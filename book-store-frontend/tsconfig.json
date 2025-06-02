@@ -22,6 +22,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/pages/AboutPage/components/AboutIntro.tsx", "src/pages/AboutPage/components/ContactSection.tsx", "src/pages/AboutPage/components/HistorySection.tsx", "src/pages/AboutPage/components/MissionSection.tsx", "src/pages/AboutPage/components/TeamSection.tsx", "src/pages/AboutPage/page.tsx", "src/pages/page.tsx", "src/pages/layout.tsx", "src/pages/RegisterPage/page.tsx", "src/pages/RegisterPage/components/RegisterHeader.tsx", "src/pages/RegisterPage/components/RegisterForm.tsx", "src/pages/LoginPage/page.tsx", "src/pages/LoginPage/components/LoginInput.tsx", "src/pages/LoginPage/components/LoginForm.tsx", "src/pages/LoginPage/components/LoginButton.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
