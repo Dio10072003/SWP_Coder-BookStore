@@ -37,7 +37,7 @@ export default function Home() {
               ✉️ Contact
             </div>
           </Link>
-          <Link href="/List">
+          <Link href="/Book">
             <div className="px-6 py-3 rounded bg-purple-600 text-white hover:bg-purple-700 transition cursor-pointer">
               📚 Book List
             </div>

@@ -12,7 +12,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <a href="/HomePage">Home</a> | 
           <a href="/AboutPage">About</a> | 
           <a href="/Contact">Contact</a> | 
-          <a href="/List">Books</a> | 
+          <a href="/Books">Books</a> | 
           <a href="/Login">Login</a> | 
           <a href="/Register">Register</a>
         </nav>
