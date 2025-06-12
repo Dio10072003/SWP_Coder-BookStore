@@ -22,9 +22,9 @@ export default function Footer(): JSX.Element {
           <h3 className="text-xl font-extrabold text-gray-800 dark:text-gray-200 mb-4">Quick Links</h3>
           <ul className="space-y-3 text-base">
             {[
-              { href: '/privacy', label: 'Privacy Policy' },
-              { href: '/terms', label: 'Terms of Service' },
-              { href: '/help', label: 'Help' },
+              { href: '/Privacy', label: 'Privacy Policy' },
+              { href: '/Terms', label: 'Terms of Service' },
+              { href: '/Help', label: 'Help' },
             ].map((link) => (
               <li key={link.href}>
                 <Link

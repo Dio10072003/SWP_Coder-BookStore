@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Lightbulb } from 'lucide-react';
+import { HeartHandshake } from 'lucide-react';
 
 const SelfHelpCategory = () => {
   return (
@@ -14,12 +14,12 @@ const SelfHelpCategory = () => {
         transition={{ duration: 0.5 }}
         whileHover={{ scale: 1.05 }}
       >
-        <Lightbulb className="h-8 w-8 text-cyan-400" />
+        <HeartHandshake className="h-8 w-8 text-cyan-400" />
         Self-Help Books
       </motion.h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gray-700 p-4 rounded-lg">
-          <p className="text-gray-300">Book listing placeholder</p>
+          <p className="text-gray-300">Self-help book listing placeholder</p>
         </div>
       </div>
     </div>

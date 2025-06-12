@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Rocket } from 'lucide-react';
+import { Atom } from 'lucide-react';
 
 const ScienceFictionCategory = () => {
   return (
@@ -14,12 +14,12 @@ const ScienceFictionCategory = () => {
         transition={{ duration: 0.5 }}
         whileHover={{ scale: 1.05 }}
       >
-        <Rocket className="h-8 w-8 text-cyan-400" />
+        <Atom className="h-8 w-8 text-cyan-400" />
         Science Fiction Books
       </motion.h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gray-700 p-4 rounded-lg">
-          <p className="text-gray-300">Book listing placeholder</p>
+          <p className="text-gray-300">Science fiction book listing placeholder</p>
         </div>
       </div>
     </div>
