@@ -1,34 +1,36 @@
-"use client";
+'use client';
 
-import { useParams } from 'next/navigation';
-import FictionCategory from './Components/FictionCategory.jsx';
-import NonFictionCategory from './Components/NonfictionCategory.jsx';
-import ScienceFictionCategory from './Components/ScienceFictionCategory.jsx';
-import FantasyCategory from './Components/FantasyCategory.jsx';
-import BiographyCategory from './Components/BiographyCategory.jsx';
-import MysteryCategory from './Components/MysteryCategory.jsx';
-import RomanceCategory from './Components/RomanceCategory.jsx';
-import ThrillerCategory from './Components/ThrillerCategory.jsx';
-import SelfHelpCategory from './Components/SelfHelpCategory.jsx';
-import HistoryCategory from './Components/HistoryCategory.jsx';
+import Link from 'next/link';
 
-const categoryComponents = {
-  fiction: FictionCategory,
-  'non-fiction': NonFictionCategory,
-  'science-fiction': ScienceFictionCategory,
-  fantasy: FantasyCategory,
-  biography: BiographyCategory,
-  mystery: MysteryCategory,
-  romance: RomanceCategory,
-  thriller: ThrillerCategory,
-  'self-help': SelfHelpCategory,
-  history: HistoryCategory,
-};
+const categories = [
+  'Biography',
+  'Fantasy',
+  'Fiction',
+  'History',
+  'Mystery',
+  'Nonfiction',
+  'Romance',
+  'ScienceFiction',
+  'SelfHelp',
+  'Thriller',
+];
 
-export default function CategoryPage() {
-  const params = useParams();
-  const category = params?.category;
-  const CategoryComponent = categoryComponents[category] || (() => <div>Category not found</div>);
-
-  return <CategoryComponent />;
+export default function CategoriesPage() {
+  return (
+    <div className="p-6 bg-white min-h-screen text-gray-900">
+      <h2 className="text-3xl font-bold mb-6 text-blue-700">📖 Browse by Category</h2>
+      <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {categories.map((cat) => (
+          <li
+            key={cat}
+            className="bg-blue-100 hover:bg-blue-200 text-center p-4 rounded-lg shadow transition duration-200"
+          >
+            <Link href={`/categories/${cat}`}>
+              <span className="text-lg font-semibold hover:underline">{cat}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
 }

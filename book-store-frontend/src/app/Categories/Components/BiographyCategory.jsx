@@ -1,3 +1,5 @@
+
+
 "use client";
 
 import React from 'react';
@@ -6,7 +8,7 @@ import { User } from 'lucide-react';
 
 const BiographyCategory = () => {
   return (
-    <div className="p-6 bg-gray-800 min-h-screen text-gray-200">
+    <div className="p-6 bg-white min-h-screen text-gray-900">
       <motion.h1
         className="text-3xl font-bold mb-6 flex items-center gap-2"
         initial={{ opacity: 0, y: -20 }}
@@ -14,12 +16,12 @@ const BiographyCategory = () => {
         transition={{ duration: 0.5 }}
         whileHover={{ scale: 1.05 }}
       >
-        <User className="h-8 w-8 text-cyan-400" />
+        <User className="h-8 w-8 text-blue-600" />
         Biography Books
       </motion.h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-gray-700 p-4 rounded-lg">
-          <p className="text-gray-300">Book listing placeholder</p>
+        <div className="bg-blue-100 p-4 rounded-lg">
+          <p className="text-gray-800">Book listing placeholder</p>
         </div>
       </div>
     </div>

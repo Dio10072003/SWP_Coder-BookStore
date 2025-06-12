@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Search } from 'lucide-react';
+import { Eye } from 'lucide-react';
 
 const MysteryCategory = () => {
   return (
@@ -14,12 +14,12 @@ const MysteryCategory = () => {
         transition={{ duration: 0.5 }}
         whileHover={{ scale: 1.05 }}
       >
-        <Search className="h-8 w-8 text-cyan-400" />
+        <Eye className="h-8 w-8 text-cyan-400" />
         Mystery Books
       </motion.h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gray-700 p-4 rounded-lg">
-          <p className="text-gray-300">Book listing placeholder</p>
+          <p className="text-gray-300">Mystery book listing placeholder</p>
         </div>
       </div>
     </div>

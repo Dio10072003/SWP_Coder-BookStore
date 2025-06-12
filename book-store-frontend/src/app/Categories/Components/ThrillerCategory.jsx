@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 const ThrillerCategory = () => {
   return (
@@ -14,12 +14,12 @@ const ThrillerCategory = () => {
         transition={{ duration: 0.5 }}
         whileHover={{ scale: 1.05 }}
       >
-        <AlertTriangle className="h-8 w-8 text-cyan-400" />
+        <Zap className="h-8 w-8 text-cyan-400" />
         Thriller Books
       </motion.h1>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-gray-700 p-4 rounded-lg">
-          <p className="text-gray-300">Book listing placeholder</p>
+          <p className="text-gray-300">Thriller book listing placeholder</p>
         </div>
       </div>
     </div>
