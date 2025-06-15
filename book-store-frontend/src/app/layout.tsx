@@ -6,7 +6,7 @@ import Footer from './Footer';
 
 export const metadata = {
   title: 'Coder-Bookstore 🌈',
-  description: 'Nơi hội tụ những cuốn sách coding đỉnh cao!',
+  description: 'Thế giới sách đa dạng cho bạn đọc muôn phương',
 };
 
 export default function RootLayout({ children }: { children: ReactNode }) {
