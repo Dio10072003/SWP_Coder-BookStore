@@ -61,7 +61,7 @@ export default function Footer(): JSX.Element {
               <li><Link href="/Categories" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Danh mục sách</Link></li>
               <li><Link href="/Authors" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Tác giả nổi bật</Link></li>
               <li><Link href="/NewArrivals" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Sách mới về</Link></li>
-              <li><Link href="/BestSellers" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Sách bán chạy</Link></li>
+              <li><Link href="/BestSeller" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Sách bán chạy</Link></li>
               <li><Link href="/Promotions" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Ưu đãi & Khuyến mãi</Link></li>
               <li><Link href="/Blog" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Bài viết & Tin tức</Link></li>
               <li><Link href="/Events" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Sự kiện</Link></li>
