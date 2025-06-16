@@ -1,16 +1,17 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image'; // Import the Image component
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa'; // Removed FaBookOpen
+import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
 import { JSX } from 'react';
 
 export default function Header(): JSX.Element {
   const [open, setOpen] = useState(false);
   const [greet, setGreet] = useState("Chào bạn");
   const [currentTime, setCurrentTime] = useState("");
-  const [currentLocation] = useState("An Nhơn, Bình Định");
+  // Sử dụng vị trí đã lưu trong bộ nhớ để cá nhân hóa
+  const [currentLocation] = useState("An Nhơn, Bình Định"); // Vị trí mặc định dựa trên ngữ cảnh đã lưu
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -40,13 +41,12 @@ export default function Header(): JSX.Element {
           href="/"
           className="flex items-center gap-2 text-xl font-extrabold tracking-wide hover:scale-105 transition-transform duration-300 drop-shadow-md"
         >
-          {/* Update the src path to include the 'images' folder */}
           <Image
-            src="/images/Coder-BookStore-Logo.png" // <-- UPDATED PATH
+            src="/images/Coder-BookStore-Logo.svg" // <-- ĐÃ THAY ĐỔI TỪ .png THÀNH .svg Ở ĐÂY
             alt="Coder-Bookstore Logo"
-            width={40} // Adjust width as needed
-            height={40} // Adjust height as needed
-            className="object-contain"
+            width={40}
+            height={40}
+            className="object-contain mr-1"
           />
           <span>Coder-Bookstore</span>
         </Link>
