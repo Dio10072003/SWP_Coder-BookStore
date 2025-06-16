@@ -61,7 +61,7 @@ export default function Footer(): JSX.Element {
               <li><Link href="/Categories" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Danh mục sách</Link></li>
               <li><Link href="/Authors" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Tác giả nổi bật</Link></li>
               <li><Link href="/NewArrivals" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Sách mới về</Link></li>
-              <li><Link href="/Best-sellers" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Sách bán chạy</Link></li>
+              <li><Link href="/BestSellers" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Sách bán chạy</Link></li>
               <li><Link href="/Promotions" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Ưu đãi & Khuyến mãi</Link></li>
               <li><Link href="/Blog" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Bài viết & Tin tức</Link></li>
               <li><Link href="/Events" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Sự kiện</Link></li>
@@ -77,10 +77,10 @@ export default function Footer(): JSX.Element {
               <li><Link href="/Privacy" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Chính sách bảo mật</Link></li>
               <li><Link href="/Terms" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Điều khoản dịch vụ</Link></li>
               <li><Link href="/Faq" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Câu hỏi thường gặp</Link></li>
-              <li><Link href="/Shipping-returns" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Vận chuyển & Đổi trả</Link></li>
-              <li><Link href="/Support-center" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Trung tâm hỗ trợ</Link></li>
-              <li><Link href="/Payment-methods" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Phương thức thanh toán</Link></li>
-              <li><Link href="/Order-tracking" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Theo dõi đơn hàng</Link></li>
+              <li><Link href="/ShipReturns" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Vận chuyển & Đổi trả</Link></li>
+              <li><Link href="/Support-Center" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Trung tâm hỗ trợ</Link></li>
+              <li><Link href="/Payment" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Phương thức thanh toán</Link></li>
+              <li><Link href="/OrderTracking" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Theo dõi đơn hàng</Link></li>
               <li><Link href="/Feedback" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Gửi phản hồi</Link></li>
               <li><Link href="/Contact" className="hover:text-pink-300 transition-colors duration-300 hover:underline">Liên hệ</Link></li>
             </ul>
