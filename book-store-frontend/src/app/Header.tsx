@@ -1,16 +1,17 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { FaBookOpen, FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
 import { JSX } from 'react';
 
 export default function Header(): JSX.Element {
   const [open, setOpen] = useState(false);
   const [greet, setGreet] = useState("Chào bạn");
   const [currentTime, setCurrentTime] = useState("");
-  // Using the remembered location for personalization
-  const [currentLocation] = useState("An Nhơn, Bình Định"); // Default location based on remembered context
+  // Sử dụng vị trí đã lưu trong bộ nhớ để cá nhân hóa
+  const [currentLocation] = useState("An Nhơn, Bình Định"); // Vị trí mặc định dựa trên ngữ cảnh đã lưu
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -35,14 +36,18 @@ export default function Header(): JSX.Element {
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 shadow-xl dark:from-blue-950 dark:via-indigo-950 dark:to-purple-950 text-white font-sans">
       <div className="max-w-7xl mx-auto px-5 py-4 flex items-center justify-between">
-        {/* Brand Logo & Name - Adjusted size */}
+        {/* Brand Logo & Name */}
         <Link
           href="/"
-          // Đã thay đổi từ text-2xl xuống text-xl ở đây
           className="flex items-center gap-2 text-xl font-extrabold tracking-wide hover:scale-105 transition-transform duration-300 drop-shadow-md"
         >
-          {/* Icon cũng được thu nhỏ để khớp */}
-          <FaBookOpen className="text-teal-300 text-2xl" /> {/* Adjusted icon size to text-2xl */}
+          <Image
+            src="/images/Coder-BookStore-Logo.svg" // <-- ĐÃ THAY ĐỔI TỪ .png THÀNH .svg Ở ĐÂY
+            alt="Coder-Bookstore Logo"
+            width={40}
+            height={40}
+            className="object-contain mr-1"
+          />
           <span>Coder-Bookstore</span>
         </Link>
 
@@ -52,26 +57,25 @@ export default function Header(): JSX.Element {
             <Link href="/" className="hover:text-teal-200 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">
               Trang Chủ
             </Link>
-            <Link href="/books" className="hover:text-teal-200 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">
+            <Link href="/Books" className="hover:text-teal-200 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">
               Sách
             </Link>
-            <Link href="/about" className="hover:text-teal-200 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">
+            <Link href="/AboutPage" className="hover:text-teal-200 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">
               Về Chúng Tôi
             </Link>
-            <Link href="/contact" className="hover:text-teal-200 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">
+            <Link href="/Contact" className="hover:text-teal-200 transition-colors duration-200 px-3 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">
               Liên Hệ
             </Link>
           </nav>
           
           {/* User/Auth Links & Time/Greeting */}
           <div className="flex items-center gap-4 text-sm font-medium">
-            <Link href="/login" className="flex items-center gap-1 hover:text-white transition-colors duration-200 px-3 py-1.5 rounded-full bg-teal-600 hover:bg-teal-700 shadow-inner">
+            <Link href="/Login" className="flex items-center gap-1 hover:text-white transition-colors duration-200 px-3 py-1.5 rounded-full bg-teal-600 hover:bg-teal-700 shadow-inner">
               <FaUserCircle className="text-xl" /> Đăng nhập
             </Link>
-            <Link href="/register" className="hover:text-white transition-colors duration-200 px-3 py-1.5 rounded-full bg-teal-600 hover:bg-teal-700 shadow-inner">
+            <Link href="/Register" className="hover:text-white transition-colors duration-200 px-3 py-1.5 rounded-full bg-teal-600 hover:bg-teal-700 shadow-inner">
               Đăng ký
             </Link>
-            {/* Adjusted layout for time and location */}
             <span className="text-yellow-100 bg-black bg-opacity-25 px-3 py-1 rounded-full shadow-inner text-xs flex flex-col items-center">
               <span className="font-bold">{greet}, {currentTime}</span>
               <span className="text-gray-300 text-opacity-80 mt-0.5">{currentLocation}</span>
@@ -100,21 +104,21 @@ export default function Header(): JSX.Element {
             Trang Chủ
           </Link>
           <Link
-            href="/books"
+            href="/Books"
             onClick={() => setOpen(false)}
             className="block hover:text-teal-200 transition-colors duration-200 py-2 rounded-md hover:bg-white hover:bg-opacity-10"
           >
             Sách
           </Link>
           <Link
-            href="/about"
+            href="/AboutPage"
             onClick={() => setOpen(false)}
             className="block hover:text-teal-200 transition-colors duration-200 py-2 rounded-md hover:bg-white hover:bg-opacity-10"
           >
             Về Chúng Tôi
           </Link>
           <Link
-            href="/contact"
+            href="/Contact"
             onClick={() => setOpen(false)}
             className="block hover:text-teal-200 transition-colors duration-200 py-2 rounded-md hover:bg-white hover:bg-opacity-10"
           >
@@ -122,14 +126,14 @@ export default function Header(): JSX.Element {
           </Link>
           <hr className="border-t border-white border-opacity-20 my-2" />
           <Link
-            href="/login"
+            href="/Login"
             onClick={() => setOpen(false)}
             className="block hover:text-teal-200 transition-colors duration-200 py-2 rounded-md hover:bg-white hover:bg-opacity-10"
           >
             Đăng nhập
           </Link>
           <Link
-            href="/register"
+            href="/Register"
             onClick={() => setOpen(false)}
             className="block hover:text-teal-200 transition-colors duration-200 py-2 rounded-md hover:bg-white hover:bg-opacity-10"
           >
