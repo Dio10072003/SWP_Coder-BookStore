@@ -3,7 +3,8 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { FaBookOpen, FaInfoCircle, FaPhoneAlt, FaChevronRight, FaStar, FaFire, FaFeatherAlt } from 'react-icons/fa'; // Thêm icon mới
+// Đã thêm FaStarHalfAlt để hiển thị nửa sao chính xác hơn
+import { FaBookOpen, FaInfoCircle, FaPhoneAlt, FaChevronRight, FaStar, FaFire, FaFeatherAlt, FaStarHalfAlt } from 'react-icons/fa'; 
 import Image from 'next/image';
 
 export default function Home() {
@@ -94,7 +95,7 @@ export default function Home() {
     visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
   };
 
-  // Function to render star ratings
+  // Function to render star ratings - Cập nhật để hiển thị nửa sao chính xác hơn
   const renderStars = (rating: number) => {
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
@@ -104,9 +105,7 @@ export default function Home() {
       stars.push(<FaStar key={`full-${i}`} className="text-yellow-400" />);
     }
     if (hasHalfStar) {
-      // For a half star, you might need a different icon or a clever CSS trick
-      // For simplicity, I'll add another full star, or you can use a half-star icon if available
-      stars.push(<FaStar key="half" className="text-yellow-400 opacity-50" />); // Representing half as faded full star
+      stars.push(<FaStarHalfAlt key="half" className="text-yellow-400" />); // Sử dụng FaStarHalfAlt
     }
     while (stars.length < 5) {
       stars.push(<FaStar key={`empty-${stars.length}`} className="text-gray-300 dark:text-gray-600" />);
@@ -115,7 +114,8 @@ export default function Home() {
   };
 
   return (
-    <main className="min-h-screen px-4 py-16 max-w-7xl mx-auto">
+    // ĐÃ XÓA THẺ <main> BÊN NGOÀI NÀY
+    <> {/* Sử dụng Fragment thay vì thẻ <main> */}
       {/* Hero Section */}
       <motion.section
         initial={{ opacity: 0, y: -50 }}
@@ -134,7 +134,7 @@ export default function Home() {
             Your ultimate destination for inspiring coding books and resources to elevate your skills and fuel your passion.
           </p>
           <Link
-            href="/Books"
+            href="/Books" // Đảm bảo khớp với đường dẫn trong Header và cấu trúc file
             className="inline-block px-10 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white text-lg rounded-full font-bold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out transform"
             aria-label="Browse all books at Coder-Bookstore"
           >
@@ -167,7 +167,7 @@ export default function Home() {
               },
             },
           }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8" // Điều chỉnh grid
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"
         >
           {books.map(({ id, title, author, price, img, rating }) => (
             <motion.article
@@ -176,19 +176,19 @@ export default function Home() {
                 hidden: { opacity: 0, y: 50, scale: 0.95 },
                 visible: { opacity: 1, y: 0, scale: 1 },
               }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700 flex flex-col" // Thêm flex-col
+              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700 flex flex-col"
             >
-              <div className="relative w-full h-72 overflow-hidden rounded-t-2xl"> {/* Container cho ảnh */}
+              <div className="relative w-full h-72 overflow-hidden rounded-t-2xl">
                 <Image
                   src={img}
                   alt={title}
-                  layout="fill" // Sử dụng layout="fill" để ảnh lấp đầy container
-                  objectFit="cover" // Đảm bảo ảnh cover toàn bộ không gian
-                  priority={id <= 3} // Ưu tiên load ảnh đầu tiên
+                  layout="fill"
+                  objectFit="cover"
+                  priority={id <= 3}
                   className="group-hover:scale-110 transition-transform duration-500 ease-in-out"
                 />
               </div>
-              <div className="p-6 flex-grow flex flex-col justify-between"> {/* Thêm flex-grow */}
+              <div className="p-6 flex-grow flex flex-col justify-between">
                 <div>
                   <h3 className="text-2xl font-bold text-pink-600 dark:text-pink-400 mb-2 leading-snug">{title}</h3>
                   <p className="text-base text-gray-500 dark:text-gray-400 mb-3">by <span className="font-semibold">{author}</span></p>
@@ -199,7 +199,7 @@ export default function Home() {
                   <p className="font-extrabold text-2xl text-yellow-600 dark:text-yellow-400 mb-4">{price}</p>
                 </div>
                 <Link
-                  href={`/books/${id}`}
+                  href={`/Books/${id}`} // Đảm bảo khớp với cấu trúc đường dẫn của bạn
                   className="inline-flex items-center justify-center gap-2 text-pink-500 font-semibold hover:text-pink-700 dark:hover:text-pink-300 transition-colors duration-200 mt-auto bg-pink-50 dark:bg-gray-700 py-2 rounded-lg hover:bg-pink-100 dark:hover:bg-gray-600"
                   aria-label={`Details about ${title}`}
                 >
@@ -211,7 +211,7 @@ export default function Home() {
         </motion.div>
         <div className="text-center mt-16">
           <Link
-            href="/books"
+            href="/Books" // Đảm bảo khớp với đường dẫn trong Header và cấu trúc file
             className="inline-block px-8 py-3 text-lg bg-purple-600 text-white rounded-full font-semibold shadow-lg hover:bg-purple-700 hover:scale-105 transition-transform duration-300 ease-in-out"
             aria-label="View all books"
           >
@@ -275,14 +275,14 @@ export default function Home() {
         </p>
         <div className="flex justify-center gap-4">
           <Link
-            href="/register"
+            href="/Register" // Đảm bảo khớp với đường dẫn trong Header và cấu trúc file
             className="inline-block px-8 py-3 bg-purple-600 text-white text-lg rounded-full font-bold shadow-lg hover:bg-purple-700 hover:scale-105 transition-transform duration-300"
             aria-label="Register now"
           >
             Đăng Ký Ngay
           </Link>
           <Link
-            href="/contact"
+            href="/Contact" // Đảm bảo khớp với đường dẫn trong Header và cấu trúc file
             className="inline-block px-8 py-3 bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-300 text-lg rounded-full font-bold shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:scale-105 transition-transform duration-300 border border-purple-600 dark:border-purple-400"
             aria-label="Learn more about us"
           >
@@ -290,6 +290,6 @@ export default function Home() {
           </Link>
         </div>
       </motion.section>
-    </main>
+    </> // ĐÃ XÓA THẺ <main> BÊN NGOÀI NÀY
   );
 }
