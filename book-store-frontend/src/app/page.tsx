@@ -120,22 +120,34 @@ export default function Home() {
       <motion.section
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9, ease: "easeOut" }}
-        className="text-center mb-14 bg-white dark:bg-gray-800 p-5 md:p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden"
+        transition={{ duration: 0.9 }}
+        className="relative text-center mb-14 bg-white dark:bg-gray-800 p-5 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden"
       >
-        {/* Background gradient overlay for subtle effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-yellow-100/30 via-pink-100/30 to-purple-100/30 dark:from-yellow-900/20 dark:via-pink-900/20 dark:to-purple-900/20 rounded-3xl z-0"></div>
+        {/* Blob nền động */}
+        <span className="absolute -top-10 -left-10 w-56 h-56 bg-pink-200 opacity-20 rounded-full blur-2xl animate-blob z-0" />
+        <span className="absolute -bottom-10 -right-10 w-56 h-56 bg-yellow-200 opacity-10 rounded-full blur-2xl animate-blob2 z-0" />
+        {/* Icon sách phía trên */}
+        <div className="flex justify-center mb-2 relative z-10">
+          <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-yellow-300 via-pink-300 to-purple-300 shadow-lg animate-bounce-slow">
+            <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-yellow-500"><rect x="4" y="7" width="16" height="10" rx="2" strokeWidth={2} /><path d="M8 11h8" strokeWidth={2} /></svg>
+          </span>
+        </div>
         <div className="relative z-10">
-          <h1 className="text-3xl md:text-4xl font-extrabold text-pink-600 dark:text-pink-400 drop-shadow-lg mb-4 leading-tight">
+          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight animate-bounce-slow">
             <span className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">{greet},</span>
-            Welcome to <span className="text-yellow-500 dark:text-yellow-300">Coder-Bookstore</span>!
+            <span className="bg-gradient-to-r from-yellow-400 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent drop-shadow-lg">
+              Welcome to Coder-Bookstore!
+            </span>
           </h1>
-          <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6 leading-relaxed">
-            Your ultimate destination for inspiring coding books and resources to elevate your skills and fuel your passion.
-          </p>
+          <div className="flex flex-col items-center">
+            <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-2 leading-relaxed relative">
+              Your ultimate destination for inspiring coding books and resources to elevate your skills and fuel your passion.
+              <span className="block h-1 w-32 mx-auto mt-2 bg-gradient-to-r from-yellow-400 via-pink-400 to-fuchsia-400 rounded-full opacity-70" />
+            </p>
+          </div>
           <Link
             href="/Books"
-            className="inline-block px-7 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white text-base rounded-full font-bold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out transform"
+            className="inline-block px-8 py-3 bg-gradient-to-r from-pink-500 via-yellow-400 to-fuchsia-500 text-white text-base rounded-full font-bold shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out mt-4 animate-fade-in"
             aria-label="Browse all books at Coder-Bookstore"
           >
             Explore Our Collection <FaChevronRight className="inline-block ml-2 -mr-1 text-xs" />
