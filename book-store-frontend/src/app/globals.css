@@ -24,3 +24,43 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Animation cho hiệu ứng blob, float, fade-in, gradient-move */
+@keyframes blob {
+  0%, 100% { transform: scale(1) translateY(0); }
+  33% { transform: scale(1.1, 0.9) translateY(-10px); }
+  66% { transform: scale(0.9, 1.1) translateY(10px); }
+}
+.animate-blob {
+  animation: blob 8s infinite ease-in-out;
+}
+@keyframes blob2 {
+  0%, 100% { transform: scale(1) translateY(0); }
+  25% { transform: scale(1.05, 0.95) translateY(8px); }
+  75% { transform: scale(0.95, 1.05) translateY(-8px); }
+}
+.animate-blob2 {
+  animation: blob2 10s infinite ease-in-out;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.animate-float {
+  animation: float 3s infinite ease-in-out;
+}
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.animate-fade-in {
+  animation: fade-in 1s cubic-bezier(0.4,0,0.2,1) both;
+}
+@keyframes gradient-move {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+.animate-gradient-move {
+  background-size: 200% 200%;
+  animation: gradient-move 10s ease-in-out infinite;
+}
