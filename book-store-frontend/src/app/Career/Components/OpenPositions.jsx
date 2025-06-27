@@ -1,5 +1,6 @@
 import React from 'react';
 import PositionCard from './PositionCard';
+import { FaUserPlus } from 'react-icons/fa';
 
 const OpenPositions = () => {
     const positions = [
@@ -30,9 +31,9 @@ const OpenPositions = () => {
     ];
 
     return (
-        <section className="open-positions">
-            <h2>Các Vị Trí Đang Tuyển Dụng</h2>
-            <div className="positions-grid">
+        <section>
+            <h2 className="text-2xl font-bold text-pink-700 mb-3 flex items-center gap-2"><FaUserPlus className="text-pink-500" />Vị Trí Đang Tuyển Dụng</h2>
+            <div className="grid md:grid-cols-2 gap-6">
                 {positions.map(pos => (
                     <PositionCard
                         key={pos.id}
