@@ -42,11 +42,12 @@ export default function Header(): JSX.Element {
           className="flex items-center gap-2 text-xl font-extrabold tracking-wide hover:scale-105 transition-transform duration-300 drop-shadow-md"
         >
           <Image
-            src="/images/Coder-BookStore-Logo.svg" // <-- ĐÃ THAY ĐỔI TỪ .png THÀNH .svg Ở ĐÂY
+            src="/images/Coder-BookStore-Logo.svg"
             alt="Coder-Bookstore Logo"
-            width={40}
-            height={40}
-            className="object-contain mr-1"
+            width={48}
+            height={48}
+            className="object-contain mr-1 rounded-lg bg-white p-1 shadow"
+            priority
           />
           <span>Coder-Bookstore</span>
         </Link>
