@@ -1,6 +1,7 @@
-import React from 'react';
-import FAQHeader from './FAQHeader';
-import FAQCard from './FAQCard';
+'use client';
+import React, { useState } from 'react';
+import FAQHeader from './FAQHeader'; // Assuming FAQHeader is a component that you want to keep
+import FAQCard from './FAQCard'; // Assuming FAQCard is a component that you want to keep
 
 const faqs = [
   {
@@ -65,19 +66,39 @@ const faqs = [
   }
 ];
 
-const FaqPage = () => {
+// Re-using the color array from the 'main' branch to keep the styling options
+const cardColors = [
+  'bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100',
+  'bg-red-100', 'bg-indigo-100', 'bg-teal-100', 'bg-orange-100', 'bg-cyan-100',
+  'bg-lime-100', 'bg-fuchsia-100', 'bg-amber-100', 'bg-emerald-100', 'bg-sky-100',
+];
+
+export default function FaqPage() {
+  const [openIndex, setOpenIndex] = useState(null);
+
+  const handleToggle = idx => {
+    setOpenIndex(openIndex === idx ? null : idx);
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-blue-50 to-yellow-50 py-0 relative overflow-x-hidden">
-      <FAQHeader />
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-12 px-4">
+      {/* Assuming FAQHeader handles the title. If not, you can add an h1 here. */}
+      {/* <FAQHeader /> */}
+      <h1 className="text-4xl font-extrabold text-center mb-10 text-blue-700 drop-shadow">Câu hỏi thường gặp (FAQ)</h1>
       <main className="max-w-3xl mx-auto px-4 md:px-0 relative z-10">
         <div className="space-y-6">
           {faqs.map((faq, idx) => (
-            <FAQCard key={idx} question={faq.question} answer={faq.answer} />
+            <FAQCard
+              key={idx}
+              question={faq.question}
+              answer={faq.answer}
+              isOpen={openIndex === idx}
+              onClick={() => handleToggle(idx)}
+              color={cardColors[idx % cardColors.length]} // Applying colors from the 'main' branch
+            />
           ))}
         </div>
       </main>
     </div>
   );
-};
-
-export default FaqPage; 
+}
