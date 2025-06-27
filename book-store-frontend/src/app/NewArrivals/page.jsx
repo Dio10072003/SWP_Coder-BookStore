@@ -25,21 +25,31 @@ export default function NewArrivalPage() {
     };
 
     return (
-        <div className="new-arrival-page-container min-h-screen bg-gray-50">
-            <NewArrivalsHeader />
-            <main className="new-arrival-main-content">
-                <BookHighlight
-                    title={featuredBook.title}
-                    author={featuredBook.author}
-                    description={featuredBook.description}
-                    imageUrl={featuredBook.imageUrl}
-                    link={featuredBook.link}
-                />
-                <h2 style={{ textAlign: 'center', margin: '40px 0 20px' }}>Tất cả sách mới về</h2>
-                <NewBookGrid books={newBooks} />
-                <ComingSoonSection />
-                <SubscriptionPrompt />
-            </main>
+        <div className="min-h-screen bg-gradient-to-br from-cyan-50 via-pink-50 to-yellow-50 py-10 px-2">
+            <div className="max-w-5xl mx-auto">
+                <div className="mb-10 animate-fade-in">
+                    <NewArrivalsHeader />
+                </div>
+                <div className="mb-12 animate-fade-in-up">
+                    <BookHighlight
+                        title={featuredBook.title}
+                        author={featuredBook.author}
+                        description={featuredBook.description}
+                        imageUrl={featuredBook.imageUrl}
+                        link={featuredBook.link}
+                    />
+                </div>
+                <h2 className="text-3xl font-extrabold text-center text-pink-600 mb-8 drop-shadow animate-fade-in">✨ Tất cả sách mới về ✨</h2>
+                <div className="mb-12 animate-fade-in-up">
+                    <NewBookGrid books={newBooks} />
+                </div>
+                <div className="mb-12 animate-fade-in-up">
+                    <ComingSoonSection />
+                </div>
+                <div className="animate-fade-in-up">
+                    <SubscriptionPrompt />
+                </div>
+            </div>
         </div>
     );
 }
