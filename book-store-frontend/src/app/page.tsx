@@ -92,7 +92,7 @@ export default function Home() {
   // Animation variants for sections
   const sectionVariants = {
     hidden: { opacity: 0, y: 50 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.8 } },
   };
 
   // Function to render star ratings - Cập nhật để hiển thị nửa sao chính xác hơn
@@ -121,24 +121,24 @@ export default function Home() {
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.9, ease: "easeOut" }}
-        className="text-center mb-20 bg-white dark:bg-gray-800 p-8 md:p-12 rounded-3xl shadow-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden"
+        className="text-center mb-14 bg-white dark:bg-gray-800 p-5 md:p-8 rounded-2xl shadow-xl border border-gray-100 dark:border-gray-700 relative overflow-hidden"
       >
         {/* Background gradient overlay for subtle effect */}
         <div className="absolute inset-0 bg-gradient-to-br from-yellow-100/30 via-pink-100/30 to-purple-100/30 dark:from-yellow-900/20 dark:via-pink-900/20 dark:to-purple-900/20 rounded-3xl z-0"></div>
         <div className="relative z-10">
-          <h1 className="text-5xl md:text-6xl font-extrabold text-pink-600 dark:text-pink-400 drop-shadow-lg mb-6 leading-tight">
-            <span className="block text-2xl font-semibold text-gray-700 dark:text-gray-300 mb-2">{greet},</span>
+          <h1 className="text-3xl md:text-4xl font-extrabold text-pink-600 dark:text-pink-400 drop-shadow-lg mb-4 leading-tight">
+            <span className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">{greet},</span>
             Welcome to <span className="text-yellow-500 dark:text-yellow-300">Coder-Bookstore</span>!
           </h1>
-          <p className="text-lg md:text-xl text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-8 leading-relaxed">
+          <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-6 leading-relaxed">
             Your ultimate destination for inspiring coding books and resources to elevate your skills and fuel your passion.
           </p>
           <Link
-            href="/Books" // Đảm bảo khớp với đường dẫn trong Header và cấu trúc file
-            className="inline-block px-10 py-4 bg-gradient-to-r from-pink-500 to-red-500 text-white text-lg rounded-full font-bold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out transform"
+            href="/Books"
+            className="inline-block px-7 py-2.5 bg-gradient-to-r from-pink-500 to-red-500 text-white text-base rounded-full font-bold shadow-lg hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out transform"
             aria-label="Browse all books at Coder-Bookstore"
           >
-            Explore Our Collection <FaChevronRight className="inline-block ml-2 -mr-1 text-sm" />
+            Explore Our Collection <FaChevronRight className="inline-block ml-2 -mr-1 text-xs" />
           </Link>
         </div>
       </motion.section>
@@ -149,13 +149,12 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={sectionVariants}
-        className="mb-24"
+        className="mb-16"
       >
-        <h2 className="text-4xl md:text-5xl font-extrabold text-purple-700 dark:text-purple-400 mb-12 text-center drop-shadow-md">
-          <FaFire className="inline-block text-yellow-500 mr-3 align-middle" />
+        <h2 className="text-2xl md:text-3xl font-extrabold text-purple-700 dark:text-purple-400 mb-8 text-center drop-shadow-md">
+          <FaFire className="inline-block text-yellow-500 mr-2 align-middle" />
           Sách Nổi Bật <span className="text-pink-500">& Mới Nhất</span>
         </h2>
-
         <motion.div
           initial="hidden"
           animate="visible"
@@ -167,7 +166,7 @@ export default function Home() {
               },
             },
           }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-8"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"
         >
           {books.map(({ id, title, author, price, img, rating }) => (
             <motion.article
@@ -176,46 +175,46 @@ export default function Home() {
                 hidden: { opacity: 0, y: 50, scale: 0.95 },
                 visible: { opacity: 1, y: 0, scale: 1 },
               }}
-              className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700 flex flex-col"
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700 flex flex-col hover:-translate-y-1 hover:scale-[1.025]"
             >
-              <div className="relative w-full h-72 overflow-hidden rounded-t-2xl">
+              <div className="relative w-full aspect-[3/4] overflow-hidden rounded-t-xl bg-gray-100 dark:bg-gray-700">
                 <Image
                   src={img}
                   alt={title}
-                  layout="fill"
-                  objectFit="cover"
+                  fill
+                  style={{ objectFit: 'cover' }}
                   priority={id <= 3}
-                  className="group-hover:scale-110 transition-transform duration-500 ease-in-out"
+                  className="group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-t-xl"
                 />
               </div>
-              <div className="p-6 flex-grow flex flex-col justify-between">
+              <div className="p-4 flex-grow flex flex-col justify-between">
                 <div>
-                  <h3 className="text-2xl font-bold text-pink-600 dark:text-pink-400 mb-2 leading-snug">{title}</h3>
-                  <p className="text-base text-gray-500 dark:text-gray-400 mb-3">by <span className="font-semibold">{author}</span></p>
-                  <div className="flex items-center mb-3">
+                  <h3 className="text-base font-bold text-pink-600 dark:text-pink-400 mb-1 leading-snug line-clamp-2 min-h-[40px]">{title}</h3>
+                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">by <span className="font-semibold">{author}</span></p>
+                  <div className="flex items-center mb-1">
                     {renderStars(rating)}
-                    <span className="text-sm text-gray-600 dark:text-gray-400 ml-2">({rating})</span>
+                    <span className="text-xs text-gray-600 dark:text-gray-400 ml-2">({rating})</span>
                   </div>
-                  <p className="font-extrabold text-2xl text-yellow-600 dark:text-yellow-400 mb-4">{price}</p>
+                  <p className="font-extrabold text-base text-yellow-600 dark:text-yellow-400 mb-2">{price}</p>
                 </div>
                 <Link
-                  href={`/Books/${id}`} // Đảm bảo khớp với cấu trúc đường dẫn của bạn
-                  className="inline-flex items-center justify-center gap-2 text-pink-500 font-semibold hover:text-pink-700 dark:hover:text-pink-300 transition-colors duration-200 mt-auto bg-pink-50 dark:bg-gray-700 py-2 rounded-lg hover:bg-pink-100 dark:hover:bg-gray-600"
+                  href={`/Books/${id}`}
+                  className="inline-flex items-center justify-center gap-2 text-pink-500 font-semibold hover:text-white transition-colors duration-200 mt-auto bg-pink-100 dark:bg-gray-700 py-1.5 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:to-yellow-400 hover:shadow-lg text-xs border border-pink-200 dark:border-gray-600"
                   aria-label={`Details about ${title}`}
                 >
-                  Xem chi tiết <FaChevronRight className="text-sm" />
+                  Xem chi tiết <FaChevronRight className="text-xs" />
                 </Link>
               </div>
             </motion.article>
           ))}
         </motion.div>
-        <div className="text-center mt-16">
+        <div className="text-center mt-10">
           <Link
-            href="/Books" // Đảm bảo khớp với đường dẫn trong Header và cấu trúc file
-            className="inline-block px-8 py-3 text-lg bg-purple-600 text-white rounded-full font-semibold shadow-lg hover:bg-purple-700 hover:scale-105 transition-transform duration-300 ease-in-out"
+            href="/Books"
+            className="inline-block px-6 py-2 text-base bg-purple-600 text-white rounded-full font-semibold shadow-lg hover:bg-purple-700 hover:scale-105 transition-transform duration-300 ease-in-out"
             aria-label="View all books"
           >
-            Xem tất cả sách <FaChevronRight className="inline-block ml-2 text-sm" />
+            Xem tất cả sách <FaChevronRight className="inline-block ml-2 text-xs" />
           </Link>
         </div>
       </motion.section>
@@ -226,13 +225,13 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={sectionVariants}
-        className="mb-24"
+        className="mb-16"
       >
-        <h2 className="text-4xl md:text-5xl font-extrabold text-pink-700 dark:text-pink-400 mb-12 text-center drop-shadow-md">
-          <FaFeatherAlt className="inline-block text-purple-500 mr-3 align-middle" />
+        <h2 className="text-2xl md:text-3xl font-extrabold text-pink-700 dark:text-pink-400 mb-8 text-center drop-shadow-md">
+          <FaFeatherAlt className="inline-block text-purple-500 mr-2 align-middle" />
           Khám Phá Thêm
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {explore.map(({ href, icon, label, desc }) => (
             <motion.div
               key={href}
@@ -240,19 +239,19 @@ export default function Home() {
                 hidden: { opacity: 0, y: 50 },
                 visible: { opacity: 1, y: 0 },
               }}
-              className="bg-white dark:bg-gray-800 p-8 rounded-2xl shadow-lg hover:shadow-2xl transition-transform hover:scale-105 duration-300 border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center justify-center"
+              className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg hover:shadow-2xl transition-transform hover:scale-105 duration-300 border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center justify-center"
             >
-              <div className="mb-5 p-4 rounded-full bg-gradient-to-br from-yellow-50 via-pink-50 to-purple-50 dark:from-yellow-950 dark:via-pink-950 dark:to-purple-950 shadow-inner">
+              <div className="mb-3 p-3 rounded-full bg-gradient-to-br from-yellow-50 via-pink-50 to-purple-50 dark:from-yellow-950 dark:via-pink-950 dark:to-purple-950 shadow-inner">
                 {icon}
               </div>
-              <h3 className="text-2xl font-bold text-gray-800 dark:text-gray-200 mb-2">{label}</h3>
-              <p className="text-base text-gray-600 dark:text-gray-400">{desc}</p>
+              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-1">{label}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{desc}</p>
               <Link
                 href={href}
-                className="mt-6 inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-800 dark:hover:text-purple-200 transition-colors duration-200"
+                className="mt-4 inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-800 dark:hover:text-purple-200 transition-colors duration-200 text-sm"
                 aria-label={`Go to ${label}`}
               >
-                Tìm hiểu thêm <FaChevronRight className="text-sm" />
+                Tìm hiểu thêm <FaChevronRight className="text-xs" />
               </Link>
             </motion.div>
           ))}
@@ -265,25 +264,25 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, amount: 0.3 }}
         variants={sectionVariants}
-        className="text-center py-16 bg-gradient-to-br from-pink-100 via-purple-100 to-yellow-100 dark:from-pink-900/50 dark:via-purple-900/50 dark:to-yellow-900/50 rounded-3xl shadow-lg border border-gray-100 dark:border-gray-700"
+        className="text-center py-10 bg-gradient-to-br from-pink-100 via-purple-100 to-yellow-100 dark:from-pink-900/50 dark:via-purple-900/50 dark:to-yellow-900/50 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
       >
-        <h2 className="text-4xl font-extrabold text-pink-700 dark:text-pink-400 mb-6">
+        <h2 className="text-2xl font-extrabold text-pink-700 dark:text-pink-400 mb-4">
           Sẵn Sàng Nâng Tầm Kỹ Năng Của Bạn?
         </h2>
-        <p className="text-xl text-gray-700 dark:text-gray-300 max-w-xl mx-auto mb-8">
+        <p className="text-base text-gray-700 dark:text-gray-300 max-w-xl mx-auto mb-6">
           Tham gia cộng đồng Coder-Bookstore ngay hôm nay để không bỏ lỡ những kiến thức mới nhất!
         </p>
-        <div className="flex justify-center gap-4">
+        <div className="flex justify-center gap-3">
           <Link
-            href="/Register" // Đảm bảo khớp với đường dẫn trong Header và cấu trúc file
-            className="inline-block px-8 py-3 bg-purple-600 text-white text-lg rounded-full font-bold shadow-lg hover:bg-purple-700 hover:scale-105 transition-transform duration-300"
+            href="/Register"
+            className="inline-block px-6 py-2 bg-purple-600 text-white text-base rounded-full font-bold shadow-lg hover:bg-purple-700 hover:scale-105 transition-transform duration-300"
             aria-label="Register now"
           >
             Đăng Ký Ngay
           </Link>
           <Link
-            href="/Contact" // Đảm bảo khớp với đường dẫn trong Header và cấu trúc file
-            className="inline-block px-8 py-3 bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-300 text-lg rounded-full font-bold shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:scale-105 transition-transform duration-300 border border-purple-600 dark:border-purple-400"
+            href="/Contact"
+            className="inline-block px-6 py-2 bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-300 text-base rounded-full font-bold shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:scale-105 transition-transform duration-300 border border-purple-600 dark:border-purple-400"
             aria-label="Learn more about us"
           >
             Tìm Hiểu Thêm
