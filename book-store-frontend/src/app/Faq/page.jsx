@@ -1,25 +1,72 @@
 'use client';
 import React, { useState } from 'react';
-import FaqCard from './Components/FaqCard.jsx';
+import FAQHeader from './FAQHeader'; // Assuming FAQHeader is a component that you want to keep
+import FAQCard from './FAQCard'; // Assuming FAQCard is a component that you want to keep
 
 const faqs = [
-  { q: 'Làm thế nào để đặt sách trên Coder-BookStore?', a: 'Bạn chỉ cần chọn sách, thêm vào giỏ hàng và tiến hành thanh toán theo hướng dẫn.' },
-  { q: 'Tôi có thể thanh toán bằng những hình thức nào?', a: 'Chúng tôi hỗ trợ thanh toán qua thẻ ngân hàng, ví điện tử và COD.' },
-  { q: 'Bao lâu tôi nhận được sách sau khi đặt hàng?', a: 'Thời gian giao hàng từ 2-5 ngày làm việc tùy khu vực.' },
-  { q: 'Làm sao để kiểm tra tình trạng đơn hàng?', a: 'Bạn có thể kiểm tra trong mục "Đơn hàng của tôi" sau khi đăng nhập.' },
-  { q: 'Tôi muốn đổi/trả sách thì làm thế nào?', a: 'Liên hệ bộ phận CSKH trong vòng 7 ngày kể từ khi nhận hàng để được hỗ trợ.' },
-  { q: 'Coder-BookStore có chương trình khuyến mãi nào không?', a: 'Chúng tôi thường xuyên có các chương trình ưu đãi, hãy theo dõi mục Khuyến Mãi!' },
-  { q: 'Tôi có thể mua sách bản điện tử không?', a: 'Hiện tại chúng tôi chỉ cung cấp sách giấy, chưa hỗ trợ ebook.' },
-  { q: 'Làm sao để nhận hóa đơn VAT?', a: 'Vui lòng điền thông tin xuất hóa đơn khi đặt hàng hoặc liên hệ CSKH.' },
-  { q: 'Tôi có thể hủy đơn hàng sau khi đặt không?', a: 'Bạn có thể hủy đơn trước khi đơn được xác nhận giao cho đơn vị vận chuyển.' },
-  { q: 'Coder-BookStore có hỗ trợ xuất hóa đơn cho doanh nghiệp không?', a: 'Có, chúng tôi hỗ trợ xuất hóa đơn VAT cho doanh nghiệp.' },
-  { q: 'Tôi muốn trở thành cộng tác viên/đối tác thì làm thế nào?', a: 'Hãy liên hệ với chúng tôi qua mục Liên Hệ để biết thêm chi tiết.' },
-  { q: 'Có thể đặt sách làm quà tặng không?', a: 'Bạn có thể chọn gói quà tặng khi đặt hàng và ghi chú lời chúc.' },
-  { q: 'Tôi bị lỗi khi thanh toán, phải làm sao?', a: 'Vui lòng thử lại hoặc liên hệ CSKH để được hỗ trợ kịp thời.' },
-  { q: 'Có thể nhận sách tại cửa hàng không?', a: 'Hiện tại chúng tôi chỉ bán online, chưa có cửa hàng trực tiếp.' },
-  { q: 'Làm sao để nhận thông báo về sách mới?', a: 'Đăng ký nhận bản tin hoặc theo dõi fanpage của chúng tôi.' },
+  {
+    question: 'Làm sao để đặt sách trên Coder-BookStore?',
+    answer: 'Bạn chỉ cần chọn sách, thêm vào giỏ hàng và làm theo hướng dẫn thanh toán. Đơn hàng sẽ được xác nhận qua email.'
+  },
+  {
+    question: 'Tôi có thể theo dõi đơn hàng như thế nào?',
+    answer: 'Sau khi đặt hàng, bạn sẽ nhận được mã vận đơn qua email. Dùng mã này để tra cứu trạng thái trên website đối tác vận chuyển.'
+  },
+  {
+    question: 'Phí vận chuyển được tính ra sao?',
+    answer: 'Đơn từ 300.000 VND được miễn phí vận chuyển. Đơn dưới mức này sẽ tính phí dựa trên trọng lượng và địa chỉ nhận hàng.'
+  },
+  {
+    question: 'Tôi có thể đổi trả sách trong trường hợp nào?',
+    answer: 'Bạn được đổi trả trong 7 ngày nếu sách bị lỗi do xuất bản, hư hỏng khi vận chuyển hoặc không đúng đơn đặt.'
+  },
+  {
+    question: 'Làm sao để yêu cầu đổi trả?',
+    answer: 'Liên hệ bộ phận hỗ trợ qua email hoặc điện thoại, cung cấp thông tin đơn hàng và lý do đổi trả.'
+  },
+  {
+    question: 'Tôi có thể thanh toán bằng những hình thức nào?',
+    answer: 'Coder-BookStore hỗ trợ thanh toán qua thẻ tín dụng, chuyển khoản ngân hàng, ví điện tử và COD.'
+  },
+  {
+    question: 'Thông tin cá nhân của tôi có được bảo mật không?',
+    answer: 'Chúng tôi cam kết bảo mật tuyệt đối thông tin khách hàng, sử dụng SSL và không chia sẻ cho bên thứ ba nếu không cần thiết.'
+  },
+  {
+    question: 'Tôi quên mật khẩu, phải làm sao?',
+    answer: 'Bạn hãy dùng chức năng "Quên mật khẩu" trên trang đăng nhập để lấy lại mật khẩu qua email.'
+  },
+  {
+    question: 'Có thể thay đổi địa chỉ nhận hàng sau khi đặt không?',
+    answer: 'Bạn hãy liên hệ ngay bộ phận hỗ trợ để được cập nhật địa chỉ nếu đơn chưa giao cho đối tác vận chuyển.'
+  },
+  {
+    question: 'Sách đặt bao lâu thì có?',
+    answer: 'Nội thành Quy Nhơn: 1-2 ngày. Các tỉnh khác: 3-5 ngày làm việc. Đơn cuối tuần/ngày lễ sẽ xử lý vào ngày làm việc tiếp theo.'
+  },
+  {
+    question: 'Tôi có thể hủy đơn hàng không?',
+    answer: 'Bạn có thể hủy đơn nếu đơn chưa được giao cho đối tác vận chuyển. Hãy liên hệ hỗ trợ càng sớm càng tốt.'
+  },
+  {
+    question: 'Làm sao để nhận hóa đơn mua hàng?',
+    answer: 'Hóa đơn điện tử sẽ được gửi qua email sau khi đơn hàng hoàn tất. Nếu cần bản giấy, hãy liên hệ hỗ trợ.'
+  },
+  {
+    question: 'Tôi muốn xuất hóa đơn công ty?',
+    answer: 'Vui lòng nhập thông tin công ty khi đặt hàng hoặc liên hệ hỗ trợ để được xuất hóa đơn VAT.'
+  },
+  {
+    question: 'Có chương trình tích điểm/thành viên không?',
+    answer: 'Coder-BookStore đang phát triển chương trình thành viên. Hãy theo dõi website để cập nhật ưu đãi mới nhất.'
+  },
+  {
+    question: 'Làm sao liên hệ hỗ trợ nhanh nhất?',
+    answer: 'Gọi (84) 901 234 567 hoặc email support@coderbookstore.com. Ngoài ra, bạn có thể nhấn nút "Cần hỗ trợ" ở cuối trang.'
+  }
 ];
 
+// Re-using the color array from the 'main' branch to keep the styling options
 const cardColors = [
   'bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100',
   'bg-red-100', 'bg-indigo-100', 'bg-teal-100', 'bg-orange-100', 'bg-cyan-100',
@@ -35,19 +82,23 @@ export default function FaqPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-12 px-4">
+      {/* Assuming FAQHeader handles the title. If not, you can add an h1 here. */}
+      {/* <FAQHeader /> */}
       <h1 className="text-4xl font-extrabold text-center mb-10 text-blue-700 drop-shadow">Câu hỏi thường gặp (FAQ)</h1>
-      <div className="max-w-3xl mx-auto space-y-6">
-        {faqs.map((faq, idx) => (
-          <FaqCard
-            key={idx}
-            question={faq.q}
-            answer={faq.a}
-            isOpen={openIndex === idx}
-            onClick={() => handleToggle(idx)}
-            color={cardColors[idx % cardColors.length]}
-          />
-        ))}
-      </div>
+      <main className="max-w-3xl mx-auto px-4 md:px-0 relative z-10">
+        <div className="space-y-6">
+          {faqs.map((faq, idx) => (
+            <FAQCard
+              key={idx}
+              question={faq.question}
+              answer={faq.answer}
+              isOpen={openIndex === idx}
+              onClick={() => handleToggle(idx)}
+              color={cardColors[idx % cardColors.length]} // Applying colors from the 'main' branch
+            />
+          ))}
+        </div>
+      </main>
     </div>
   );
-} 
+}
