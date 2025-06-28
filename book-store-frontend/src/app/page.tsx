@@ -6,9 +6,13 @@ import { motion } from 'framer-motion';
 // Đã thêm FaStarHalfAlt để hiển thị nửa sao chính xác hơn
 import { FaBookOpen, FaInfoCircle, FaPhoneAlt, FaChevronRight, FaStar, FaFire, FaFeatherAlt, FaStarHalfAlt } from 'react-icons/fa'; 
 import Image from 'next/image';
+import { useFeaturedBooks } from './hooks/useBooks';
+import Loading from './components/Loading';
+import Error from './components/Error';
 
 export default function Home() {
   const [greet, setGreet] = useState('Hello');
+  const { books, loading, error } = useFeaturedBooks(6);
 
   useEffect(() => {
     const hour = new Date().getHours();
@@ -16,57 +20,6 @@ export default function Home() {
     else if (hour < 18) setGreet('Good Afternoon');
     else setGreet('Good Evening');
   }, []);
-
-  const books = [
-    {
-      id: 1,
-      title: 'Code Mastery: Advanced Techniques',
-      author: 'Jane Doe',
-      price: '99.000đ',
-      img: 'https://images-na.ssl-images-amazon.com/images/I/41w7mJ0Oj-L._SX258_BO1,204,203,200_.jpg',
-      rating: 4.5,
-    },
-    {
-      id: 2,
-      title: 'The Art of Clean Code',
-      author: 'John Smith',
-      price: '125.000đ',
-      img: 'https://images-na.ssl-images-amazon.com/images/I/41xShlnTZTL._SX374_BO1,204,203,200_.jpg',
-      rating: 4.8,
-    },
-    {
-      id: 3,
-      title: 'Beyond the Code: Software Architecture',
-      author: 'Alex Brown',
-      price: '150.000đ',
-      img: 'https://images-na.ssl-images-amazon.com/images/I/51LnQxpLsuL._SX379_BO1,204,203,200_.jpg',
-      rating: 4.2,
-    },
-    {
-      id: 4,
-      title: 'Mastering JavaScript ES6+',
-      author: 'Emily White',
-      price: '110.000đ',
-      img: 'https://images-na.ssl-images-amazon.com/images/I/41N5hdRcw6L._SX258_BO1,204,203,200_.jpg',
-      rating: 4.7,
-    },
-    {
-      id: 5,
-      title: 'Python for Data Science',
-      author: 'David Green',
-      price: '180.000đ',
-      img: 'https://images-na.ssl-images-amazon.com/images/I/41uPjEenkFL._SX379_BO1,204,203,200_.jpg',
-      rating: 4.9,
-    },
-    {
-      id: 6,
-      title: 'Designing User Interfaces',
-      author: 'Sophia Lee',
-      price: '135.000đ',
-      img: 'https://images-na.ssl-images-amazon.com/images/I/41fnWzYPvFL._SX331_BO1,204,203,200_.jpg',
-      rating: 4.6,
-    },
-  ];
 
   const explore = [
     {
@@ -167,59 +120,67 @@ export default function Home() {
           <FaFire className="inline-block text-yellow-500 mr-2 align-middle" />
           Sách Nổi Bật <span className="text-pink-500">& Mới Nhất</span>
         </h2>
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={{
-            hidden: {},
-            visible: {
-              transition: {
-                staggerChildren: 0.1,
+        
+        {loading && <Loading message="Đang tải sách..." />}
+        {error && <Error message={`Lỗi: ${error}`} />}
+        
+        {!loading && !error && (
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={{
+              hidden: {},
+              visible: {
+                transition: {
+                  staggerChildren: 0.1,
+                },
               },
-            },
-          }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"
-        >
-          {books.map(({ id, title, author, price, img, rating }) => (
-            <motion.article
-              key={id}
-              variants={{
-                hidden: { opacity: 0, y: 50, scale: 0.95 },
-                visible: { opacity: 1, y: 0, scale: 1 },
-              }}
-              className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700 flex flex-col hover:-translate-y-1 hover:scale-[1.025]"
-            >
-              <div className="relative w-full aspect-[3/4] overflow-hidden rounded-t-xl bg-gray-100 dark:bg-gray-700">
-                <Image
-                  src={img}
-                  alt={title}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  priority={id <= 3}
-                  className="group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-t-xl"
-                />
-              </div>
-              <div className="p-4 flex-grow flex flex-col justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-pink-600 dark:text-pink-400 mb-1 leading-snug line-clamp-2 min-h-[40px]">{title}</h3>
-                  <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">by <span className="font-semibold">{author}</span></p>
-                  <div className="flex items-center mb-1">
-                    {renderStars(rating)}
-                    <span className="text-xs text-gray-600 dark:text-gray-400 ml-2">({rating})</span>
-                  </div>
-                  <p className="font-extrabold text-base text-yellow-600 dark:text-yellow-400 mb-2">{price}</p>
+            }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"
+          >
+            {books.map(({ id, title, author, price, img, rating }) => (
+              <motion.article
+                key={id}
+                variants={{
+                  hidden: { opacity: 0, y: 50, scale: 0.95 },
+                  visible: { opacity: 1, y: 0, scale: 1 },
+                }}
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700 flex flex-col hover:-translate-y-1 hover:scale-[1.025]"
+              >
+                <div className="relative w-full aspect-[3/4] overflow-hidden rounded-t-xl bg-gray-100 dark:bg-gray-700">
+                  <Image
+                    src={img}
+                    alt={title}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    priority={id <= 3}
+                    className="group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-t-xl"
+                  />
                 </div>
-                <Link
-                  href={`/Books/${id}`}
-                  className="inline-flex items-center justify-center gap-2 text-pink-500 font-semibold hover:text-white transition-colors duration-200 mt-auto bg-pink-100 dark:bg-gray-700 py-1.5 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:to-yellow-400 hover:shadow-lg text-xs border border-pink-200 dark:border-gray-600"
-                  aria-label={`Details about ${title}`}
-                >
-                  Xem chi tiết <FaChevronRight className="text-xs" />
-                </Link>
-              </div>
-            </motion.article>
-          ))}
-        </motion.div>
+                
+                <div className="p-4 flex flex-col flex-grow">
+                  <div>
+                    <h3 className="text-base font-bold text-pink-600 dark:text-pink-400 mb-1 leading-snug line-clamp-2 min-h-[40px]">{title}</h3>
+                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">by <span className="font-semibold">{author}</span></p>
+                    <div className="flex items-center mb-1">
+                      {renderStars(rating)}
+                      <span className="text-xs text-gray-600 dark:text-gray-400 ml-2">({rating})</span>
+                    </div>
+                    <p className="font-extrabold text-base text-yellow-600 dark:text-yellow-400 mb-2">{price}</p>
+                  </div>
+                  <Link
+                    href={`/Books/${id}`}
+                    className="inline-flex items-center justify-center gap-2 text-pink-500 font-semibold hover:text-white transition-colors duration-200 mt-auto bg-pink-100 dark:bg-gray-700 py-1.5 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:to-yellow-400 hover:shadow-lg text-xs border border-pink-200 dark:border-gray-600"
+                    aria-label={`Details about ${title}`}
+                  >
+                    Xem chi tiết <FaChevronRight className="text-xs" />
+                  </Link>
+                </div>
+              </motion.article>
+            ))}
+          </motion.div>
+        )}
+        
         <div className="text-center mt-10">
           <Link
             href="/Books"
