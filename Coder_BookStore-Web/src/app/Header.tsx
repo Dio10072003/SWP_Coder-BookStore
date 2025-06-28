@@ -13,7 +13,7 @@ export default function Header(): JSX.Element {
   const [currentLocation] = useState("An Nhơn, Bình Định");
 
   useEffect(() => {
-    const getGreeting = (hour) => {
+    const getGreeting = (hour: number) => {
       if (hour >= 6 && hour < 7) return "Chào ngày mới! ☀️ Hãy bắt đầu bằng một trang sách hay.";
       if (hour >= 7 && hour < 8) return "Chúc bạn buổi sáng tràn đầy năng lượng và cảm hứng học tập!";
       if (hour >= 8 && hour < 9) return "Sáng tạo mỗi ngày cùng Coder-Bookstore!";
@@ -50,73 +50,88 @@ export default function Header(): JSX.Element {
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 shadow-lg text-white font-sans">
-      <div className="max-w-5xl mx-auto px-3 py-2 flex items-center justify-between">
-        {/* Brand Logo & Name */}
-        <Link
-          href="/"
-          className="flex items-center gap-1 text-lg font-bold tracking-wide hover:scale-105 transition-transform duration-200 drop-shadow-sm"
-        >
+      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
+        {/* Logo + Brand */}
+        <Link href="/" className="flex items-center gap-3 min-w-[220px]">
           <Image
             src="/images/Coder-BookStore-Logo.svg"
             alt="Coder-Bookstore Logo"
-            width={32}
-            height={32}
-            className="object-contain mr-1 rounded bg-white p-0.5 shadow"
+            width={44}
+            height={44}
+            className="object-contain rounded-lg bg-white p-1 shadow"
             priority
           />
-          <span>Coder-Bookstore</span>
-        </Link>
-        {/* Desktop menu and User/Time Info */}
-        <div className="hidden md:flex items-center gap-4">
-          <nav className="font-semibold text-sm uppercase tracking-wide flex items-center gap-2">
-            <Link href="/" className="hover:text-teal-200 transition-colors duration-150 px-2 py-1 rounded hover:bg-white hover:bg-opacity-10">Trang Chủ</Link>
-            <Link href="/Books" className="hover:text-teal-200 transition-colors duration-150 px-2 py-1 rounded hover:bg-white hover:bg-opacity-10">Sách</Link>
-            <Link href="/AboutPage" className="hover:text-teal-200 transition-colors duration-150 px-2 py-1 rounded hover:bg-white hover:bg-opacity-10">Về Chúng Tôi</Link>
-            <Link href="/Contact" className="hover:text-teal-200 transition-colors duration-150 px-2 py-1 rounded hover:bg-white hover:bg-opacity-10">Liên Hệ</Link>
-          </nav>
-          <div className="flex items-center gap-2 text-xs font-medium">
-            <Link href="/admin" className="flex items-center gap-1 hover:text-white transition-colors duration-150 px-2 py-1 rounded-full bg-orange-600 hover:bg-orange-700 shadow-inner">
-              <FaCog className="text-lg" /> Admin
-            </Link>
-            <Link href="/Login" className="flex items-center gap-1 hover:text-white transition-colors duration-150 px-2 py-1 rounded-full bg-teal-600 hover:bg-teal-700 shadow-inner">
-              <FaUserCircle className="text-lg" /> Đăng nhập
-            </Link>
-            <Link href="/Register" className="hover:text-white transition-colors duration-150 px-2 py-1 rounded-full bg-teal-600 hover:bg-teal-700 shadow-inner">Đăng ký</Link>
-            <span className="text-yellow-100 bg-black bg-opacity-20 px-2 py-0.5 rounded-full shadow-inner text-[11px] flex flex-col items-center min-w-[180px]">
-              <span className="font-bold text-center w-full">{greet}</span>
-              <span className="block text-center w-full text-yellow-200 tracking-widest text-xs mt-1">{currentTime}</span>
-              <span className="text-gray-300 text-opacity-80 mt-0.5">{currentLocation}</span>
+          <div className="flex flex-col justify-center">
+            <span className="text-xl font-extrabold tracking-wide text-white drop-shadow-sm leading-tight">
+              CODER-BOOKSTORE
+            </span>
+            <span className="text-xs text-blue-100 font-medium tracking-wider hidden md:inline leading-tight">
+              Knowledge • Code • Growth
             </span>
           </div>
+        </Link>
+
+        {/* Menu */}
+        <nav className="flex-1 flex justify-center gap-7">
+          <Link href="/" className="font-semibold text-white/90 hover:text-blue-200 transition">Trang Chủ</Link>
+          <Link href="/Books" className="font-semibold text-white/90 hover:text-blue-200 transition">Sách</Link>
+          <Link href="/AboutPage" className="font-semibold text-white/90 hover:text-blue-200 transition">Về Chúng Tôi</Link>
+          <Link href="/Contact" className="font-semibold text-white/90 hover:text-blue-200 transition">Liên Hệ</Link>
+        </nav>
+
+        {/* Actions */}
+        <div className="flex items-center gap-2">
+          <Link href="/admin" className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-700 to-purple-700 text-white font-bold shadow hover:from-blue-800 hover:to-purple-800 transition">Admin</Link>
+          <Link href="/Login" className="px-4 py-2 rounded-full border border-blue-400 text-blue-100 bg-white/10 hover:bg-white/20 shadow transition">Đăng nhập</Link>
+          <Link href="/Register" className="px-4 py-2 rounded-full border border-purple-400 text-purple-100 bg-white/10 hover:bg-white/20 shadow transition">Đăng ký</Link>
+          <div className="ml-2 px-4 py-2 rounded-xl bg-white/70 backdrop-blur-md shadow text-blue-900 text-xs font-semibold flex flex-col items-center min-w-[170px] border border-white/30">
+            <span className="font-bold text-center whitespace-nowrap">{greet}</span>
+            <span
+              className="block text-center tracking-widest text-xs mt-1 font-mono"
+              style={{
+                fontFamily: 'DS-Digital, DSEG7Classic, Seven Segment, monospace',
+                fontSize: '1.5rem',
+                color: '#19ff19',
+                textShadow: '0 0 8px #19ff19, 0 0 2px #fff',
+                letterSpacing: '0.15em',
+                lineHeight: 1.1,
+              }}
+            >
+              {currentTime}
+            </span>
+            <span className="text-gray-500 mt-1">{currentLocation}</span>
+          </div>
         </div>
-        {/* Mobile menu toggle button */}
+      </div>
+      {/* Mobile menu toggle button */}
+      <div className="md:hidden flex justify-end px-4 pb-2">
         <button
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
-          className="md:hidden p-1.5 rounded hover:bg-white hover:bg-opacity-15 transition-colors duration-150"
+          className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors duration-150 shadow"
         >
-          {open ? <FaTimes size={22} /> : <FaBars size={22} />}
+          {open ? <FaTimes size={24} /> : <FaBars size={24} />}
         </button>
       </div>
       {/* Mobile menu */}
       {open && (
-        <nav className="md:hidden bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 px-4 pb-4 space-y-2 text-white font-semibold uppercase tracking-wide text-sm rounded-b-lg">
-          <Link href="/" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Trang Chủ</Link>
-          <Link href="/Books" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Sách</Link>
-          <Link href="/AboutPage" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Về Chúng Tôi</Link>
-          <Link href="/Contact" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Liên Hệ</Link>
-          <hr className="border-t border-white border-opacity-15 my-1" />
-          <Link href="/admin" onClick={() => setOpen(false)} className="block hover:text-orange-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10 flex items-center gap-2">
+        <nav className="md:hidden bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 px-6 pb-6 space-y-3 text-white font-semibold uppercase tracking-wide text-sm rounded-b-xl shadow-xl">
+          <Link href="/" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Trang Chủ</Link>
+          <Link href="/Books" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Sách</Link>
+          <Link href="/AboutPage" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Về Chúng Tôi</Link>
+          <Link href="/Contact" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Liên Hệ</Link>
+          <hr className="border-t border-white border-opacity-20 my-3" />
+          <Link href="/admin" onClick={() => setOpen(false)} className="block hover:text-orange-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 flex items-center gap-3">
             <FaCog /> Admin Panel
           </Link>
-          <Link href="/Login" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Đăng nhập</Link>
-          <Link href="/Register" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Đăng ký</Link>
-          <div className="flex justify-center pt-2">
-            <span className="text-[11px] font-bold text-yellow-100 bg-black bg-opacity-20 px-2 py-0.5 rounded-full shadow-inner flex flex-col items-center min-w-[180px]">
-              <span className="text-center w-full">{greet}</span>
-              <span className="block text-center w-full text-yellow-200 tracking-widest text-xs mt-1">{currentTime}</span>
-              <span className="text-gray-300 text-opacity-80 mt-0.5">{currentLocation}</span>
-            </span>
+          <Link href="/Login" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng nhập</Link>
+          <Link href="/Register" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng ký</Link>
+          <div className="flex justify-center pt-4">
+            <div className="text-xs font-bold text-blue-900 bg-white/70 backdrop-blur-md px-4 py-2 rounded-xl shadow border border-white/30 flex flex-col items-center min-w-[170px]">
+              <div className="text-center w-full text-sm leading-tight">{greet}</div>
+              <div className="block text-center w-full text-blue-700 tracking-widest text-xs mt-1 font-mono">{currentTime}</div>
+              <div className="text-gray-500 mt-1 text-center">{currentLocation}</div>
+            </div>
           </div>
         </nav>
       )}

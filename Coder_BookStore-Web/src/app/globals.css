@@ -81,3 +81,10 @@ body {
   padding-top: 1rem !important;
   padding-bottom: 1rem !important;
 }
+
+@font-face {
+  font-family: 'DSEG7Classic';
+  src: url('/fonts/DSEG7Classic-Regular.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
