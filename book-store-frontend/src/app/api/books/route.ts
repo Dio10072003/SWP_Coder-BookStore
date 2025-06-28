@@ -281,12 +281,44 @@ const books = [
   }
 ];
 
+// In-memory storage (in production, this would be a database)
+let booksData = [...books];
+
+// Helper function to generate new ID
+const generateId = () => {
+  return Math.max(...booksData.map(book => book.id)) + 1;
+};
+
+// Helper function to validate book data
+const validateBook = (book: any) => {
+  const requiredFields = ['title', 'author', 'price', 'category'];
+  for (const field of requiredFields) {
+    if (!book[field]) {
+      throw new Error(`${field} is required`);
+    }
+  }
+  
+  if (book.rating && (book.rating < 0 || book.rating > 5)) {
+    throw new Error('Rating must be between 0 and 5');
+  }
+  
+  if (book.publishYear && (book.publishYear < 1900 || book.publishYear > new Date().getFullYear() + 1)) {
+    throw new Error('Invalid publish year');
+  }
+  
+  if (book.pages && book.pages <= 0) {
+    throw new Error('Pages must be greater than 0');
+  }
+  
+  return true;
+};
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
   
   if (id) {
-    const book = books.find(b => b.id === parseInt(id));
+    const book = booksData.find(b => b.id === parseInt(id));
     if (!book) {
       return new Response(JSON.stringify({ error: 'Book not found' }), {
         status: 404,
@@ -305,7 +337,7 @@ export async function GET(request: Request) {
   const minRating = searchParams.get('minRating');
   const maxPrice = searchParams.get('maxPrice');
   
-  let filteredBooks = [...books];
+  let filteredBooks = [...booksData];
   
   // Filter by category
   if (category && category !== 'All') {
@@ -344,4 +376,130 @@ export async function GET(request: Request) {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
+}
+
+// CREATE - Add new book
+export async function POST(request: Request) {
+  try {
+    const body = await request.json();
+    
+    // Validate book data
+    validateBook(body);
+    
+    // Create new book with generated ID
+    const newBook = {
+      id: generateId(),
+      title: body.title,
+      author: body.author,
+      price: body.price,
+      img: body.img || "https://placehold.co/300x400?text=No+Image",
+      rating: body.rating || 0,
+      description: body.description || "",
+      category: body.category,
+      publishYear: body.publishYear || new Date().getFullYear(),
+      pages: body.pages || 0,
+      language: body.language || "English",
+      isbn: body.isbn || `978-${Math.random().toString().slice(2, 12)}`
+    };
+    
+    // Add to data
+    booksData.push(newBook);
+    
+    return new Response(JSON.stringify(newBook), {
+      status: 201,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Invalid book data' }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
+// UPDATE - Update existing book
+export async function PUT(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return new Response(JSON.stringify({ error: 'Book ID is required' }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    
+    const bookId = parseInt(id);
+    const bookIndex = booksData.findIndex(b => b.id === bookId);
+    
+    if (bookIndex === -1) {
+      return new Response(JSON.stringify({ error: 'Book not found' }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    
+    const body = await request.json();
+    
+    // Validate book data
+    validateBook(body);
+    
+    // Update book
+    const updatedBook = {
+      ...booksData[bookIndex],
+      ...body,
+      id: bookId // Ensure ID doesn't change
+    };
+    
+    booksData[bookIndex] = updatedBook;
+    
+    return new Response(JSON.stringify(updatedBook), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: error instanceof Error ? error.message : 'Invalid book data' }), {
+      status: 400,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
+}
+
+// DELETE - Delete book
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+    
+    if (!id) {
+      return new Response(JSON.stringify({ error: 'Book ID is required' }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    
+    const bookId = parseInt(id);
+    const bookIndex = booksData.findIndex(b => b.id === bookId);
+    
+    if (bookIndex === -1) {
+      return new Response(JSON.stringify({ error: 'Book not found' }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+    
+    // Remove book from data
+    const deletedBook = booksData.splice(bookIndex, 1)[0];
+    
+    return new Response(JSON.stringify({ message: 'Book deleted successfully', book: deletedBook }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to delete book' }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
+  }
 }

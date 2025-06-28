@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { FaBars, FaTimes, FaUserCircle } from 'react-icons/fa';
+import { FaBars, FaTimes, FaUserCircle, FaCog } from 'react-icons/fa';
 import { JSX } from 'react';
 
 export default function Header(): JSX.Element {
@@ -75,6 +75,9 @@ export default function Header(): JSX.Element {
             <Link href="/Contact" className="hover:text-teal-200 transition-colors duration-150 px-2 py-1 rounded hover:bg-white hover:bg-opacity-10">Liên Hệ</Link>
           </nav>
           <div className="flex items-center gap-2 text-xs font-medium">
+            <Link href="/admin" className="flex items-center gap-1 hover:text-white transition-colors duration-150 px-2 py-1 rounded-full bg-orange-600 hover:bg-orange-700 shadow-inner">
+              <FaCog className="text-lg" /> Admin
+            </Link>
             <Link href="/Login" className="flex items-center gap-1 hover:text-white transition-colors duration-150 px-2 py-1 rounded-full bg-teal-600 hover:bg-teal-700 shadow-inner">
               <FaUserCircle className="text-lg" /> Đăng nhập
             </Link>
@@ -103,6 +106,9 @@ export default function Header(): JSX.Element {
           <Link href="/AboutPage" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Về Chúng Tôi</Link>
           <Link href="/Contact" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Liên Hệ</Link>
           <hr className="border-t border-white border-opacity-15 my-1" />
+          <Link href="/admin" onClick={() => setOpen(false)} className="block hover:text-orange-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10 flex items-center gap-2">
+            <FaCog /> Admin Panel
+          </Link>
           <Link href="/Login" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Đăng nhập</Link>
           <Link href="/Register" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded hover:bg-white hover:bg-opacity-10">Đăng ký</Link>
           <div className="flex justify-center pt-2">

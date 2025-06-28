@@ -33,7 +33,7 @@ const BookGrid = ({ books = [] }) => {
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
       {books.map((book) => (
-        <div key={book.id} className="bg-gray-800 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+        <div key={book.id} className="bg-gray-800 p-4 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 flex flex-col">
           <div className="relative w-full aspect-[3/4] mb-4 rounded-lg overflow-hidden">
             <Image
               src={book.img || 'https://placehold.co/300x400?text=No+Image'}
@@ -43,16 +43,18 @@ const BookGrid = ({ books = [] }) => {
               className="rounded-lg"
             />
           </div>
-          <h3 className="text-xl font-bold text-white mb-2 line-clamp-2">{book.title}</h3>
-          <p className="text-gray-400 mb-2">by {book.author}</p>
-          <div className="flex items-center mb-2">
-            {renderStars(book.rating)}
-            <span className="text-xs text-gray-400 ml-2">({book.rating})</span>
+          <div className="flex-1 flex flex-col justify-between">
+            <h3 className="text-xl font-bold text-white mb-1 leading-tight break-words" style={{lineHeight: '1.3'}}>{book.title}</h3>
+            <p className="text-sm text-gray-300 mb-2 leading-snug" style={{lineHeight: '1.2'}}>Tác giả: <span className="font-medium text-blue-300">{book.author}</span></p>
+            <div className="flex items-center mb-2">
+              {renderStars(book.rating)}
+              <span className="text-xs text-gray-400 ml-2">({book.rating})</span>
+            </div>
+            <p className="text-yellow-400 font-bold text-lg mb-3 leading-tight">{book.price}</p>
           </div>
-          <p className="text-yellow-400 font-bold text-lg mb-3">{book.price}</p>
           <Link
             href={`/Books/${book.id}`}
-            className="inline-block bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors duration-200"
+            className="inline-block bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition-colors duration-200 mt-auto"
           >
             Xem chi tiết
           </Link>
