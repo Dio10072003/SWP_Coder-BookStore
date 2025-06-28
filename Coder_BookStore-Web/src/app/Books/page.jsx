@@ -25,26 +25,33 @@ export default function BooksPage() {
     minRating: undefined,
     maxPrice: undefined
   });
-  const { books, loading, error } = useBooks(filters);
+  const [page, setPage] = useState(1);
+  const limit = 12;
+  const { books, loading, error, total } = useBooks({ ...filters, page, limit });
 
   const handleCategoryChange = (category) => {
     setFilters(prev => ({ ...prev, category }));
+    setPage(1);
   };
 
   const handleSearch = (search) => {
     setFilters(prev => ({ ...prev, search }));
+    setPage(1);
   };
 
   const handleYearChange = (year) => {
     setFilters(prev => ({ ...prev, year }));
+    setPage(1);
   };
 
   const handleRatingChange = (minRating) => {
     setFilters(prev => ({ ...prev, minRating }));
+    setPage(1);
   };
 
   const handlePriceChange = (maxPrice) => {
     setFilters(prev => ({ ...prev, maxPrice }));
+    setPage(1);
   };
 
   const clearFilters = () => {
@@ -55,6 +62,7 @@ export default function BooksPage() {
       minRating: undefined,
       maxPrice: undefined
     });
+    setPage(1);
   };
 
   const hasActiveFilters = filters.category || filters.search || filters.year || filters.minRating || filters.maxPrice;
@@ -89,7 +97,7 @@ export default function BooksPage() {
       {!loading && !error && (
         <div className="mb-4 text-center">
           <p className="text-yellow-400">
-            Tìm thấy {books.length} sách
+            Tìm thấy {total ?? books.length} sách
             {hasActiveFilters && ' với bộ lọc hiện tại'}
           </p>
         </div>
@@ -101,7 +109,12 @@ export default function BooksPage() {
       {!loading && !error && (
         <>
           <BookGrid books={books} />
-          <Pagination />
+          <Pagination
+            page={page}
+            setPage={setPage}
+            total={total ?? books.length}
+            limit={limit}
+          />
         </>
       )}
     </div>
