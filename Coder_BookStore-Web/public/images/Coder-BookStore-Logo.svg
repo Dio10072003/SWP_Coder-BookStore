@@ -1,44 +1,59 @@
 <svg width="400" height="200" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="leftPageGradient" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#2D547F"/>
-      <stop offset="100%" stop-color="#4A759E"/>
+    <linearGradient id="bookGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e40af"/>
+      <stop offset="50%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#6366f1"/>
     </linearGradient>
-    <linearGradient id="rightPageGradient" x1="0" y1="0" x2="1" y2="0">
-      <stop offset="0%" stop-color="#FF7F00"/>
-      <stop offset="100%" stop-color="#FF4500"/>
+    <linearGradient id="codeGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#059669"/>
+      <stop offset="50%" stop-color="#10b981"/>
+      <stop offset="100%" stop-color="#34d399"/>
     </linearGradient>
+    <linearGradient id="textGradient" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#1e293b"/>
+      <stop offset="100%" stop-color="#475569"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="2" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
   </defs>
 
-  <path d="M100 50 L20 100 L100 150 L180 100 Z" fill="#2D547F"/>
+  <!-- Background circle -->
+  <circle cx="200" cy="100" r="80" fill="url(#bookGradient)" filter="url(#shadow)"/>
   
-  <path d="M300 50 L380 100 L300 150 L220 100 Z" fill="#FF7F00"/>
-
-  <path d="M100 50 L180 100 L180 150 L100 150 Z" fill="#E0E0E0"/>
+  <!-- Book spine -->
+  <rect x="195" y="40" width="10" height="120" fill="#1e40af" rx="2"/>
   
-  <path d="M220 100 L300 50 L300 150 L220 150 Z" fill="#F5F5F5"/>
-
-  <rect x="180" y="50" width="40" height="100" fill="#4A759E"/>
-
-  <text x="120" y="75" font-family="monospace" font-size="10" fill="#2D547F">010101</text>
-  <text x="110" y="90" font-family="monospace" font-size="10" fill="#2D547F">101010</text>
-  <text x="125" y="105" font-family="monospace" font-size="10" fill="#2D547F">001100</text>
-  <line x1="105" y1="120" x2="175" y2="135" stroke="#2D547F" stroke-width="1"/>
-  <circle cx="105" cy="120" r="2" fill="#2D547F"/>
-  <circle cx="175" cy="135" r="2" fill="#2D547F"/>
-
-  <line x1="225" y1="70" x2="295" y2="85" stroke="#FF4500" stroke-width="1"/>
-  <circle cx="225" cy="70" r="2" fill="#FF4500"/>
-  <circle cx="295" cy="85" r="2" fill="#FF4500"/>
-  <text x="230" y="120" font-family="monospace" font-size="10" fill="#FF4500">_|_</text>
-  <text x="250" y="135" font-family="monospace" font-size="10" fill="#FF4500">_|_</text>
-
-
-  <text x="200" y="180" font-family="Arial, sans-serif" font-weight="bold" font-size="30" fill="#2D547F" text-anchor="middle">
-    BOOKSTORE
+  <!-- Book pages -->
+  <path d="M200 40 L320 60 L320 140 L200 160 Z" fill="white" stroke="#e5e7eb" stroke-width="1"/>
+  <path d="M200 40 L80 60 L80 140 L200 160 Z" fill="#f8fafc" stroke="#e5e7eb" stroke-width="1"/>
+  
+  <!-- Code symbols on left page -->
+  <text x="90" y="75" font-family="'Courier New', monospace" font-size="8" fill="#059669" font-weight="bold">&lt;/&gt;</text>
+  <text x="85" y="90" font-family="'Courier New', monospace" font-size="8" fill="#059669" font-weight="bold">{ }</text>
+  <text x="88" y="105" font-family="'Courier New', monospace" font-size="8" fill="#059669" font-weight="bold">( )</text>
+  <text x="92" y="120" font-family="'Courier New', monospace" font-size="8" fill="#059669" font-weight="bold">[ ]</text>
+  <text x="86" y="135" font-family="'Courier New', monospace" font-size="8" fill="#059669" font-weight="bold">&lt; &gt;</text>
+  
+  <!-- Code symbols on right page -->
+  <text x="280" y="75" font-family="'Courier New', monospace" font-size="8" fill="#3b82f6" font-weight="bold">function</text>
+  <text x="285" y="90" font-family="'Courier New', monospace" font-size="8" fill="#3b82f6" font-weight="bold">const</text>
+  <text x="290" y="105" font-family="'Courier New', monospace" font-size="8" fill="#3b82f6" font-weight="bold">let</text>
+  <text x="295" y="120" font-family="'Courier New', monospace" font-size="8" fill="#3b82f6" font-weight="bold">return</text>
+  <text x="300" y="135" font-family="'Courier New', monospace" font-size="8" fill="#3b82f6" font-weight="bold">class</text>
+  
+  <!-- Binary code decoration -->
+  <text x="70" y="50" font-family="'Courier New', monospace" font-size="6" fill="#64748b">101010</text>
+  <text x="310" y="50" font-family="'Courier New', monospace" font-size="6" fill="#64748b">010101</text>
+  
+  <!-- Main brand text -->
+  <text x="200" y="180" font-family="'Segoe UI', Arial, sans-serif" font-weight="bold" font-size="24" fill="url(#textGradient)" text-anchor="middle" filter="url(#shadow)">
+    CODER-BOOKSTORE
   </text>
-
-  <text x="200" y="205" font-family="Arial, sans-serif" font-size="15" fill="#555555" text-anchor="middle">
-    & CODING SYSTEM
+  
+  <!-- Subtitle -->
+  <text x="200" y="195" font-family="'Segoe UI', Arial, sans-serif" font-size="12" fill="#64748b" text-anchor="middle">
+    Knowledge • Code • Growth
   </text>
 </svg>
