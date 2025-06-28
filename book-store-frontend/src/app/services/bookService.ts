@@ -21,6 +21,24 @@ export interface BookFilters {
   maxPrice?: number;
 }
 
+export interface CreateBookData {
+  title: string;
+  author: string;
+  price: string;
+  img?: string;
+  rating?: number;
+  description?: string;
+  category: string;
+  publishYear?: number;
+  pages?: number;
+  language?: string;
+  isbn?: string;
+}
+
+export interface UpdateBookData extends Partial<CreateBookData> {
+  id: number;
+}
+
 class BookService {
   private baseUrl = '/api/books';
 
@@ -58,6 +76,68 @@ class BookService {
       return await response.json();
     } catch (error) {
       console.error('Error fetching book:', error);
+      throw error;
+    }
+  }
+
+  async createBook(bookData: CreateBookData): Promise<Book> {
+    try {
+      const response = await fetch(this.baseUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error creating book:', error);
+      throw error;
+    }
+  }
+
+  async updateBook(id: number, bookData: Partial<CreateBookData>): Promise<Book> {
+    try {
+      const response = await fetch(`${this.baseUrl}?id=${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(bookData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error updating book:', error);
+      throw error;
+    }
+  }
+
+  async deleteBook(id: number): Promise<{ message: string; book: Book }> {
+    try {
+      const response = await fetch(`${this.baseUrl}?id=${id}`, {
+        method: 'DELETE',
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error('Error deleting book:', error);
       throw error;
     }
   }

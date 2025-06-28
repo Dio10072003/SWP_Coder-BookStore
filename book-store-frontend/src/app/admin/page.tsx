@@ -1,0 +1,463 @@
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import { useBooks } from '../hooks/useBooks';
+import { bookService, CreateBookData } from '../services/bookService';
+import Loading from '../components/Loading';
+import Error from '../components/Error';
+import { FaPlus, FaEdit, FaTrash, FaEye } from 'react-icons/fa';
+
+interface BookFormData {
+  title: string;
+  author: string;
+  price: string;
+  img: string;
+  rating: number;
+  description: string;
+  category: string;
+  publishYear: number;
+  pages: number;
+  language: string;
+  isbn: string;
+}
+
+const initialFormData: BookFormData = {
+  title: '',
+  author: '',
+  price: '',
+  img: '',
+  rating: 0,
+  description: '',
+  category: '',
+  publishYear: new Date().getFullYear(),
+  pages: 0,
+  language: 'English',
+  isbn: ''
+};
+
+export default function AdminPage() {
+  const { books, loading, error } = useBooks();
+  const [showForm, setShowForm] = useState(false);
+  const [editingBook, setEditingBook] = useState<number | null>(null);
+  const [formData, setFormData] = useState<BookFormData>(initialFormData);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [formLoading, setFormLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const cats = await bookService.getCategories();
+        setCategories(cats);
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      }
+    };
+    fetchCategories();
+  }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: name === 'rating' || name === 'publishYear' || name === 'pages' ? parseFloat(value) || 0 : value
+    }));
+  };
+
+  const resetForm = () => {
+    setFormData(initialFormData);
+    setEditingBook(null);
+    setFormError(null);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormLoading(true);
+    setFormError(null);
+    setSuccessMessage(null);
+
+    try {
+      if (editingBook) {
+        // Update existing book
+        await bookService.updateBook(editingBook, formData);
+        setSuccessMessage('Sách đã được cập nhật thành công!');
+      } else {
+        // Create new book
+        await bookService.createBook(formData);
+        setSuccessMessage('Sách đã được thêm thành công!');
+      }
+      
+      resetForm();
+      setShowForm(false);
+      // Refresh the books list
+      window.location.reload();
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+    } finally {
+      setFormLoading(false);
+    }
+  };
+
+  const handleEdit = (book: any) => {
+    setFormData({
+      title: book.title,
+      author: book.author,
+      price: book.price,
+      img: book.img,
+      rating: book.rating,
+      description: book.description,
+      category: book.category,
+      publishYear: book.publishYear,
+      pages: book.pages,
+      language: book.language,
+      isbn: book.isbn
+    });
+    setEditingBook(book.id);
+    setShowForm(true);
+  };
+
+  const handleDelete = async (id: number) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa sách này?')) {
+      return;
+    }
+
+    try {
+      await bookService.deleteBook(id);
+      setSuccessMessage('Sách đã được xóa thành công!');
+      // Refresh the books list
+      window.location.reload();
+    } catch (error) {
+      setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra khi xóa sách');
+    }
+  };
+
+  const handleAddNew = () => {
+    resetForm();
+    setShowForm(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+          <div className="flex justify-between items-center">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              Quản lý sách - Admin Panel
+            </h1>
+            <button
+              onClick={handleAddNew}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+            >
+              <FaPlus /> Thêm sách mới
+            </button>
+          </div>
+        </div>
+
+        {/* Success/Error Messages */}
+        {successMessage && (
+          <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+            {successMessage}
+          </div>
+        )}
+
+        {formError && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {formError}
+          </div>
+        )}
+
+        {/* Book Form */}
+        {showForm && (
+          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+            <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+              {editingBook ? 'Chỉnh sửa sách' : 'Thêm sách mới'}
+            </h2>
+            
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Tiêu đề *
+                  </label>
+                  <input
+                    type="text"
+                    name="title"
+                    value={formData.title}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Tác giả *
+                  </label>
+                  <input
+                    type="text"
+                    name="author"
+                    value={formData.author}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Giá *
+                  </label>
+                  <input
+                    type="text"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleInputChange}
+                    placeholder="150.000đ"
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Thể loại *
+                  </label>
+                  <select
+                    name="category"
+                    value={formData.category}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  >
+                    <option value="">Chọn thể loại</option>
+                    {categories.map(cat => (
+                      <option key={cat} value={cat}>{cat}</option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Đánh giá
+                  </label>
+                  <input
+                    type="number"
+                    name="rating"
+                    value={formData.rating}
+                    onChange={handleInputChange}
+                    min="0"
+                    max="5"
+                    step="0.1"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Năm xuất bản
+                  </label>
+                  <input
+                    type="number"
+                    name="publishYear"
+                    value={formData.publishYear}
+                    onChange={handleInputChange}
+                    min="1900"
+                    max={new Date().getFullYear() + 1}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Số trang
+                  </label>
+                  <input
+                    type="number"
+                    name="pages"
+                    value={formData.pages}
+                    onChange={handleInputChange}
+                    min="1"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    Ngôn ngữ
+                  </label>
+                  <input
+                    type="text"
+                    name="language"
+                    value={formData.language}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                    ISBN
+                  </label>
+                  <input
+                    type="text"
+                    name="isbn"
+                    value={formData.isbn}
+                    onChange={handleInputChange}
+                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  URL ảnh
+                </label>
+                <input
+                  type="url"
+                  name="img"
+                  value={formData.img}
+                  onChange={handleInputChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Mô tả
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleInputChange}
+                  rows={4}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+              </div>
+
+              <div className="flex gap-3">
+                <button
+                  type="submit"
+                  disabled={formLoading}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                >
+                  {formLoading ? 'Đang xử lý...' : (editingBook ? 'Cập nhật' : 'Thêm sách')}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowForm(false);
+                    resetForm();
+                  }}
+                  className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                >
+                  Hủy
+                </button>
+              </div>
+            </form>
+          </div>
+        )}
+
+        {/* Books List */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+          <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+              Danh sách sách ({books.length})
+            </h2>
+          </div>
+
+          {loading && <Loading message="Đang tải danh sách sách..." />}
+          {error && <Error message={`Lỗi: ${error}`} />}
+
+          {!loading && !error && (
+            <div className="overflow-x-auto">
+              <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed admin-table">
+                <thead className="bg-gray-50 dark:bg-gray-700">
+                  <tr>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Sách
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Thể loại
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Giá
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Đánh giá
+                    </th>
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Thao tác
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                  {books.map((book) => (
+                    <tr key={book.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                      <td className="px-6 py-4 whitespace-nowrap align-top">
+                        <div className="flex items-center gap-3">
+                          <div className="flex-shrink-0 h-14 w-10">
+                            <img
+                              className="h-14 w-10 rounded-lg object-cover border border-gray-300 dark:border-gray-700 shadow"
+                              src={book.img}
+                              alt={book.title}
+                            />
+                          </div>
+                          <div className="ml-3 flex flex-col justify-center">
+                            <span className="font-bold text-base text-gray-900 dark:text-white leading-tight break-words" style={{lineHeight: '1.3'}}>{book.title}</span>
+                            <span className="text-sm text-gray-500 dark:text-gray-300 leading-snug" style={{lineHeight: '1.2'}}>Tác giả: <span className="font-medium text-blue-700 dark:text-blue-300">{book.author}</span></span>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap align-top">
+                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
+                          {book.category}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap align-top text-sm text-gray-900 dark:text-white font-bold">
+                        {book.price}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap align-top text-sm text-gray-900 dark:text-white">
+                        <span className="inline-flex items-center gap-1">
+                          <span className="text-yellow-400">★</span>
+                          <span className="font-semibold">{book.rating}</span>
+                          <span className="text-xs text-gray-400">/5</span>
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap align-top text-sm font-medium">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => window.open(`/Books/${book.id}`, '_blank')}
+                            className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                            title="Xem chi tiết"
+                          >
+                            <FaEye />
+                          </button>
+                          <button
+                            onClick={() => handleEdit(book)}
+                            className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
+                            title="Chỉnh sửa"
+                          >
+                            <FaEdit />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(book.id)}
+                            className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                            title="Xóa"
+                          >
+                            <FaTrash />
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+} 
