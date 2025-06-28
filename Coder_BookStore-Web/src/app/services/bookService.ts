@@ -143,79 +143,68 @@ class BookService {
   }
 
   async getFeaturedBooks(limit: number = 6): Promise<Book[]> {
-    try {
-      const books = await this.getAllBooks();
-      // Return first N books as featured (you can modify this logic)
-      return books.slice(0, limit);
-    } catch (error) {
-      console.error('Error fetching featured books:', error);
-      throw error;
-    }
+    const { data } = await this.getAllBooksWithTotal();
+    return data.slice(0, limit);
   }
 
   async getBooksByCategory(category: string): Promise<Book[]> {
-    try {
-      return await this.getAllBooks({ category });
-    } catch (error) {
-      console.error('Error fetching books by category:', error);
-      throw error;
-    }
+    const { data } = await this.getAllBooksWithTotal({ category });
+    return data;
   }
 
   async searchBooks(query: string): Promise<Book[]> {
-    try {
-      return await this.getAllBooks({ search: query });
-    } catch (error) {
-      console.error('Error searching books:', error);
-      throw error;
-    }
+    const { data } = await this.getAllBooksWithTotal({ search: query });
+    return data;
   }
 
   async getBooksByYear(year: number): Promise<Book[]> {
-    try {
-      return await this.getAllBooks({ year });
-    } catch (error) {
-      console.error('Error fetching books by year:', error);
-      throw error;
-    }
+    const { data } = await this.getAllBooksWithTotal({ year });
+    return data;
   }
 
   async getBooksByRating(minRating: number): Promise<Book[]> {
-    try {
-      return await this.getAllBooks({ minRating });
-    } catch (error) {
-      console.error('Error fetching books by rating:', error);
-      throw error;
-    }
+    const { data } = await this.getAllBooksWithTotal({ minRating });
+    return data;
   }
 
   async getBooksByPriceRange(maxPrice: number): Promise<Book[]> {
-    try {
-      return await this.getAllBooks({ maxPrice });
-    } catch (error) {
-      console.error('Error fetching books by price range:', error);
-      throw error;
-    }
+    const { data } = await this.getAllBooksWithTotal({ maxPrice });
+    return data;
   }
 
   async getCategories(): Promise<string[]> {
-    try {
-      const books = await this.getAllBooks();
-      const categories = [...new Set(books.map(book => book.category))];
-      return categories.sort();
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-      throw error;
-    }
+    const { data } = await this.getAllBooksWithTotal();
+    return Array.from(new Set(data.map((b: Book) => b.category)));
   }
 
   async getYears(): Promise<number[]> {
+    const { data } = await this.getAllBooksWithTotal();
+    return Array.from(new Set(data.map((b: Book) => b.publishYear))).sort((a, b) => b - a);
+  }
+
+  async getAllBooksWithTotal(filters?: BookFilters & { page?: number; limit?: number }): Promise<{ data: Book[]; total: number }> {
     try {
-      const books = await this.getAllBooks();
-      const years = [...new Set(books.map(book => book.publishYear))];
-      return years.sort((a, b) => b - a); // Sort descending
+      const params = new URLSearchParams();
+      if (filters?.category) params.append('category', filters.category);
+      if (filters?.search) params.append('search', filters.search);
+      if (filters?.year) params.append('year', filters.year.toString());
+      if (filters?.minRating) params.append('minRating', filters.minRating.toString());
+      if (filters?.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
+      if (filters?.page) params.append('page', filters.page.toString());
+      if (filters?.limit) params.append('limit', filters.limit.toString());
+      const url = `${this.baseUrl}${params.toString() ? `?${params.toString()}` : ''}`;
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const result = await response.json();
+      if (Array.isArray(result)) {
+        // fallback nếu API chưa trả về total
+        return { data: result, total: result.length };
+      }
+      return result;
     } catch (error) {
-      console.error('Error fetching years:', error);
+      console.error('Error fetching books:', error);
       throw error;
     }
   }

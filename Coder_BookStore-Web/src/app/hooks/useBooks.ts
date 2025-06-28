@@ -1,29 +1,30 @@
 import { useState, useEffect } from 'react';
 import { bookService, Book, BookFilters } from '../services/bookService';
 
-export const useBooks = (filters?: BookFilters) => {
+export const useBooks = (filters?: BookFilters & { page?: number; limit?: number }) => {
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [total, setTotal] = useState<number>(0);
 
   useEffect(() => {
     const fetchBooks = async () => {
       try {
         setLoading(true);
         setError(null);
-        const data = await bookService.getAllBooks(filters);
+        const { data, total } = await bookService.getAllBooksWithTotal(filters);
         setBooks(data);
+        setTotal(total);
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Failed to fetch books');
       } finally {
         setLoading(false);
       }
     };
-
     fetchBooks();
-  }, [filters?.category, filters?.search]);
+  }, [filters?.category, filters?.search, filters?.page, filters?.limit, filters?.year, filters?.minRating, filters?.maxPrice]);
 
-  return { books, loading, error };
+  return { books, loading, error, total };
 };
 
 export const useBook = (id: number) => {
