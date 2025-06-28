@@ -1,27 +1,15 @@
 "use client";
-import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
-import { FaStar, FaStarHalfAlt } from "react-icons/fa";
+import { FaStar, FaStarHalfAlt, FaCalendar, FaFileAlt, FaLanguage, FaBarcode } from "react-icons/fa";
 import Image from "next/image";
 import Link from "next/link";
-import { bookImages } from "../page";
+import { useBook } from "../../hooks/useBooks";
+import Loading from "../../components/Loading";
+import Error from "../../components/Error";
 
 export default function BookDetailPage() {
   const { id } = useParams();
-  const [book, setBook] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchBook() {
-      setLoading(true);
-      const res = await fetch("/api/books");
-      const data = await res.json();
-      const found = data.find((b) => b.id === Number(id));
-      setBook(found);
-      setLoading(false);
-    }
-    fetchBook();
-  }, [id]);
+  const { book, loading, error } = useBook(Number(id));
 
   const renderStars = (rating) => {
     if (!rating) return null;
@@ -40,25 +28,111 @@ export default function BookDetailPage() {
     return <div className="flex items-center gap-1">{stars}</div>;
   };
 
-  if (loading) return <div className="text-center py-20 text-lg">Đang tải thông tin sách...</div>;
-  if (!book) return <div className="text-center py-20 text-red-500">Không tìm thấy sách!</div>;
-
-  // Lấy ảnh minh họa nếu có
-  const img = bookImages[book.title] || "https://placehold.co/300x400?text=No+Image";
+  if (loading) return <Loading message="Đang tải thông tin sách..." />;
+  if (error) return <Error message={`Lỗi: ${error}`} />;
+  if (!book) return <Error message="Không tìm thấy sách!" />;
 
   return (
-    <div className="max-w-2xl mx-auto py-10 px-4">
-      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 flex flex-col md:flex-row gap-8 items-center">
-        <div className="w-48 h-64 relative flex-shrink-0 rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700">
-          <Image src={img} alt={book.title} fill style={{ objectFit: 'cover' }} className="rounded-xl" />
-        </div>
-        <div className="flex-1 flex flex-col gap-2">
-          <h1 className="text-2xl font-bold text-pink-600 dark:text-pink-400 mb-1">{book.title}</h1>
-          <p className="text-base text-gray-500 dark:text-gray-300 mb-1">Tác giả: <span className="font-semibold">{book.author}</span></p>
-          <div className="flex items-center mb-1">{renderStars(book.rating)}<span className="ml-2 text-xs text-gray-600">({book.rating || 'N/A'})</span></div>
-          <p className="font-extrabold text-lg text-yellow-600 dark:text-yellow-400 mb-2">{book.price}</p>
-          <p className="text-sm text-gray-700 dark:text-gray-200 mb-2">{book.description || 'Chưa có mô tả cho sách này.'}</p>
-          <Link href="/Books" className="inline-block mt-2 px-5 py-2 bg-purple-600 text-white rounded-full font-semibold shadow hover:bg-purple-700 transition-all text-sm">Quay lại danh sách</Link>
+    <div className="max-w-4xl mx-auto py-10 px-4">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6">
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Book Image */}
+          <div className="w-full lg:w-1/3 flex-shrink-0">
+            <div className="w-full aspect-[3/4] relative rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-700">
+              <Image 
+                src={book.img || "https://placehold.co/300x400?text=No+Image"} 
+                alt={book.title} 
+                fill 
+                style={{ objectFit: 'cover' }} 
+                className="rounded-xl" 
+              />
+            </div>
+          </div>
+
+          {/* Book Details */}
+          <div className="flex-1 flex flex-col gap-4">
+            <div>
+              <h1 className="text-3xl font-bold text-pink-600 dark:text-pink-400 mb-2">{book.title}</h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300 mb-3">
+                Tác giả: <span className="font-semibold text-gray-800 dark:text-gray-200">{book.author}</span>
+              </p>
+              
+              {/* Rating */}
+              <div className="flex items-center mb-3">
+                {renderStars(book.rating)}
+                <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">({book.rating}/5)</span>
+              </div>
+
+              {/* Price */}
+              <p className="font-extrabold text-2xl text-yellow-600 dark:text-yellow-400 mb-4">{book.price}</p>
+            </div>
+
+            {/* Description */}
+            <div className="mb-4">
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Mô tả</h3>
+              <p className="text-gray-700 dark:text-gray-300 leading-relaxed">
+                {book.description || 'Chưa có mô tả cho sách này.'}
+              </p>
+            </div>
+
+            {/* Book Information Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <FaCalendar className="text-purple-500 text-lg" />
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Năm xuất bản</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.publishYear}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <FaFileAlt className="text-blue-500 text-lg" />
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Số trang</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.pages} trang</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <FaLanguage className="text-green-500 text-lg" />
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Ngôn ngữ</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.language}</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <FaBarcode className="text-orange-500 text-lg" />
+                <div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">ISBN</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200 text-sm">{book.isbn}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Category */}
+            <div className="mb-6">
+              <span className="inline-block px-3 py-1 bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200 rounded-full text-sm font-medium">
+                {book.category}
+              </span>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3">
+              <button className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors">
+                Thêm vào giỏ hàng
+              </button>
+              <button className="px-6 py-3 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition-colors">
+                Mua ngay
+              </button>
+              <Link 
+                href="/Books" 
+                className="px-6 py-3 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-colors text-center"
+              >
+                Quay lại danh sách
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
