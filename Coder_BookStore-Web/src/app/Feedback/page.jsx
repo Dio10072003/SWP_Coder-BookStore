@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import FeedbackForm from './Components/FeedbackForm.jsx';
+import FeedbackList from './Components/FeedbackList';
 
 export default function FeedbackPage() {
   const [name, setName] = useState('');
@@ -8,12 +9,24 @@ export default function FeedbackPage() {
   const [content, setContent] = useState('');
   const [rating, setRating] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    setSubmitted(true);
-    setTimeout(() => setSubmitted(false), 3000);
-    setName(''); setEmail(''); setContent(''); setRating(0);
+    // Gửi lên API
+    const res = await fetch('/api/feedback', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, content, rating }),
+    });
+    if (res.ok) {
+      setSubmitted(true);
+      setRefresh(r => !r);
+      setName(''); setEmail(''); setContent(''); setRating(0);
+      setTimeout(() => setSubmitted(false), 3000);
+    } else {
+      alert('Gửi góp ý thất bại!');
+    }
   };
 
   return (
@@ -32,6 +45,7 @@ export default function FeedbackPage() {
         setRating={setRating}
         submitted={submitted}
       />
+      <FeedbackList refresh={refresh} />
     </div>
   );
 } 
