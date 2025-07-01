@@ -1,6 +1,8 @@
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
-const BlogList = ({ blogs, loading, error, onSelect }) => {
+const BlogList = ({ blogs, loading, error }) => {
+  const router = useRouter();
   if (loading) return <div className="text-center py-8">Đang tải bài viết...</div>;
   if (error) return <div className="text-center py-8 text-red-500">{error}</div>;
   if (!blogs || blogs.length === 0) return <div className="text-center py-8">Chưa có bài viết nào.</div>;
@@ -11,7 +13,7 @@ const BlogList = ({ blogs, loading, error, onSelect }) => {
         <div
           key={blog.id}
           className="bg-white rounded-xl shadow-lg p-6 flex flex-col items-center cursor-pointer hover:shadow-2xl transition"
-          onClick={() => onSelect(blog)}
+          onClick={() => router.push(`/Blog/${blog.id}`)}
         >
           {/* Nếu có trường image thì hiển thị, không thì bỏ qua */}
           {blog.image && (

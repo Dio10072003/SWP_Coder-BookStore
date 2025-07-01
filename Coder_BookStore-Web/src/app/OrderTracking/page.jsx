@@ -152,7 +152,7 @@ export default function OrderTrackingPage() {
             onChange={e => setForm(f => ({ ...f, order_code: e.target.value }))}
             className="px-4 py-2 rounded border border-cyan-300 focus:border-cyan-500 outline-none"
             required
-            disabled={!!editingId} {/* Disable order code edit when editing existing entry */}
+            disabled={!!editingId}
           />
           <select
             value={form.status}
