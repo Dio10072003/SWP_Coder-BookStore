@@ -24,6 +24,17 @@ export interface Comment {
   updated_at: string
 }
 
+export interface Promotion {
+  id: string;
+  title: string;
+  description?: string;
+  discount: number;
+  start_date: string;
+  end_date: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -41,6 +52,11 @@ export interface Database {
         Row: Comment
         Insert: Omit<Comment, 'id' | 'created_at' | 'updated_at'>
         Update: Partial<Omit<Comment, 'id' | 'created_at' | 'updated_at'>>
+      }
+      promotions: {
+        Row: Promotion
+        Insert: Omit<Promotion, 'id' | 'created_at' | 'updated_at'>
+        Update: Partial<Omit<Promotion, 'id' | 'created_at' | 'updated_at'>>
       }
     }
   }
