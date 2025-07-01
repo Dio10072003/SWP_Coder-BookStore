@@ -1,19 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '../lib/supabase'
 
-// GET /api/posts - Get all posts with user information
+// GET /api/posts - Get all posts (basic fields only)
 export async function GET() {
   try {
     const { data, error } = await supabaseAdmin
       .from('posts')
-      .select(`
-        *,
-        users (
-          id,
-          name,
-          email
-        )
-      `)
+      .select('id, title, content, image, created_at')
       .order('created_at', { ascending: false })
 
     if (error) {
@@ -59,4 +52,6 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-} 
+}
+
+// To complete CRUD for posts (blog), create a dynamic route at /api/posts/[id]/route.ts for GET, PUT, DELETE operations on a single post. 
