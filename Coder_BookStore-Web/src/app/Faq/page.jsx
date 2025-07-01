@@ -1,72 +1,8 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import FAQHeader from './FAQHeader'; // Assuming FAQHeader is a component that you want to keep
 import FAQCard from './FAQCard'; // Assuming FAQCard is a component that you want to keep
 
-const faqs = [
-  {
-    question: 'Làm sao để đặt sách trên Coder-BookStore?',
-    answer: 'Bạn chỉ cần chọn sách, thêm vào giỏ hàng và làm theo hướng dẫn thanh toán. Đơn hàng sẽ được xác nhận qua email.'
-  },
-  {
-    question: 'Tôi có thể theo dõi đơn hàng như thế nào?',
-    answer: 'Sau khi đặt hàng, bạn sẽ nhận được mã vận đơn qua email. Dùng mã này để tra cứu trạng thái trên website đối tác vận chuyển.'
-  },
-  {
-    question: 'Phí vận chuyển được tính ra sao?',
-    answer: 'Đơn từ 300.000 VND được miễn phí vận chuyển. Đơn dưới mức này sẽ tính phí dựa trên trọng lượng và địa chỉ nhận hàng.'
-  },
-  {
-    question: 'Tôi có thể đổi trả sách trong trường hợp nào?',
-    answer: 'Bạn được đổi trả trong 7 ngày nếu sách bị lỗi do xuất bản, hư hỏng khi vận chuyển hoặc không đúng đơn đặt.'
-  },
-  {
-    question: 'Làm sao để yêu cầu đổi trả?',
-    answer: 'Liên hệ bộ phận hỗ trợ qua email hoặc điện thoại, cung cấp thông tin đơn hàng và lý do đổi trả.'
-  },
-  {
-    question: 'Tôi có thể thanh toán bằng những hình thức nào?',
-    answer: 'Coder-BookStore hỗ trợ thanh toán qua thẻ tín dụng, chuyển khoản ngân hàng, ví điện tử và COD.'
-  },
-  {
-    question: 'Thông tin cá nhân của tôi có được bảo mật không?',
-    answer: 'Chúng tôi cam kết bảo mật tuyệt đối thông tin khách hàng, sử dụng SSL và không chia sẻ cho bên thứ ba nếu không cần thiết.'
-  },
-  {
-    question: 'Tôi quên mật khẩu, phải làm sao?',
-    answer: 'Bạn hãy dùng chức năng "Quên mật khẩu" trên trang đăng nhập để lấy lại mật khẩu qua email.'
-  },
-  {
-    question: 'Có thể thay đổi địa chỉ nhận hàng sau khi đặt không?',
-    answer: 'Bạn hãy liên hệ ngay bộ phận hỗ trợ để được cập nhật địa chỉ nếu đơn chưa giao cho đối tác vận chuyển.'
-  },
-  {
-    question: 'Sách đặt bao lâu thì có?',
-    answer: 'Nội thành Quy Nhơn: 1-2 ngày. Các tỉnh khác: 3-5 ngày làm việc. Đơn cuối tuần/ngày lễ sẽ xử lý vào ngày làm việc tiếp theo.'
-  },
-  {
-    question: 'Tôi có thể hủy đơn hàng không?',
-    answer: 'Bạn có thể hủy đơn nếu đơn chưa được giao cho đối tác vận chuyển. Hãy liên hệ hỗ trợ càng sớm càng tốt.'
-  },
-  {
-    question: 'Làm sao để nhận hóa đơn mua hàng?',
-    answer: 'Hóa đơn điện tử sẽ được gửi qua email sau khi đơn hàng hoàn tất. Nếu cần bản giấy, hãy liên hệ hỗ trợ.'
-  },
-  {
-    question: 'Tôi muốn xuất hóa đơn công ty?',
-    answer: 'Vui lòng nhập thông tin công ty khi đặt hàng hoặc liên hệ hỗ trợ để được xuất hóa đơn VAT.'
-  },
-  {
-    question: 'Có chương trình tích điểm/thành viên không?',
-    answer: 'Coder-BookStore đang phát triển chương trình thành viên. Hãy theo dõi website để cập nhật ưu đãi mới nhất.'
-  },
-  {
-    question: 'Làm sao liên hệ hỗ trợ nhanh nhất?',
-    answer: 'Gọi (84) 901 234 567 hoặc email support@coderbookstore.com. Ngoài ra, bạn có thể nhấn nút "Cần hỗ trợ" ở cuối trang.'
-  }
-];
-
-// Re-using the color array from the 'main' branch to keep the styling options
 const cardColors = [
   'bg-pink-100', 'bg-yellow-100', 'bg-green-100', 'bg-blue-100', 'bg-purple-100',
   'bg-red-100', 'bg-indigo-100', 'bg-teal-100', 'bg-orange-100', 'bg-cyan-100',
@@ -74,7 +10,29 @@ const cardColors = [
 ];
 
 export default function FaqPage() {
+  const [faqs, setFaqs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
   const [openIndex, setOpenIndex] = useState(null);
+
+  useEffect(() => {
+    fetchFaqs();
+  }, []);
+
+  const fetchFaqs = async () => {
+    setLoading(true);
+    setError('');
+    try {
+      const res = await fetch('/api/faqs');
+      if (!res.ok) throw new Error('Không thể tải FAQ. Có thể server đang đi uống cà phê!');
+      const data = await res.json();
+      setFaqs(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleToggle = idx => {
     setOpenIndex(openIndex === idx ? null : idx);
@@ -84,20 +42,31 @@ export default function FaqPage() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-pink-50 py-12 px-4">
       {/* Assuming FAQHeader handles the title. If not, you can add an h1 here. */}
       {/* <FAQHeader /> */}
-      <h1 className="text-4xl font-extrabold text-center mb-10 text-blue-700 drop-shadow">Câu hỏi thường gặp (FAQ)</h1>
+      <h1 className="text-4xl font-extrabold text-center mb-10 text-blue-700 drop-shadow">
+        Câu hỏi thường gặp (FAQ)
+        <span className="block text-base text-pink-500 mt-2 font-normal">Có thắc mắc thì hỏi, đừng ngại! Chúng tôi trả lời nghiêm túc, nhưng đôi khi cũng vui vẻ lắm 😎</span>
+      </h1>
       <main className="max-w-3xl mx-auto px-4 md:px-0 relative z-10">
-        <div className="space-y-6">
-          {faqs.map((faq, idx) => (
-            <FAQCard
-              key={idx}
-              question={faq.question}
-              answer={faq.answer}
-              isOpen={openIndex === idx}
-              onClick={() => handleToggle(idx)}
-              color={cardColors[idx % cardColors.length]} // Applying colors from the 'main' branch
-            />
-          ))}
-        </div>
+        {loading && <div className="text-center text-blue-500 animate-pulse">Đang tải... Đợi xíu nha, FAQ đang khởi động não 🧠</div>}
+        {error && <div className="text-center text-red-500">{error}</div>}
+        {!loading && !error && (
+          <div className="space-y-6">
+            {faqs.length === 0 ? (
+              <div className="text-center text-gray-500">Ko có gì đâu, hỏi tiếp đi!</div>
+            ) : (
+              faqs.map((faq, idx) => (
+                <FAQCard
+                  key={faq.id || idx}
+                  question={faq.question}
+                  answer={faq.answer}
+                  isOpen={openIndex === idx}
+                  onClick={() => handleToggle(idx)}
+                  color={cardColors[idx % cardColors.length]}
+                />
+              ))
+            )}
+          </div>
+        )}
       </main>
     </div>
   );
