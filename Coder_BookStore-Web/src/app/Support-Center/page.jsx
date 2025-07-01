@@ -2,6 +2,8 @@
 import React from 'react';
 import { FaQuestionCircle, FaPhoneAlt, FaMoneyCheckAlt, FaUndoAlt, FaShippingFast, FaShieldAlt } from 'react-icons/fa';
 import SupportCard from './Components/SupportCard.jsx';
+import SupportForm from './Components/SupportForm';
+import SupportHistory from './Components/SupportHistory';
 
 const supports = [
   {
@@ -49,11 +51,15 @@ const supports = [
 ];
 
 export default function SupportCenterPage() {
+  const [refresh, setRefresh] = React.useState(false);
+  const handleSuccess = () => setRefresh(r => !r);
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 py-12 px-4">
       <h1 className="text-5xl font-extrabold text-center mb-6 text-blue-700 drop-shadow-lg">Trung Tâm Hỗ Trợ</h1>
       <p className="text-center text-lg text-gray-600 mb-12 max-w-2xl mx-auto">Chúng tôi luôn sẵn sàng hỗ trợ bạn mọi lúc, mọi nơi. Hãy chọn chủ đề bạn quan tâm để được giải đáp nhanh chóng và tận tình!</p>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <SupportForm onSuccess={handleSuccess} />
+      <SupportHistory key={refresh} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto mt-12">
         {supports.map((item, idx) => (
           <SupportCard
             key={idx}
