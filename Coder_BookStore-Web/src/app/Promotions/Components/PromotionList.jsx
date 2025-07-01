@@ -1,5 +1,6 @@
 'use client';
 import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
 import promotionService from '../../services/promotionService';
 
 const DEFAULT_IMAGE = 'https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?auto=format&fit=facearea&w=600&h=350';
@@ -22,9 +23,10 @@ const PromotionList = () => {
   return (
     <section className="py-10 px-4 max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
       {promotions.map((promo) => (
-        <div
+        <Link
           key={promo.id}
-          className="relative bg-white rounded-3xl shadow-xl overflow-hidden transform hover:scale-105 transition duration-300 group"
+          href={`/Promotions/${promo.id}`}
+          className="relative bg-white rounded-3xl shadow-xl overflow-hidden transform hover:scale-105 transition duration-300 group cursor-pointer"
         >
           <img
             src={promo.image || DEFAULT_IMAGE}
@@ -41,12 +43,10 @@ const PromotionList = () => {
               <span>
                 {promo.start_date} - {promo.end_date}
               </span>
-              <button className="bg-yellow-400 text-white px-4 py-1 rounded-full font-semibold shadow hover:bg-yellow-500 transition">
-                Xem chi tiết
-              </button>
+              <span className="bg-yellow-400 text-white px-4 py-1 rounded-full font-semibold shadow hover:bg-yellow-500 transition">Xem chi tiết</span>
             </div>
           </div>
-        </div>
+        </Link>
       ))}
     </section>
   );

@@ -1,4 +1,5 @@
 import React from 'react';
+import { useRouter } from 'next/navigation';
 
 const tagColors = {
   Hackathon: 'bg-pink-500',
@@ -19,7 +20,8 @@ function getTag(event) {
   return 'Default';
 }
 
-const EventList = ({ events, loading, error, onSelect }) => {
+const EventList = ({ events, loading, error }) => {
+  const router = useRouter();
   if (loading) return <div className="text-center py-10 text-xl animate-pulse">Đang tải sự kiện...</div>;
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
   if (!events || events.length === 0) return <div className="text-center py-10 text-gray-400">Chưa có sự kiện nào.</div>;
@@ -30,7 +32,7 @@ const EventList = ({ events, loading, error, onSelect }) => {
         <div
           key={event.id}
           className="bg-white rounded-3xl shadow-2xl p-7 flex flex-col items-center transform hover:scale-105 transition-transform duration-300 border-4 border-dashed border-fuchsia-200 cursor-pointer group"
-          onClick={() => onSelect(event)}
+          onClick={() => router.push(`/Events/${event.id}`)}
         >
           <img src={event.image} alt={event.title} className="w-full h-40 object-cover rounded-xl mb-5 shadow-md group-hover:shadow-fuchsia-400 transition" />
           <span className={`px-4 py-1 mb-3 rounded-full text-white text-xs font-bold uppercase ${tagColors[getTag(event)]}`}>{getTag(event)}</span>
