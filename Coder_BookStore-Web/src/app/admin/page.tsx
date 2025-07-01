@@ -118,6 +118,26 @@ export default function AdminPage() {
     });
   }, []);
 
+  const fetchBookCount = async () => {
+    try {
+      const res = await fetch('/api/books');
+      const result = await res.json();
+      if (typeof result.total === 'number') {
+        setStats(prev => ({ ...prev, books: result.total }));
+      } else if (Array.isArray(result)) {
+        setStats(prev => ({ ...prev, books: result.length }));
+      }
+    } catch (e) {
+      setStats(prev => ({ ...prev, books: 0 }));
+    }
+  };
+
+  useEffect(() => {
+    if (tab === 'books') {
+      fetchBookCount();
+    }
+  }, [tab]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
     setFormData(prev => ({
@@ -148,11 +168,9 @@ export default function AdminPage() {
         await bookService.createBook(formData);
         setSuccessMessage('Sách đã được thêm thành công!');
       }
-      
       resetForm();
       setShowForm(false);
-      // Refresh the books list
-      window.location.reload();
+      await fetchBookCount();
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
     } finally {
@@ -186,8 +204,7 @@ export default function AdminPage() {
     try {
       await bookService.deleteBook(id);
       setSuccessMessage('Sách đã được xóa thành công!');
-      // Refresh the books list
-      window.location.reload();
+      await fetchBookCount();
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra khi xóa sách');
     }

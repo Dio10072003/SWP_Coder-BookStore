@@ -25,6 +25,11 @@ const nextConfig = {
         hostname: 'covers.openlibrary.org',
       },
     ],
+    domains: [
+      'images.unsplash.com',
+      'images-na.ssl-images-amazon.com',
+      'placehold.co'
+    ],
   },
 };
 

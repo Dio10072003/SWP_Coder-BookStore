@@ -174,12 +174,14 @@ class BookService {
 
   async getCategories(): Promise<string[]> {
     const { data } = await this.getAllBooksWithTotal();
-    return Array.from(new Set(data.map((b: Book) => b.category)));
+    if (!data) return [];
+    return Array.from(new Set(data.map((b: Book) => b.category))).filter(Boolean);
   }
 
   async getYears(): Promise<number[]> {
     const { data } = await this.getAllBooksWithTotal();
-    return Array.from(new Set(data.map((b: Book) => b.publishYear))).sort((a, b) => b - a);
+    if (!data) return [];
+    return Array.from(new Set(data.map((b: Book) => b.publishYear))).filter(Boolean).sort((a, b) => b - a);
   }
 
   async getAllBooksWithTotal(filters?: BookFilters & { page?: number; limit?: number }): Promise<{ data: Book[]; total: number }> {
