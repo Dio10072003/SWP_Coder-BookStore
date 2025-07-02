@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabase } from '@/lib/supabase'
+import { supabase } from '../../../../../lib/supabase'
 
 // POST /api/auth/logout - User logout
 export async function POST(request: NextRequest) {

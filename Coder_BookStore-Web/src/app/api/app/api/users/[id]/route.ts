@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase'
+import { supabaseAdmin } from '../../../../../lib/supabase'
 
 // GET /api/users/[id] - Get a specific user
 export async function GET(
