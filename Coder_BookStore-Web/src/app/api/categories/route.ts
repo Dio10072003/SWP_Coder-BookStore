@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '../lib/supabase';
 
-// GET /api/categories - Get all categories or single category by id
+// GET /api/categories – list/chi tiết
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
+
   if (id) {
     const { data, error } = await supabaseAdmin
       .from('categories')
@@ -16,17 +17,19 @@ export async function GET(request: NextRequest) {
     }
     return NextResponse.json(data);
   }
+
   const { data, error } = await supabaseAdmin
     .from('categories')
     .select('*')
     .order('created_at', { ascending: false });
+
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   return NextResponse.json(data);
 }
 
-// POST /api/categories - Create a new category
+// POST /api/categories – tạo mới
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -38,16 +41,17 @@ export async function POST(request: NextRequest) {
       .insert([body])
       .select()
       .single();
+
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json(data, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Invalid category data' }, { status: 400 });
   }
 }
 
-// PUT /api/categories?id=... - Update category
+// PUT /api/categories?id=… – cập nhật
 export async function PUT(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -62,16 +66,17 @@ export async function PUT(request: NextRequest) {
       .eq('id', id)
       .select()
       .single();
+
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Invalid category data' }, { status: 400 });
   }
 }
 
-// DELETE /api/categories?id=... - Delete category
+// DELETE /api/categories?id=… – xoá
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -79,15 +84,12 @@ export async function DELETE(request: NextRequest) {
     if (!id) {
       return NextResponse.json({ error: 'Category ID is required' }, { status: 400 });
     }
-    const { error } = await supabaseAdmin
-      .from('categories')
-      .delete()
-      .eq('id', id);
+    const { error } = await supabaseAdmin.from('categories').delete().eq('id', id);
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ message: 'Category deleted successfully' });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Failed to delete category' }, { status: 500 });
   }
-} 
+}

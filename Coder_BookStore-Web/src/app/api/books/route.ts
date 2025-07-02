@@ -7,7 +7,6 @@ export async function GET(request: NextRequest) {
   const id = searchParams.get('id');
 
   if (id) {
-    // Lấy chi tiết 1 book
     const { data, error } = await supabaseAdmin
       .from('books')
       .select('*')
@@ -19,7 +18,6 @@ export async function GET(request: NextRequest) {
     return NextResponse.json(data);
   }
 
-  // Lọc, phân trang
   const category = searchParams.get('category');
   const search = searchParams.get('search');
   const year = searchParams.get('year');
@@ -45,7 +43,7 @@ export async function GET(request: NextRequest) {
   return NextResponse.json({ data, total: count });
 }
 
-// POST /api/books - Create new book
+// POST /api/books
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
@@ -65,12 +63,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json(data, { status: 201 });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-// PUT /api/books?id=... - Update book
+// PUT /api/books?id=...
 export async function PUT(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
@@ -89,12 +87,12 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json(data);
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 
-// DELETE /api/books?id=... - Delete book
+// DELETE /api/books?id=...
 export async function DELETE(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get('id');
