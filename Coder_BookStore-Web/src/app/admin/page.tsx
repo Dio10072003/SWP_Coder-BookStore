@@ -6,6 +6,7 @@ import { bookService, CreateBookData } from '../services/bookService';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaBook, FaUser, FaUserTie, FaTags, FaChartBar } from 'react-icons/fa';
+import { userService, CreateUserData } from '../services/userService';
 
 interface BookFormData {
   title: string;
@@ -35,6 +36,11 @@ const initialFormData: BookFormData = {
   isbn: ''
 };
 
+const initialUserFormData: CreateUserData = {
+  email: '',
+  name: '',
+};
+
 const TABS = [
   { key: 'books', label: 'Sách', icon: <FaBook /> },
   { key: 'users', label: 'Người dùng', icon: <FaUser /> },
@@ -59,6 +65,12 @@ export default function AdminPage() {
   const [loadingAuthors, setLoadingAuthors] = useState(false);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [stats, setStats] = useState({ books: 0, users: 0, authors: 0, categories: 0 });
+  const [showUserForm, setShowUserForm] = useState(false);
+  const [editingUser, setEditingUser] = useState<string | null>(null);
+  const [userFormData, setUserFormData] = useState<CreateUserData>(initialUserFormData);
+  const [userFormLoading, setUserFormLoading] = useState(false);
+  const [userFormError, setUserFormError] = useState<string | null>(null);
+  const [userSuccessMessage, setUserSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -213,6 +225,78 @@ export default function AdminPage() {
   const handleAddNew = () => {
     resetForm();
     setShowForm(true);
+  };
+
+  const fetchUsers = async () => {
+    setLoadingUsers(true);
+    try {
+      const users = await userService.getAllUsers();
+      setUsers(users);
+    } catch (error) {
+      setUsers([]);
+    } finally {
+      setLoadingUsers(false);
+    }
+  };
+
+  useEffect(() => {
+    if (tab === 'users') {
+      fetchUsers();
+    }
+  }, [tab]);
+
+  const handleUserInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setUserFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const resetUserForm = () => {
+    setUserFormData(initialUserFormData);
+    setEditingUser(null);
+    setUserFormError(null);
+  };
+
+  const handleUserSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setUserFormLoading(true);
+    setUserFormError(null);
+    setUserSuccessMessage(null);
+    try {
+      if (editingUser) {
+        await userService.updateUser(editingUser, userFormData);
+        setUserSuccessMessage('Người dùng đã được cập nhật thành công!');
+      } else {
+        await userService.createUser(userFormData);
+        setUserSuccessMessage('Người dùng đã được thêm thành công!');
+      }
+      resetUserForm();
+      setShowUserForm(false);
+      fetchUsers();
+    } catch (error) {
+      setUserFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+    } finally {
+      setUserFormLoading(false);
+    }
+  };
+
+  const handleEditUser = (user: any) => {
+    setUserFormData({ email: user.email, name: user.name });
+    setEditingUser(user.id);
+    setShowUserForm(true);
+  };
+
+  const handleDeleteUser = async (id: string) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa người dùng này?')) return;
+    setUserFormLoading(true);
+    try {
+      await userService.deleteUser(id);
+      setUserSuccessMessage('Người dùng đã được xóa thành công!');
+      fetchUsers();
+    } catch (error) {
+      setUserFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+    } finally {
+      setUserFormLoading(false);
+    }
   };
 
   return (
@@ -580,28 +664,61 @@ export default function AdminPage() {
           </div>
         )}
         {tab === 'users' && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Danh sách người dùng</h2>
-            {loadingUsers ? <Loading /> : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full table-auto">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2">Tên</th>
-                      <th className="px-4 py-2">Email</th>
-                      <th className="px-4 py-2">Ngày tạo</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {users.map(user => (
-                      <tr key={user.id} className="border-b">
-                        <td className="px-4 py-2">{user.name}</td>
-                        <td className="px-4 py-2">{user.email}</td>
-                        <td className="px-4 py-2">{new Date(user.created_at).toLocaleDateString()}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Quản lý người dùng</h2>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700"
+                onClick={() => { resetUserForm(); setShowUserForm(true); }}
+              >
+                <FaPlus className="inline mr-2" /> Thêm người dùng
+              </button>
+            </div>
+            {userFormError && <Error message={userFormError} />}
+            {userSuccessMessage && <div className="text-green-600 mb-2">{userSuccessMessage}</div>}
+            <table className="min-w-full bg-white border rounded-lg">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">Email</th>
+                  <th className="py-2 px-4 border-b">Tên</th>
+                  <th className="py-2 px-4 border-b">Ngày tạo</th>
+                  <th className="py-2 px-4 border-b">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.map(user => (
+                  <tr key={user.id}>
+                    <td className="py-2 px-4 border-b">{user.email}</td>
+                    <td className="py-2 px-4 border-b">{user.name}</td>
+                    <td className="py-2 px-4 border-b">{user.created_at ? new Date(user.created_at).toLocaleString() : ''}</td>
+                    <td className="py-2 px-4 border-b">
+                      <button className="mr-2 text-blue-600 hover:underline" onClick={() => handleEditUser(user)}><FaEdit /></button>
+                      <button className="text-red-600 hover:underline" onClick={() => handleDeleteUser(user.id)}><FaTrash /></button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {showUserForm && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
+                  <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-800" onClick={() => setShowUserForm(false)}>&times;</button>
+                  <h3 className="text-xl font-bold mb-4">{editingUser ? 'Chỉnh sửa người dùng' : 'Thêm người dùng'}</h3>
+                  <form onSubmit={handleUserSubmit}>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Email</label>
+                      <input type="email" name="email" value={userFormData.email} onChange={handleUserInputChange} className="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Tên</label>
+                      <input type="text" name="name" value={userFormData.name} onChange={handleUserInputChange} className="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <div className="flex justify-end">
+                      <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded" onClick={() => setShowUserForm(false)}>Hủy</button>
+                      <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={userFormLoading}>{userFormLoading ? 'Đang lưu...' : 'Lưu'}</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
           </div>
