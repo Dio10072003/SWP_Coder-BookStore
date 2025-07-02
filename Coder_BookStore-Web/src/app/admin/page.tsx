@@ -8,6 +8,7 @@ import Error from '../components/Error';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaBook, FaUser, FaUserTie, FaTags, FaChartBar } from 'react-icons/fa';
 import { authorService, CreateAuthorData } from '../services/authorService'; // Keep this line
 import { userService, CreateUserData } from '../services/userService'; // Keep this line
+import { categoryService, CreateCategoryData } from '../services/categoryService';
 
 interface BookFormData {
   title: string;
@@ -51,6 +52,11 @@ const initialUserFormData: CreateUserData = {
   name: '',
 };
 
+const initialCategoryFormData: CreateCategoryData = {
+  name: '',
+  description: '',
+};
+
 const TABS = [
   { key: 'books', label: 'Sách', icon: <FaBook /> },
   { key: 'users', label: 'Người dùng', icon: <FaUser /> },
@@ -90,6 +96,13 @@ export default function AdminPage() {
   const [userFormLoading, setUserFormLoading] = useState(false);
   const [userFormError, setUserFormError] = useState<string | null>(null);
   const [userSuccessMessage, setUserSuccessMessage] = useState<string | null>(null);
+
+  const [showCategoryForm, setShowCategoryForm] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<string | null>(null);
+  const [categoryFormData, setCategoryFormData] = useState<CreateCategoryData>(initialCategoryFormData);
+  const [categoryFormLoading, setCategoryFormLoading] = useState(false);
+  const [categoryFormError, setCategoryFormError] = useState<string | null>(null);
+  const [categorySuccessMessage, setCategorySuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -394,6 +407,81 @@ const fetchAuthors = async () => {
       setUserFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
     } finally {
       setUserFormLoading(false);
+    }
+  };
+
+  const fetchCategoriesData = async () => {
+    setLoadingCategories(true);
+    try {
+      const categories = await categoryService.getAllCategories();
+      setCategoriesData(categories);
+    } catch (error) {
+      setCategoriesData([]);
+    } finally {
+      setLoadingCategories(false);
+    }
+  };
+
+  useEffect(() => {
+    if (tab === 'categories') {
+      fetchCategoriesData();
+    }
+  }, [tab]);
+
+  const handleCategoryInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setCategoryFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const resetCategoryForm = () => {
+    setCategoryFormData(initialCategoryFormData);
+    setEditingCategory(null);
+    setCategoryFormError(null);
+  };
+
+  const handleCategorySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setCategoryFormLoading(true);
+    setCategoryFormError(null);
+    setCategorySuccessMessage(null);
+    try {
+      if (editingCategory) {
+        await categoryService.updateCategory(editingCategory, categoryFormData);
+        setCategorySuccessMessage('Thể loại đã được cập nhật thành công!');
+      } else {
+        await categoryService.createCategory(categoryFormData);
+        setCategorySuccessMessage('Thể loại đã được thêm thành công!');
+      }
+      resetCategoryForm();
+      setShowCategoryForm(false);
+      fetchCategoriesData();
+    } catch (error) {
+      setCategoryFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+    } finally {
+      setCategoryFormLoading(false);
+    }
+  };
+
+  const handleEditCategory = (category: any) => {
+    setCategoryFormData({
+      name: category.name || '',
+      description: category.description || '',
+    });
+    setEditingCategory(category.id);
+    setShowCategoryForm(true);
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa thể loại này?')) return;
+    setCategoryFormLoading(true);
+    try {
+      await categoryService.deleteCategory(id);
+      setCategorySuccessMessage('Thể loại đã được xóa thành công!');
+      fetchCategoriesData();
+    } catch (error) {
+      setCategoryFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+    } finally {
+      setCategoryFormLoading(false);
     }
   };
 
@@ -900,26 +988,59 @@ const fetchAuthors = async () => {
           </div>
         )}
         {tab === 'categories' && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Danh sách thể loại</h2>
-            {loadingCategories ? <Loading /> : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full table-auto">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2">Tên thể loại</th>
-                      <th className="px-4 py-2">Mô tả</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {categoriesData.map(cat => (
-                      <tr key={cat.id} className="border-b">
-                        <td className="px-4 py-2">{cat.name}</td>
-                        <td className="px-4 py-2">{cat.description}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Quản lý thể loại</h2>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700"
+                onClick={() => { resetCategoryForm(); setShowCategoryForm(true); }}
+              >
+                <FaPlus className="inline mr-2" /> Thêm thể loại
+              </button>
+            </div>
+            {categoryFormError && <Error message={categoryFormError} />}
+            {categorySuccessMessage && <div className="text-green-600 mb-2">{categorySuccessMessage}</div>}
+            <table className="min-w-full bg-white border rounded-lg">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">Tên</th>
+                  <th className="py-2 px-4 border-b">Mô tả</th>
+                  <th className="py-2 px-4 border-b">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categoriesData.map(category => (
+                  <tr key={category.id}>
+                    <td className="py-2 px-4 border-b">{category.name}</td>
+                    <td className="py-2 px-4 border-b">{category.description}</td>
+                    <td className="py-2 px-4 border-b">
+                      <button className="mr-2 text-blue-600 hover:underline" onClick={() => handleEditCategory(category)}><FaEdit /></button>
+                      <button className="text-red-600 hover:underline" onClick={() => handleDeleteCategory(category.id)}><FaTrash /></button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {showCategoryForm && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
+                  <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-800" onClick={() => setShowCategoryForm(false)}>&times;</button>
+                  <h3 className="text-xl font-bold mb-4">{editingCategory ? 'Chỉnh sửa thể loại' : 'Thêm thể loại'}</h3>
+                  <form onSubmit={handleCategorySubmit}>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Tên</label>
+                      <input type="text" name="name" value={categoryFormData.name} onChange={handleCategoryInputChange} className="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Mô tả</label>
+                      <textarea name="description" value={categoryFormData.description} onChange={handleCategoryInputChange} className="w-full border rounded px-3 py-2" rows={3} />
+                    </div>
+                    <div className="flex justify-end">
+                      <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded" onClick={() => setShowCategoryForm(false)}>Hủy</button>
+                      <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={categoryFormLoading}>{categoryFormLoading ? 'Đang lưu...' : 'Lưu'}</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
           </div>
