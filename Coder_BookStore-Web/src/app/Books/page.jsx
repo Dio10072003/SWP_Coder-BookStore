@@ -10,7 +10,7 @@ import Loading from '../components/Loading';
 import Error from '../components/Error';
 
 // Danh sách ảnh minh họa cho các sách phổ biến
-export const bookImages = {
+const bookImages = {
   'Clean Code': 'https://images-na.ssl-images-amazon.com/images/I/41xShlnTZTL._SX374_BO1,204,203,200_.jpg',
   'Python Crash Course': 'https://images-na.ssl-images-amazon.com/images/I/41uPjEenkFL._SX379_BO1,204,203,200_.jpg',
   'Dune': 'https://images-na.ssl-images-amazon.com/images/I/41N5hdRcw6L._SX258_BO1,204,203,200_.jpg',

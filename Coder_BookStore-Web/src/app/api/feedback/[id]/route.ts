@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/feedback/[id] - Lấy chi tiết feedback
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(request: Request, { params }: any) {
   const { id } = params;
   const { data, error } = await supabaseAdmin
     .from('feedback')
@@ -14,7 +15,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT /api/feedback/[id] - Update feedback
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PUT(request: Request, { params }: any) {
   const { id } = params;
   const body = await request.json();
   const { name, email, content, rating } = body;
@@ -32,7 +34,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE /api/feedback/[id] - Xóa feedback
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(request: Request, { params }: any) {
   const { id } = params;
   const { error } = await supabaseAdmin
     .from('feedback')

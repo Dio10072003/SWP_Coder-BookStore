@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/faqs/[id] - Get a single FAQ by ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(request: Request, { params }: any) {
   const { id } = params;
   const { data, error } = await supabaseAdmin
     .from('faqs')
@@ -16,7 +17,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT /api/faqs/[id] - Update a FAQ by ID
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PUT(request: Request, { params }: any) {
   const { id } = params;
   const body = await request.json();
   const { question, answer } = body;
@@ -36,7 +38,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE /api/faqs/[id] - Delete a FAQ by ID
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(request: Request, { params }: any) { 
   const { id } = params;
   const { error } = await supabaseAdmin
     .from('faqs')

@@ -2,7 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/order-tracking/[id] - Get a single order tracking record by ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(request: Request, { params }: any) {
   const { id } = params;
   const { data, error } = await supabaseAdmin
     .from('order_tracking')
@@ -16,11 +17,12 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT /api/order-tracking/[id] - Update an order tracking record by ID
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PUT(request: Request, { params }: any) {
   const { id } = params;
   const body = await request.json();
   const { order_code, status, location, note } = body;
-  if (!order_code || !status) {
+  if (!order_code || !status || !location || !note) {
     return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
   }
   const { data, error } = await supabaseAdmin
@@ -36,7 +38,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE /api/order-tracking/[id] - Delete an order tracking record by ID
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(request: Request, { params }: any) {
   const { id } = params;
   const { error } = await supabaseAdmin
     .from('order_tracking')
