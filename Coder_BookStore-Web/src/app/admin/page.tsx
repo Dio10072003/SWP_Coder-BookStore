@@ -6,6 +6,7 @@ import { bookService, CreateBookData } from '../services/bookService';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
 import { FaPlus, FaEdit, FaTrash, FaEye, FaBook, FaUser, FaUserTie, FaTags, FaChartBar } from 'react-icons/fa';
+import { authorService, CreateAuthorData } from '../services/authorService';
 
 interface BookFormData {
   title: string;
@@ -35,6 +36,15 @@ const initialFormData: BookFormData = {
   isbn: ''
 };
 
+const initialAuthorFormData: CreateAuthorData = {
+  name: '',
+  bio: '',
+  avatar: '',
+  country: '',
+  birth_year: undefined,
+  genres: [],
+};
+
 const TABS = [
   { key: 'books', label: 'Sách', icon: <FaBook /> },
   { key: 'users', label: 'Người dùng', icon: <FaUser /> },
@@ -59,6 +69,12 @@ export default function AdminPage() {
   const [loadingAuthors, setLoadingAuthors] = useState(false);
   const [loadingCategories, setLoadingCategories] = useState(false);
   const [stats, setStats] = useState({ books: 0, users: 0, authors: 0, categories: 0 });
+  const [showAuthorForm, setShowAuthorForm] = useState(false);
+  const [editingAuthor, setEditingAuthor] = useState<string | null>(null);
+  const [authorFormData, setAuthorFormData] = useState<CreateAuthorData>(initialAuthorFormData);
+  const [authorFormLoading, setAuthorFormLoading] = useState(false);
+  const [authorFormError, setAuthorFormError] = useState<string | null>(null);
+  const [authorSuccessMessage, setAuthorSuccessMessage] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -213,6 +229,85 @@ export default function AdminPage() {
   const handleAddNew = () => {
     resetForm();
     setShowForm(true);
+  };
+
+  const fetchAuthors = async () => {
+    setLoadingAuthors(true);
+    try {
+      const authors = await authorService.getAllAuthors();
+      setAuthors(authors);
+    } catch (error) {
+      setAuthors([]);
+    } finally {
+      setLoadingAuthors(false);
+    }
+  };
+
+  useEffect(() => {
+    if (tab === 'authors') {
+      fetchAuthors();
+    }
+  }, [tab]);
+
+  const handleAuthorInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+    setAuthorFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const resetAuthorForm = () => {
+    setAuthorFormData(initialAuthorFormData);
+    setEditingAuthor(null);
+    setAuthorFormError(null);
+  };
+
+  const handleAuthorSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setAuthorFormLoading(true);
+    setAuthorFormError(null);
+    setAuthorSuccessMessage(null);
+    try {
+      if (editingAuthor) {
+        await authorService.updateAuthor(editingAuthor, authorFormData);
+        setAuthorSuccessMessage('Tác giả đã được cập nhật thành công!');
+      } else {
+        await authorService.createAuthor(authorFormData);
+        setAuthorSuccessMessage('Tác giả đã được thêm thành công!');
+      }
+      resetAuthorForm();
+      setShowAuthorForm(false);
+      fetchAuthors();
+    } catch (error) {
+      setAuthorFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+    } finally {
+      setAuthorFormLoading(false);
+    }
+  };
+
+  const handleEditAuthor = (author: any) => {
+    setAuthorFormData({
+      name: author.name || '',
+      bio: author.bio || '',
+      avatar: author.avatar || '',
+      country: author.country || '',
+      birth_year: author.birth_year,
+      genres: author.genres || [],
+    });
+    setEditingAuthor(author.id);
+    setShowAuthorForm(true);
+  };
+
+  const handleDeleteAuthor = async (id: string) => {
+    if (!confirm('Bạn có chắc chắn muốn xóa tác giả này?')) return;
+    setAuthorFormLoading(true);
+    try {
+      await authorService.deleteAuthor(id);
+      setAuthorSuccessMessage('Tác giả đã được xóa thành công!');
+      fetchAuthors();
+    } catch (error) {
+      setAuthorFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+    } finally {
+      setAuthorFormLoading(false);
+    }
   };
 
   return (
@@ -607,33 +702,79 @@ export default function AdminPage() {
           </div>
         )}
         {tab === 'authors' && (
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
-            <h2 className="text-2xl font-bold mb-4">Danh sách tác giả</h2>
-            {loadingAuthors ? <Loading /> : (
-              <div className="overflow-x-auto">
-                <table className="min-w-full table-auto">
-                  <thead>
-                    <tr>
-                      <th className="px-4 py-2">Tên</th>
-                      <th className="px-4 py-2">Quốc gia</th>
-                      <th className="px-4 py-2">Năm sinh</th>
-                      <th className="px-4 py-2">Thể loại</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {authors.map(author => (
-                      <tr key={author.id} className="border-b">
-                        <td className="px-4 py-2 flex items-center gap-2">
-                          <img src={author.avatar} alt={author.name} className="w-8 h-8 rounded-full" />
-                          {author.name}
-                        </td>
-                        <td className="px-4 py-2">{author.country}</td>
-                        <td className="px-4 py-2">{author.birthYear}</td>
-                        <td className="px-4 py-2">{author.genres?.join(', ')}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          <div>
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-2xl font-bold">Quản lý tác giả</h2>
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700"
+                onClick={() => { resetAuthorForm(); setShowAuthorForm(true); }}
+              >
+                <FaPlus className="inline mr-2" /> Thêm tác giả
+              </button>
+            </div>
+            {authorFormError && <Error message={authorFormError} />}
+            {authorSuccessMessage && <div className="text-green-600 mb-2">{authorSuccessMessage}</div>}
+            <table className="min-w-full bg-white border rounded-lg">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b">Tên</th>
+                  <th className="py-2 px-4 border-b">Quốc gia</th>
+                  <th className="py-2 px-4 border-b">Năm sinh</th>
+                  <th className="py-2 px-4 border-b">Thể loại</th>
+                  <th className="py-2 px-4 border-b">Hành động</th>
+                </tr>
+              </thead>
+              <tbody>
+                {authors.map(author => (
+                  <tr key={author.id}>
+                    <td className="py-2 px-4 border-b">{author.name}</td>
+                    <td className="py-2 px-4 border-b">{author.country}</td>
+                    <td className="py-2 px-4 border-b">{author.birth_year}</td>
+                    <td className="py-2 px-4 border-b">{Array.isArray(author.genres) ? author.genres.join(', ') : ''}</td>
+                    <td className="py-2 px-4 border-b">
+                      <button className="mr-2 text-blue-600 hover:underline" onClick={() => handleEditAuthor(author)}><FaEdit /></button>
+                      <button className="text-red-600 hover:underline" onClick={() => handleDeleteAuthor(author.id)}><FaTrash /></button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {showAuthorForm && (
+              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
+                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
+                  <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-800" onClick={() => setShowAuthorForm(false)}>&times;</button>
+                  <h3 className="text-xl font-bold mb-4">{editingAuthor ? 'Chỉnh sửa tác giả' : 'Thêm tác giả'}</h3>
+                  <form onSubmit={handleAuthorSubmit}>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Tên</label>
+                      <input type="text" name="name" value={authorFormData.name} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" required />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Quốc gia</label>
+                      <input type="text" name="country" value={authorFormData.country} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Năm sinh</label>
+                      <input type="number" name="birth_year" value={authorFormData.birth_year || ''} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Thể loại (phân cách bằng dấu phẩy)</label>
+                      <input type="text" name="genres" value={Array.isArray(authorFormData.genres) ? authorFormData.genres.join(', ') : ''} onChange={e => setAuthorFormData(prev => ({ ...prev, genres: e.target.value.split(',').map(g => g.trim()).filter(Boolean) }))} className="w-full border rounded px-3 py-2" />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Ảnh đại diện (URL)</label>
+                      <input type="text" name="avatar" value={authorFormData.avatar} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" />
+                    </div>
+                    <div className="mb-4">
+                      <label className="block mb-1 font-semibold">Tiểu sử</label>
+                      <textarea name="bio" value={authorFormData.bio} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" rows={3} />
+                    </div>
+                    <div className="flex justify-end">
+                      <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded" onClick={() => setShowAuthorForm(false)}>Hủy</button>
+                      <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={authorFormLoading}>{authorFormLoading ? 'Đang lưu...' : 'Lưu'}</button>
+                    </div>
+                  </form>
+                </div>
               </div>
             )}
           </div>
