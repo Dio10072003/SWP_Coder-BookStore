@@ -1,9 +1,10 @@
 'use client';
 import { useRouter } from 'next/navigation';
+import { use } from 'react';
 
 export default function CategoryDetailPage({ params }) {
   const router = useRouter();
-  const { Category } = params;
+  const { Category } = use(params);
 
   // Mô tả mẫu cho từng chủ đề (có thể mở rộng sau)
   const descriptions = {
