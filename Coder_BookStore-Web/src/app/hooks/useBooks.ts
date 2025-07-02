@@ -22,7 +22,7 @@ export const useBooks = (filters?: BookFilters & { page?: number; limit?: number
       }
     };
     fetchBooks();
-  }, [filters?.category, filters?.search, filters?.page, filters?.limit, filters?.year, filters?.minRating, filters?.maxPrice]);
+  }, [filters]);
 
   return { books, loading, error, total };
 };

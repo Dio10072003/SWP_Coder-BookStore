@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/promotions/[id] - Get single promotion by id
-export async function GET(request, { params }) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const { data, error } = await supabaseAdmin
     .from('promotions')
@@ -16,13 +16,24 @@ export async function GET(request, { params }) {
 }
 
 // PATCH /api/promotions/[id] - Update promotion by id
-export async function PATCH(request, { params }) {
+export async function PATCH(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const body = await request.json();
   // Cho phép update linh hoạt mọi trường
-  const updateData = {};
-  for (const key of ['title', 'description', 'discount', 'start_date', 'end_date', 'image']) {
-    if (body[key] !== undefined) updateData[key] = body[key];
+  type PromotionUpdate = {
+    title?: string;
+    description?: string;
+    discount?: number;
+    start_date?: string;
+    end_date?: string;
+    image?: string;
+  };
+
+  const updateData: PromotionUpdate = {};
+  for (const key of ['title', 'description', 'discount', 'start_date', 'end_date', 'image'] as const) {
+    if (body[key] !== undefined) {
+      updateData[key] = body[key];
+    }
   }
   const { data, error } = await supabaseAdmin
     .from('promotions')
@@ -37,7 +48,7 @@ export async function PATCH(request, { params }) {
 }
 
 // DELETE /api/promotions/[id] - Delete promotion by id
-export async function DELETE(request, { params }) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const { error } = await supabaseAdmin
     .from('promotions')

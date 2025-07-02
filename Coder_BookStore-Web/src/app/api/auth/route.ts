@@ -1,3 +1,1 @@
-import { supabase } from '../lib/supabase';
-
 // ... existing code ... 

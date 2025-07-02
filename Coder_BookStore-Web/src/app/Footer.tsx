@@ -55,8 +55,8 @@ export default function Footer(): JSX.Element {
               <li><Link href="/Authors" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Tác giả nổi bật</Link></li>
               <li><Link href="/NewArrivals" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Sách mới về</Link></li>
               <li><Link href="/BestSeller" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Sách bán chạy</Link></li>
-              <li><Link href="/Promotions" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Ưu đãi & Khuyến mãi</Link></li>
-              <li><Link href="/Blog" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Bài viết & Tin tức</Link></li>
+              <li><Link href="/Promotions" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Ưu đãi &amp; Khuyến mãi</Link></li>
+              <li><Link href="/Blog" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Bài viết &amp; Tin tức</Link></li>
               <li><Link href="/Events" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Sự kiện</Link></li>
               <li><Link href="/AboutPage" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Về chúng tôi</Link></li>
               <li><Link href="/Career" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Cơ hội nghề nghiệp</Link></li>
@@ -69,7 +69,7 @@ export default function Footer(): JSX.Element {
               <li><Link href="/Privacy" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Chính sách bảo mật</Link></li>
               <li><Link href="/Terms" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Điều khoản dịch vụ</Link></li>
               <li><Link href="/Faq" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Câu hỏi thường gặp</Link></li>
-              <li><Link href="/ShipReturns" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Vận chuyển & Đổi trả</Link></li>
+              <li><Link href="/ShipReturns" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Vận chuyển &amp; Đổi trả</Link></li>
               <li><Link href="/Support-Center" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Trung tâm hỗ trợ</Link></li>
               <li><Link href="/Payment" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Phương thức thanh toán</Link></li>
               <li><Link href="/OrderTracking" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Theo dõi đơn hàng</Link></li>
@@ -141,7 +141,7 @@ export default function Footer(): JSX.Element {
             transition={{ delay: 0.2 }}
             className="text-center md:text-left text-xs italic max-w-xs"
           >
-            "Mỗi trang sách là một bước tiến trên hành trình khám phá thế giới muôn màu của bạn."
+            &quot;Mỗi trang sách là một bước tiến trên hành trình khám phá thế giới muôn màu của bạn.&quot;
           </motion.p>
           <motion.p
             variants={fadeInVariants}

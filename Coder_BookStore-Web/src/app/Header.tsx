@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { FaBars, FaTimes, FaUserCircle, FaCog } from 'react-icons/fa';
+import { FaBars, FaTimes, FaCog } from 'react-icons/fa';
 import { JSX } from 'react';
 
 export default function Header(): JSX.Element {

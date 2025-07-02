@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '../lib/supabase';
+import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/order-tracking/[id] - Get a single order tracking record by ID
-export async function GET(request, { params }) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const { data, error } = await supabaseAdmin
     .from('order_tracking')
@@ -16,7 +16,7 @@ export async function GET(request, { params }) {
 }
 
 // PUT /api/order-tracking/[id] - Update an order tracking record by ID
-export async function PUT(request, { params }) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const body = await request.json();
   const { order_code, status, location, note } = body;
@@ -36,7 +36,7 @@ export async function PUT(request, { params }) {
 }
 
 // DELETE /api/order-tracking/[id] - Delete an order tracking record by ID
-export async function DELETE(request, { params }) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const { error } = await supabaseAdmin
     .from('order_tracking')

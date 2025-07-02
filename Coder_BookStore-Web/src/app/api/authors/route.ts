@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
       .eq('id', id)
       .single();
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 404 });
+      return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json(data);
   }
@@ -33,14 +33,11 @@ export async function POST(request: NextRequest) {
     if (!body.name) {
       return NextResponse.json({ error: 'Name is required' }, { status: 400 });
     }
-    const { data, error } = await supabaseAdmin
+    const { data } = await supabaseAdmin
       .from('authors')
       .insert([body])
       .select()
       .single();
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
     return NextResponse.json(data, { status: 201 });
   } catch (error) {
     return NextResponse.json({ error: 'Invalid author data' }, { status: 400 });
@@ -56,15 +53,12 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json({ error: 'Author ID is required' }, { status: 400 });
     }
     const body = await request.json();
-    const { data, error } = await supabaseAdmin
+    const { data } = await supabaseAdmin
       .from('authors')
       .update({ ...body, updated_at: new Date().toISOString() })
       .eq('id', id)
       .select()
       .single();
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
     return NextResponse.json(data);
   } catch (error) {
     return NextResponse.json({ error: 'Invalid author data' }, { status: 400 });
@@ -79,13 +73,10 @@ export async function DELETE(request: NextRequest) {
     if (!id) {
       return NextResponse.json({ error: 'Author ID is required' }, { status: 400 });
     }
-    const { error } = await supabaseAdmin
+    await supabaseAdmin
       .from('authors')
       .delete()
       .eq('id', id);
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
     return NextResponse.json({ message: 'Author deleted successfully' });
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete author' }, { status: 500 });

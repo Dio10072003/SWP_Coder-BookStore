@@ -2,13 +2,17 @@
 
 import React, { useState, useEffect } from 'react';
 import { useBooks } from '../hooks/useBooks';
-import { bookService, CreateBookData } from '../services/bookService';
+import { bookService } from '../services/bookService';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
-import { FaPlus, FaEdit, FaTrash, FaEye, FaBook, FaUser, FaUserTie, FaTags, FaChartBar } from 'react-icons/fa';
-import { authorService, CreateAuthorData } from '../services/authorService'; // Keep this line
-import { userService, CreateUserData } from '../services/userService'; // Keep this line
+import { FaPlus, FaEdit, FaTrash, FaEye, FaBook, FaUser, FaUserTie, FaTags } from 'react-icons/fa';
+import { authorService, CreateAuthorData } from '../services/authorService';
+import { userService, CreateUserData } from '../services/userService';
 import { categoryService, CreateCategoryData } from '../services/categoryService';
+import { User } from '../api/types/database';
+import { Author } from '../services/authorService';
+import { Category } from '../services/categoryService';
+import Image from "next/image";
 
 interface BookFormData {
   title: string;
@@ -74,12 +78,9 @@ export default function AdminPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [tab, setTab] = useState('books');
-  const [users, setUsers] = useState<any[]>([]);
-  const [authors, setAuthors] = useState<any[]>([]);
-  const [categoriesData, setCategoriesData] = useState<any[]>([]);
-  const [loadingUsers, setLoadingUsers] = useState(false);
-  const [loadingAuthors, setLoadingAuthors] = useState(false);
-  const [loadingCategories, setLoadingCategories] = useState(false);
+  const [users, setUsers] = useState<User[]>([]);
+  const [authors, setAuthors] = useState<Author[]>([]);
+  const [categoriesData, setCategoriesData] = useState<Category[]>([]);
   const [stats, setStats] = useState({ books: 0, users: 0, authors: 0, categories: 0 });
 
   // Keep all state declarations for both author and user management
@@ -118,31 +119,25 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (tab === 'users') {
-      setLoadingUsers(true);
       fetch('/api/users')
         .then(res => res.json())
-        .then(data => setUsers(Array.isArray(data) ? data : []))
-        .finally(() => setLoadingUsers(false));
+        .then(data => setUsers(Array.isArray(data) ? data : []));
     }
   }, [tab]);
 
   useEffect(() => {
     if (tab === 'authors') {
-      setLoadingAuthors(true);
       fetch('/api/authors')
         .then(res => res.json())
-        .then(data => setAuthors(Array.isArray(data) ? data : []))
-        .finally(() => setLoadingAuthors(false));
+        .then(data => setAuthors(Array.isArray(data) ? data : []));
     }
   }, [tab]);
 
   useEffect(() => {
     if (tab === 'categories') {
-      setLoadingCategories(true);
       fetch('/api/categories')
         .then(res => res.json())
-        .then(data => setCategoriesData(Array.isArray(data) ? data : []))
-        .finally(() => setLoadingCategories(false));
+        .then(data => setCategoriesData(Array.isArray(data) ? data : []));
     }
   }, [tab]);
 
@@ -171,7 +166,7 @@ export default function AdminPage() {
       } else if (Array.isArray(result)) {
         setStats(prev => ({ ...prev, books: result.length }));
       }
-    } catch (e) {
+    } catch {
       setStats(prev => ({ ...prev, books: 0 }));
     }
   };
@@ -222,7 +217,7 @@ export default function AdminPage() {
     }
   };
 
-  const handleEdit = (book: any) => {
+  const handleEdit = (book: BookFormData) => {
     setFormData({
       title: book.title,
       author: book.author,
@@ -259,27 +254,21 @@ export default function AdminPage() {
     setShowForm(true);
   };
 
-const fetchAuthors = async () => {
-    setLoadingAuthors(true);
+  const fetchAuthors = async () => {
     try {
-      const authors = await authorService.getAllAuthors();
+      const authors: Author[] = await authorService.getAllAuthors();
       setAuthors(authors);
-    } catch (error) {
+    } catch {
       setAuthors([]);
-    } finally {
-      setLoadingAuthors(false);
     }
   };
 
   const fetchUsers = async () => {
-    setLoadingUsers(true);
     try {
-      const users = await userService.getAllUsers();
+      const users: User[] = await userService.getAllUsers();
       setUsers(users);
-    } catch (error) {
+    } catch {
       setUsers([]);
-    } finally {
-      setLoadingUsers(false);
     }
   };
 
@@ -363,7 +352,7 @@ const fetchAuthors = async () => {
     }
   };
 
-  const handleEditAuthor = (author: any) => {
+  const handleEditAuthor = (author: Author) => {
     setAuthorFormData({
       name: author.name || '',
       bio: author.bio || '',
@@ -376,7 +365,7 @@ const fetchAuthors = async () => {
     setShowAuthorForm(true);
   };
 
-  const handleEditUser = (user: any) => {
+  const handleEditUser = (user: User) => {
     setUserFormData({ email: user.email, name: user.name });
     setEditingUser(user.id);
     setShowUserForm(true);
@@ -411,14 +400,11 @@ const fetchAuthors = async () => {
   };
 
   const fetchCategoriesData = async () => {
-    setLoadingCategories(true);
     try {
-      const categories = await categoryService.getAllCategories();
+      const categories: Category[] = await categoryService.getAllCategories();
       setCategoriesData(categories);
-    } catch (error) {
+    } catch {
       setCategoriesData([]);
-    } finally {
-      setLoadingCategories(false);
     }
   };
 
@@ -462,7 +448,7 @@ const fetchAuthors = async () => {
     }
   };
 
-  const handleEditCategory = (category: any) => {
+  const handleEditCategory = (category: Category) => {
     setCategoryFormData({
       name: category.name || '',
       description: category.description || '',
@@ -787,10 +773,12 @@ const fetchAuthors = async () => {
                             <td className="px-6 py-4 whitespace-nowrap align-top">
                               <div className="flex items-center gap-3">
                                 <div className="flex-shrink-0 h-14 w-10">
-                                  <img
+                                  <Image
                                     className="h-14 w-10 rounded-lg object-cover border border-gray-300 dark:border-gray-700 shadow"
                                     src={book.img}
                                     alt={book.title}
+                                    width={40}
+                                    height={40}
                                   />
                                 </div>
                                 <div className="ml-3 flex flex-col justify-center">

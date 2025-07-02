@@ -1,1 +1,0 @@
-import { supabaseAdmin } from '../../../../lib/supabase'; 

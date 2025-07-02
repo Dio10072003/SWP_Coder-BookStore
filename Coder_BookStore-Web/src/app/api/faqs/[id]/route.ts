@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { supabaseAdmin } from '../lib/supabase';
+import { NextResponse } from 'next/server';
+import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/faqs/[id] - Get a single FAQ by ID
-export async function GET(request, { params }) {
+export async function GET(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const { data, error } = await supabaseAdmin
     .from('faqs')
@@ -16,7 +16,7 @@ export async function GET(request, { params }) {
 }
 
 // PUT /api/faqs/[id] - Update a FAQ by ID
-export async function PUT(request, { params }) {
+export async function PUT(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const body = await request.json();
   const { question, answer } = body;
@@ -36,7 +36,7 @@ export async function PUT(request, { params }) {
 }
 
 // DELETE /api/faqs/[id] - Delete a FAQ by ID
-export async function DELETE(request, { params }) {
+export async function DELETE(request: Request, { params }: { params: { id: string } }) {
   const { id } = params;
   const { error } = await supabaseAdmin
     .from('faqs')
