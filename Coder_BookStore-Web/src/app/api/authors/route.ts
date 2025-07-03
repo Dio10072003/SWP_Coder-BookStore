@@ -49,47 +49,35 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// PUT /api/authors?id=... - Update author
+// PUT /api/authors?id=xxx - Update author
 export async function PUT(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
-    if (!id) {
-      return NextResponse.json({ error: 'Author ID is required' }, { status: 400 });
-    }
-    const body = await request.json();
-    const { data, error } = await supabaseAdmin
-      .from('authors')
-      .update({ ...body, updated_at: new Date().toISOString() })
-      .eq('id', id)
-      .select()
-      .single();
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json(data);
-  } catch {
-    return NextResponse.json({ error: 'Invalid author data' }, { status: 400 });
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+  const body = await request.json();
+  const { data, error } = await supabaseAdmin
+    .from('authors')
+    .update(body)
+    .eq('id', id)
+    .select()
+    .single();
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
+  return NextResponse.json(data);
 }
 
-// DELETE /api/authors?id=... - Delete author
+// DELETE /api/authors?id=xxx - Delete author
 export async function DELETE(request: NextRequest) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const id = searchParams.get('id');
-    if (!id) {
-      return NextResponse.json({ error: 'Author ID is required' }, { status: 400 });
-    }
-    const { error } = await supabaseAdmin
-      .from('authors')
-      .delete()
-      .eq('id', id);
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ message: 'Author deleted successfully' });
-  } catch {
-    return NextResponse.json({ error: 'Failed to delete author' }, { status: 500 });
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+  const { error } = await supabaseAdmin
+    .from('authors')
+    .delete()
+    .eq('id', id);
+  if (error) {
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
+  return NextResponse.json({ message: 'Author deleted' });
 }
