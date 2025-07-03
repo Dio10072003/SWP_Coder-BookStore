@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useBooks } from '../hooks/useBooks';
 import { bookService } from '../services/bookService';
 import Loading from '../components/Loading';
@@ -69,7 +69,9 @@ const TABS = [
 ];
 
 export default function AdminPage() {
-  const { books, loading, error } = useBooks();
+  const [reloadBooks, setReloadBooks] = useState(0);
+  const bookFilters = useMemo(() => ({ limit: 1000, reload: reloadBooks }), [reloadBooks]);
+  const { books, loading, error } = useBooks(bookFilters);
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState<number | null>(null);
   const [formData, setFormData] = useState<BookFormData>(initialFormData);
@@ -199,16 +201,15 @@ export default function AdminPage() {
 
     try {
       if (editingBook) {
-        // Update existing book
         await bookService.updateBook(editingBook, formData);
         setSuccessMessage('Sách đã được cập nhật thành công!');
       } else {
-        // Create new book
         await bookService.createBook(formData);
         setSuccessMessage('Sách đã được thêm thành công!');
       }
       resetForm();
       setShowForm(false);
+      setReloadBooks(r => r + 1);
       await fetchBookCount();
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
@@ -243,6 +244,7 @@ export default function AdminPage() {
     try {
       await bookService.deleteBook(id);
       setSuccessMessage('Sách đã được xóa thành công!');
+      setReloadBooks(r => r + 1);
       await fetchBookCount();
     } catch (error) {
       setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra khi xóa sách');
