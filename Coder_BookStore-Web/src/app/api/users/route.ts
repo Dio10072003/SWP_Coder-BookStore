@@ -2,6 +2,7 @@
 // export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '../lib/supabase';
+import bcrypt from 'bcryptjs';
 
 // GET /api/users – tất cả user
 export async function GET() {
@@ -14,7 +15,9 @@ export async function GET() {
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json(data);
+    // Không trả về password hoặc hash
+    const safeData = data.map(({ password, passwordHash, ...rest }) => rest);
+    return NextResponse.json(safeData);
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -32,16 +35,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
+
     const { data, error } = await supabaseAdmin
       .from('users')
-      .insert([{ email, name, password, role: role || 'User' }])
+      .insert([{ email, name, passwordHash, role: role || 'User' }])
       .select()
       .single();
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json(data, { status: 201 });
+    // Không trả về password hoặc hash
+    const { password: _pw, passwordHash: _ph, ...safeUser } = data;
+    return NextResponse.json(safeUser, { status: 201 });
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -55,33 +63,6 @@ export async function DELETE() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     return NextResponse.json({ message: 'All users deleted' });
-  } catch {
-    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-  }
-}
-
-// POST /api/users/seed – seed lại user mẫu
-export async function POST_seed() {
-  try {
-    // Xóa toàn bộ user trước
-    await supabaseAdmin.from('users').delete().neq('id', '');
-    // Thêm user mẫu
-    const rawUsers = [
-      { email: 'alice@example.com', name: 'Alice Nguyen', role: 'Admin', password: 'alice123' },
-      { email: 'bob@example.com', name: 'Bob Tran', role: 'Staff', password: 'bob123' },
-      { email: 'carol@example.com', name: 'Carol Le', role: 'User', password: 'carol123' },
-      { email: 'david@example.com', name: 'David Pham', role: 'User', password: 'david123' },
-    ];
-    const users = await Promise.all(rawUsers.map(async u => ({
-      email: u.email,
-      name: u.name,
-      role: u.role,
-    })));
-    const { data, error } = await supabaseAdmin.from('users').insert(users).select();
-    if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
-    }
-    return NextResponse.json({ message: 'Seeded users', data });
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }

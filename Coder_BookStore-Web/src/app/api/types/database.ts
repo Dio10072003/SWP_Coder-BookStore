@@ -4,8 +4,8 @@ export interface User {
   name: string
   created_at: string
   updated_at: string
-  password?: string // plain text (for demo only, không dùng thực tế)
-  passwordHash?: string // hashed password
+  password?: string // plain text (for demo only, KHÔNG dùng thực tế, không lưu vào DB production)
+  passwordHash?: string // hashed password, dùng cho xác thực thực tế
   role: 'Admin' | 'Staff' | 'User'
 }
 
