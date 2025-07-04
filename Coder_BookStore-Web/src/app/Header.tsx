@@ -11,6 +11,8 @@ export default function Header(): JSX.Element {
   const [greet, setGreet] = useState("");
   const [currentTime, setCurrentTime] = useState("");
   const [currentLocation] = useState("An Nhơn, Bình Định");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const getGreeting = (hour: number) => {
@@ -48,6 +50,19 @@ export default function Header(): JSX.Element {
     return () => clearInterval(intervalId);
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsLoggedIn(!!localStorage.getItem('user'));
+      const user = localStorage.getItem('user');
+      setUserName(user ? JSON.parse(user).name : "");
+      window.addEventListener('storage', () => {
+        setIsLoggedIn(!!localStorage.getItem('user'));
+        const user = localStorage.getItem('user');
+        setUserName(user ? JSON.parse(user).name : "");
+      });
+    }
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 shadow-lg text-white font-sans">
       <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
@@ -82,8 +97,17 @@ export default function Header(): JSX.Element {
         {/* Actions */}
         <div className="flex items-center gap-2">
           <Link href="/admin" className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-700 to-purple-700 text-white font-bold shadow hover:from-blue-800 hover:to-purple-800 transition">Admin</Link>
-          <Link href="/Login" className="px-4 py-2 rounded-full border border-blue-400 text-blue-100 bg-white/10 hover:bg-white/20 shadow transition">Đăng nhập</Link>
-          <Link href="/Register" className="px-4 py-2 rounded-full border border-purple-400 text-purple-100 bg-white/10 hover:bg-white/20 shadow transition">Đăng ký</Link>
+          {isLoggedIn ? (
+            <Link href="/Profile" className="px-4 py-2 rounded-full border border-green-400 text-green-900 bg-green-100 hover:bg-green-200 shadow transition font-bold">Profile</Link>
+          ) : (
+            <>
+              <Link href="/Login" className="px-4 py-2 rounded-full border border-blue-400 text-blue-100 bg-white/10 hover:bg-white/20 shadow transition">Đăng nhập</Link>
+              <Link href="/Register" className="px-4 py-2 rounded-full border border-purple-400 text-purple-100 bg-white/10 hover:bg-white/20 shadow transition">Đăng ký</Link>
+            </>
+          )}
+          {isLoggedIn && userName && (
+            <span className="font-bold text-green-300 mr-2">Xin chào, {userName}!</span>
+          )}
           <div className="ml-2 px-4 py-2 rounded-xl bg-white/70 backdrop-blur-md shadow text-blue-900 text-xs font-semibold flex flex-col items-center min-w-[170px] border border-white/30">
             <span className="font-bold text-center whitespace-nowrap">{greet}</span>
             <span
@@ -124,8 +148,14 @@ export default function Header(): JSX.Element {
           <Link href="/admin" onClick={() => setOpen(false)} className="block hover:text-orange-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 flex items-center gap-3">
             <FaCog /> Admin Panel
           </Link>
-          <Link href="/Login" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng nhập</Link>
-          <Link href="/Register" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng ký</Link>
+          {isLoggedIn ? (
+            <Link href="/Profile" onClick={() => setOpen(false)} className="block hover:text-green-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Profile</Link>
+          ) : (
+            <>
+              <Link href="/Login" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng nhập</Link>
+              <Link href="/Register" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng ký</Link>
+            </>
+          )}
           <div className="flex justify-center pt-4">
             <div className="text-xs font-bold text-blue-900 bg-white/70 backdrop-blur-md px-4 py-2 rounded-xl shadow border border-white/30 flex flex-col items-center min-w-[170px]">
               <div className="text-center w-full text-sm leading-tight">{greet}</div>

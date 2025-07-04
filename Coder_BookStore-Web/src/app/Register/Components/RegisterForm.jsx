@@ -6,11 +6,30 @@ const RegisterForm = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState('User');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
     // Add registration logic here (e.g., API call)
-    console.log("Register attempt:", { name, email, password });
+    try {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, name, role, password, passwordHash: '' })
+      });
+      if (res.ok) {
+        setSuccess('Đăng ký thành công!');
+      } else {
+        const data = await res.json();
+        setError(data.error || 'Đăng ký thất bại');
+      }
+    } catch (err) {
+      setError('Lỗi kết nối máy chủ');
+    }
   };
 
   return (
@@ -45,6 +64,18 @@ const RegisterForm = () => {
           className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400"
         />
       </div>
+      <div className="space-y-2">
+        <label className="block text-gray-200 font-medium">Vai trò</label>
+        <select
+          value={role}
+          onChange={e => setRole(e.target.value)}
+          className="w-full px-4 py-2 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+        >
+          <option value="User">User</option>
+          <option value="Staff">Staff</option>
+          <option value="Admin">Admin</option>
+        </select>
+      </div>
       <button
         type="submit"
         className="w-full px-6 py-3 bg-cyan-400 text-indigo-900 font-bold rounded-lg hover:bg-cyan-500 transition-all duration-300"
@@ -57,6 +88,8 @@ const RegisterForm = () => {
           Đăng nhập ngay
         </a>
       </p>
+      {error && <div className="text-red-500 text-center">{error}</div>}
+      {success && <div className="text-green-500 text-center">{success}</div>}
     </form>
   );
 };

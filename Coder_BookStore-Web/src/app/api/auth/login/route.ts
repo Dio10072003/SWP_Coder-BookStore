@@ -1,16 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+import { supabaseAdmin } from '../../lib/supabase';
 
 export async function POST(request: NextRequest) {
   const { email, password } = await request.json();
-  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 401 });
+  // Query the users table directly
+  const { data, error } = await supabaseAdmin
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .eq('password', password)
+    .single();
+  if (error || !data) {
+    return NextResponse.json({ error: 'Sai email hoặc mật khẩu' }, { status: 401 });
   }
-  return NextResponse.json({ user: data.user, session: data.session });
+  // Return all user fields
+  return NextResponse.json({ user: data });
 } 

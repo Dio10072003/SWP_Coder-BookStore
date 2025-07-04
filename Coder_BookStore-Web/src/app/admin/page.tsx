@@ -211,7 +211,11 @@ export default function AdminPage() {
       setShowForm(false);
       await fetchBookCount();
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setFormError(
+  typeof error === 'object' && error !== null && 'message' in error
+    ? (error as any).message
+    : 'Có lỗi xảy ra'
+);
     } finally {
       setFormLoading(false);
     }
@@ -231,7 +235,7 @@ export default function AdminPage() {
       language: book.language,
       isbn: book.isbn
     });
-    setEditingBook(book.id);
+    setEditingBook('id' in book ? (book as any).id : null);
     setShowForm(true);
   };
 
@@ -245,7 +249,11 @@ export default function AdminPage() {
       setSuccessMessage('Sách đã được xóa thành công!');
       await fetchBookCount();
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra khi xóa sách');
+      setFormError(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra khi xóa sách'
+      );
     }
   };
 
@@ -323,7 +331,11 @@ export default function AdminPage() {
       setShowAuthorForm(false);
       fetchAuthors();
     } catch (error) {
-      setAuthorFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setAuthorFormError(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setAuthorFormLoading(false);
     }
@@ -346,7 +358,11 @@ export default function AdminPage() {
       setShowUserForm(false);
       fetchUsers();
     } catch (error) {
-      setUserFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setUserFormError(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setUserFormLoading(false);
     }
@@ -379,7 +395,11 @@ export default function AdminPage() {
       setAuthorSuccessMessage('Tác giả đã được xóa thành công!');
       fetchAuthors();
     } catch (error) {
-      setAuthorFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setAuthorFormError(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setAuthorFormLoading(false);
     }
@@ -393,7 +413,11 @@ export default function AdminPage() {
       setUserSuccessMessage('Người dùng đã được xóa thành công!');
       fetchUsers();
     } catch (error) {
-      setUserFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setUserFormError(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setUserFormLoading(false);
     }
@@ -442,7 +466,11 @@ export default function AdminPage() {
       setShowCategoryForm(false);
       fetchCategoriesData();
     } catch (error) {
-      setCategoryFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setCategoryFormError(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setCategoryFormLoading(false);
     }
@@ -465,7 +493,11 @@ export default function AdminPage() {
       setCategorySuccessMessage('Thể loại đã được xóa thành công!');
       fetchCategoriesData();
     } catch (error) {
-      setCategoryFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setCategoryFormError(
+        typeof error === 'object' && error !== null && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setCategoryFormLoading(false);
     }
@@ -738,7 +770,7 @@ export default function AdminPage() {
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Danh sách sách ({books.length})
+                    Danh sách sách ({stats.books})
                   </h2>
                 </div>
 
