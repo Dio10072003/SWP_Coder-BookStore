@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/promotions/[id] - Get single promotion by id
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(request: Request, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
@@ -16,6 +17,7 @@ export async function GET(request: Request, context: any) {
 }
 
 // PATCH /api/promotions/[id] - Update promotion by id
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PATCH(request: Request, context: any) {
   const { id } = context.params;
   const body = await request.json();
@@ -48,6 +50,7 @@ export async function PATCH(request: Request, context: any) {
 }
 
 // DELETE /api/promotions/[id] - Delete promotion by id
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DELETE(request: Request, context: any) {
   const { id } = context.params;
   const { error } = await supabaseAdmin

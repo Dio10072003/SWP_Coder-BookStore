@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/posts/[id] - Get a single post by ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(request: Request, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
@@ -17,6 +18,7 @@ export async function GET(request: Request, context: any) {
 }
 
 // PUT /api/posts/[id] - Update a post by ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PUT(request: NextRequest, context: any) {
   const { id } = context.params;
   const body = await request.json();
@@ -43,6 +45,7 @@ export async function PUT(request: NextRequest, context: any) {
 }
 
 // DELETE /api/posts/[id] - Delete a post by ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DELETE(request: NextRequest, context: any) {
   const { id } = context.params;
   const { error } = await supabaseAdmin

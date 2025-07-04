@@ -2,6 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/order-tracking/[id] - Get a single order tracking record by ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function GET(request: Request, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
@@ -16,6 +17,7 @@ export async function GET(request: Request, context: any) {
 }
 
 // PUT /api/order-tracking/[id] - Update an order tracking record by ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function PUT(request: NextRequest, context: any) {
   const { id } = context.params;
   const body = await request.json();
@@ -36,6 +38,7 @@ export async function PUT(request: NextRequest, context: any) {
 }
 
 // DELETE /api/order-tracking/[id] - Delete an order tracking record by ID
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function DELETE(request: NextRequest, context: any) {
   const { id } = context.params;
   const { error } = await supabaseAdmin
