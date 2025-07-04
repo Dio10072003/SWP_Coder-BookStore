@@ -5,7 +5,7 @@ import { useBooks } from '../hooks/useBooks';
 import { bookService } from '../services/bookService';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
-import { FaPlus, FaEdit, FaTrash, FaEye, FaBook, FaUser, FaUserTie, FaTags } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaBook, FaUser, FaUserTie, FaTags } from 'react-icons/fa';
 import { authorService, CreateAuthorData } from '../services/authorService';
 import { userService, CreateUserData } from '../services/userService';
 import { categoryService, CreateCategoryData } from '../services/categoryService';
@@ -13,6 +13,7 @@ import { User } from '../api/types/database';
 import { Author } from '../services/authorService';
 import { Category } from '../services/categoryService';
 import Image from "next/image";
+import Link from 'next/link';
 
 interface BookFormData {
   id?: number; // Make ID optional for new books
@@ -68,6 +69,10 @@ const TABS = [
   { key: 'categories', label: 'Thể loại', icon: <FaTags /> },
 ];
 
+function safeId(id: unknown): string | null {
+  return (typeof id === 'string' || typeof id === 'number') ? String(id) : null;
+}
+
 export default function AdminPage() {
   const [reloadBooks, setReloadBooks] = useState(0);
   const bookFilters = useMemo(() => ({ limit: 1000, reload: reloadBooks }), [reloadBooks]);
@@ -80,7 +85,6 @@ export default function AdminPage() {
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [tab, setTab] = useState('books');
-  const [users, setUsers] = useState<User[]>([]);
   const [authors, setAuthors] = useState<Author[]>([]);
   const [categoriesData, setCategoriesData] = useState<Category[]>([]);
   const [stats, setStats] = useState({ books: 0, users: 0, authors: 0, categories: 0 });
@@ -92,13 +96,6 @@ export default function AdminPage() {
   const [authorFormLoading, setAuthorFormLoading] = useState(false);
   const [authorFormError, setAuthorFormError] = useState<string | null>(null);
   const [authorSuccessMessage, setAuthorSuccessMessage] = useState<string | null>(null);
-
-  const [showUserForm, setShowUserForm] = useState(false);
-  const [editingUser, setEditingUser] = useState<string | null>(null);
-  const [userFormData, setUserFormData] = useState<CreateUserData>(initialUserFormData);
-  const [userFormLoading, setUserFormLoading] = useState(false);
-  const [userFormError, setUserFormError] = useState<string | null>(null);
-  const [userSuccessMessage, setUserSuccessMessage] = useState<string | null>(null);
 
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
@@ -146,14 +143,6 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    if (tab === 'users') {
-      fetch('/api/users')
-        .then(res => res.json())
-        .then(data => setUsers(Array.isArray(data) ? data : []));
-    }
-  }, [tab]);
-
-  useEffect(() => {
     if (tab === 'authors') {
       fetch('/api/authors')
         .then(res => res.json())
@@ -172,13 +161,12 @@ export default function AdminPage() {
   useEffect(() => {
     Promise.all([
       fetch('/api/books').then(res => res.json()),
-      fetch('/api/users').then(res => res.json()),
       fetch('/api/authors').then(res => res.json()),
       fetch('/api/categories').then(res => res.json()),
-    ]).then(([books, users, authors, categories]) => {
+    ]).then(([books, authors, categories]) => {
       setStats({
         books: Array.isArray(books) ? books.length : 0,
-        users: Array.isArray(users) ? users.length : 0,
+        users: 0, // No longer tracking users here
         authors: Array.isArray(authors) ? authors.length : 0,
         categories: Array.isArray(categories) ? categories.length : 0,
       });
@@ -240,11 +228,9 @@ export default function AdminPage() {
     } catch (error) {
       setFormError(
         error && typeof error === 'object' && 'message' in error
-          ? (error as any).message
+          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
           : 'Có lỗi xảy ra'
       );
-    } finally {
-      setFormLoading(false);
     }
   };
 
@@ -279,7 +265,7 @@ export default function AdminPage() {
     } catch (error) {
       setFormError(
         error && typeof error === 'object' && 'message' in error
-          ? (error as any).message
+          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra khi xóa sách'
           : 'Có lỗi xảy ra khi xóa sách'
       );
     }
@@ -299,24 +285,9 @@ export default function AdminPage() {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const users: User[] = await userService.getAllUsers();
-      setUsers(users);
-    } catch {
-      setUsers([]);
-    }
-  };
-
   useEffect(() => {
     if (tab === 'authors') {
       fetchAuthors();
-    }
-  }, [tab]);
-
-  useEffect(() => {
-    if (tab === 'users') {
-      fetchUsers();
     }
   }, [tab]);
 
@@ -325,21 +296,10 @@ export default function AdminPage() {
     setAuthorFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleUserInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setUserFormData(prev => ({ ...prev, [name]: value }));
-  };
-
   const resetAuthorForm = () => {
     setAuthorFormData(initialAuthorFormData);
     setEditingAuthor(null);
     setAuthorFormError(null);
-  };
-
-  const resetUserForm = () => {
-    setUserFormData(initialUserFormData);
-    setEditingUser(null);
-    setUserFormError(null);
   };
 
   const handleAuthorSubmit = async (e: React.FormEvent) => {
@@ -361,38 +321,11 @@ export default function AdminPage() {
     } catch (error) {
       setAuthorFormError(
         error && typeof error === 'object' && 'message' in error
-          ? (error as any).message
+          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
           : 'Có lỗi xảy ra'
       );
     } finally {
       setAuthorFormLoading(false);
-    }
-  };
-
-  const handleUserSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setUserFormLoading(true);
-    setUserFormError(null);
-    setUserSuccessMessage(null);
-    try {
-      if (editingUser) {
-        await userService.updateUser(editingUser, userFormData);
-        setUserSuccessMessage('Người dùng đã được cập nhật thành công!');
-      } else {
-        await userService.createUser(userFormData);
-        setUserSuccessMessage('Người dùng đã được thêm thành công!');
-      }
-      resetUserForm();
-      setShowUserForm(false);
-      fetchUsers();
-    } catch (error) {
-      setUserFormError(
-        error && typeof error === 'object' && 'message' in error
-          ? (error as any).message
-          : 'Có lỗi xảy ra'
-      );
-    } finally {
-      setUserFormLoading(false);
     }
   };
 
@@ -405,14 +338,8 @@ export default function AdminPage() {
       birth_year: author.birth_year,
       genres: author.genres || [],
     });
-    setEditingAuthor(author.id);
+    setEditingAuthor(safeId(author.id));
     setShowAuthorForm(true);
-  };
-
-  const handleEditUser = (user: User) => {
-    setUserFormData({ email: user.email, name: user.name });
-    setEditingUser(user.id);
-    setShowUserForm(true);
   };
 
   const handleDeleteAuthor = async (id: string) => {
@@ -425,29 +352,11 @@ export default function AdminPage() {
     } catch (error) {
       setAuthorFormError(
         error && typeof error === 'object' && 'message' in error
-          ? (error as any).message
+          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
           : 'Có lỗi xảy ra'
       );
     } finally {
       setAuthorFormLoading(false);
-    }
-  };
-
-  const handleDeleteUser = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa người dùng này?')) return;
-    setUserFormLoading(true);
-    try {
-      await userService.deleteUser(id);
-      setUserSuccessMessage('Người dùng đã được xóa thành công!');
-      fetchUsers();
-    } catch (error) {
-      setUserFormError(
-        error && typeof error === 'object' && 'message' in error
-          ? (error as any).message
-          : 'Có lỗi xảy ra'
-      );
-    } finally {
-      setUserFormLoading(false);
     }
   };
 
@@ -496,7 +405,7 @@ export default function AdminPage() {
     } catch (error) {
       setCategoryFormError(
         error && typeof error === 'object' && 'message' in error
-          ? (error as any).message
+          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
           : 'Có lỗi xảy ra'
       );
     } finally {
@@ -509,7 +418,7 @@ export default function AdminPage() {
       name: category.name || '',
       description: category.description || '',
     });
-    setEditingCategory(category.id);
+    setEditingCategory(safeId(category.id));
     setShowCategoryForm(true);
   };
 
@@ -523,7 +432,7 @@ export default function AdminPage() {
     } catch (error) {
       setCategoryFormError(
         error && typeof error === 'object' && 'message' in error
-          ? (error as any).message
+          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
           : 'Có lỗi xảy ra'
       );
     } finally {
@@ -536,7 +445,7 @@ export default function AdminPage() {
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
         <div className="bg-white p-8 rounded shadow text-center">
           <h2 className="text-2xl font-bold text-red-600 mb-4">Bạn không có phận sự để truy cập tính năng này</h2>
-          <a href="/" className="text-blue-600 underline">Quay về trang chủ</a>
+          <Link href="/" className="text-blue-600 underline">Quay về trang chủ</Link>
         </div>
       </div>
     );
@@ -883,15 +792,6 @@ export default function AdminPage() {
                                 >
                                   <FaTrash className="w-5 h-5" />
                                 </button>
-                                {/* <a
-                                  href={`/books/${book.id}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
-                                  title="Xem chi tiết"
-                                >
-                                  <FaEye className="w-5 h-5" />
-                                </a> */}
                               </div>
                             </td>
                           </tr>
@@ -1058,7 +958,7 @@ export default function AdminPage() {
                                   <FaEdit className="w-5 h-5" />
                                 </button>
                                 <button
-                                  onClick={() => handleDeleteAuthor(author.id)}
+                                  onClick={() => handleDeleteAuthor(author.id ? String(author.id) : '')}
                                   className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                                   title="Xóa"
                                 >
@@ -1190,7 +1090,7 @@ export default function AdminPage() {
                                   <FaEdit className="w-5 h-5" />
                                 </button>
                                 <button
-                                  onClick={() => handleDeleteCategory(category.id)}
+                                  onClick={() => handleDeleteCategory(category.id ? String(category.id) : '')}
                                   className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                                   title="Xóa"
                                 >
@@ -1210,7 +1110,7 @@ export default function AdminPage() {
         )}
       </div>
       {userRole === 'Admin' && (
-        <a href="/admin/StaffManagement" className="inline-block mb-4 px-4 py-2 bg-blue-700 text-white rounded-lg font-bold shadow hover:bg-blue-800 transition">Quản lý Staff</a>
+        <Link href="/admin/StaffManagement" className="inline-block mb-4 px-4 py-2 bg-blue-700 text-white rounded-lg font-bold shadow hover:bg-blue-800 transition">Quản lý Staff</Link>
       )}
     </div>
   );
