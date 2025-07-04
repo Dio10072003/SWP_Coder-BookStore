@@ -1,10 +1,8 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
-type RouteContext = { params: { id: string } };
-
 // GET /api/events/[id] - Get a single event by ID
-export async function GET(request: Request, context: RouteContext) {
+export async function GET(request: Request, context: { params: { id: string } }) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('events')

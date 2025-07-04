@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
-type RouteContext = { params: { id: string } };
-
 // GET /api/promotions/[id] - Get single promotion by id
-export async function GET(request: Request, context: RouteContext) {
+export async function GET(request: Request, context: { params: { id: string } }) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('promotions')
@@ -18,7 +16,7 @@ export async function GET(request: Request, context: RouteContext) {
 }
 
 // PATCH /api/promotions/[id] - Update promotion by id
-export async function PATCH(request: Request, context: RouteContext) {
+export async function PATCH(request: Request, context: { params: { id: string } }) {
   const { id } = context.params;
   const body = await request.json();
   // Cho phép update linh hoạt mọi trường
@@ -50,7 +48,7 @@ export async function PATCH(request: Request, context: RouteContext) {
 }
 
 // DELETE /api/promotions/[id] - Delete promotion by id
-export async function DELETE(request: Request, context: RouteContext) {
+export async function DELETE(request: Request, context: { params: { id: string } }) {
   const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('promotions')
