@@ -15,6 +15,7 @@ import { Category } from '../services/categoryService';
 import Image from "next/image";
 
 interface BookFormData {
+  id?: number;
   title: string;
   author: string;
   price: string;
@@ -212,7 +213,11 @@ export default function AdminPage() {
       setReloadBooks(r => r + 1);
       await fetchBookCount();
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setFormError(
+        error && typeof error === 'object' && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setFormLoading(false);
     }
@@ -232,7 +237,7 @@ export default function AdminPage() {
       language: book.language,
       isbn: book.isbn
     });
-    setEditingBook(book.id);
+    setEditingBook(book.id ?? null);
     setShowForm(true);
   };
 
@@ -247,7 +252,11 @@ export default function AdminPage() {
       setReloadBooks(r => r + 1);
       await fetchBookCount();
     } catch (error) {
-      setFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra khi xóa sách');
+      setFormError(
+        error && typeof error === 'object' && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra khi xóa sách'
+      );
     }
   };
 
@@ -325,7 +334,11 @@ export default function AdminPage() {
       setShowAuthorForm(false);
       fetchAuthors();
     } catch (error) {
-      setAuthorFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setAuthorFormError(
+        error && typeof error === 'object' && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setAuthorFormLoading(false);
     }
@@ -348,7 +361,11 @@ export default function AdminPage() {
       setShowUserForm(false);
       fetchUsers();
     } catch (error) {
-      setUserFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setUserFormError(
+        error && typeof error === 'object' && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setUserFormLoading(false);
     }
@@ -381,7 +398,11 @@ export default function AdminPage() {
       setAuthorSuccessMessage('Tác giả đã được xóa thành công!');
       fetchAuthors();
     } catch (error) {
-      setAuthorFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setAuthorFormError(
+        error && typeof error === 'object' && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setAuthorFormLoading(false);
     }
@@ -395,7 +416,11 @@ export default function AdminPage() {
       setUserSuccessMessage('Người dùng đã được xóa thành công!');
       fetchUsers();
     } catch (error) {
-      setUserFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setUserFormError(
+        error && typeof error === 'object' && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setUserFormLoading(false);
     }
@@ -444,7 +469,11 @@ export default function AdminPage() {
       setShowCategoryForm(false);
       fetchCategoriesData();
     } catch (error) {
-      setCategoryFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setCategoryFormError(
+        error && typeof error === 'object' && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setCategoryFormLoading(false);
     }
@@ -467,7 +496,11 @@ export default function AdminPage() {
       setCategorySuccessMessage('Thể loại đã được xóa thành công!');
       fetchCategoriesData();
     } catch (error) {
-      setCategoryFormError(error instanceof Error ? error.message : 'Có lỗi xảy ra');
+      setCategoryFormError(
+        error && typeof error === 'object' && 'message' in error
+          ? (error as any).message
+          : 'Có lỗi xảy ra'
+      );
     } finally {
       setCategoryFormLoading(false);
     }
