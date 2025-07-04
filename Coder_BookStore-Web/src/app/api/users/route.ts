@@ -16,7 +16,8 @@ export async function GET() {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     // Không trả về password hoặc hash
-    const safeData = data.map(({ password, passwordHash, ...rest }) => rest);
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const safeData = data.map(({ password: _pw, passwordHash: _ph, ...rest }) => rest);
     return NextResponse.json(safeData);
   } catch {
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -48,6 +49,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
     // Không trả về password hoặc hash
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _pw, passwordHash: _ph, ...safeUser } = data;
     return NextResponse.json(safeUser, { status: 201 });
   } catch {

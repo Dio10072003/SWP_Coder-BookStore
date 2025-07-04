@@ -24,6 +24,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Không trả về password hoặc hash
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _pw, passwordHash: _ph, ...safeUser } = user;
     return NextResponse.json({ user: safeUser });
   } catch (err) {
