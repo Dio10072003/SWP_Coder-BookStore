@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/posts/[id] - Get a single post by ID
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
+export async function GET(request: Request, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('posts')

@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/order-tracking/[id] - Get a single order tracking record by ID
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
+export async function GET(request: Request, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('order_tracking')

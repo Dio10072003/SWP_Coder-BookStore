@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/feedback/[id] - Lấy chi tiết feedback
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
+export async function GET(request: Request, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('feedback')
