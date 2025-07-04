@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/faqs/[id] - Get a single FAQ by ID
-export async function GET(request: Request, context: { params: { id: string } }) {
+export async function GET(request: Request, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('faqs')
@@ -16,7 +16,7 @@ export async function GET(request: Request, context: { params: { id: string } })
 }
 
 // PUT /api/faqs/[id] - Update a FAQ by ID
-export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: any) {
   const { id } = context.params;
   const body = await request.json();
   const { question, answer } = body;
@@ -36,7 +36,7 @@ export async function PUT(request: NextRequest, context: { params: { id: string 
 }
 
 // DELETE /api/faqs/[id] - Delete a FAQ by ID
-export async function DELETE(request: NextRequest, context: { params: { id: string } }) { 
+export async function DELETE(request: NextRequest, context: any) { 
   const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('faqs')

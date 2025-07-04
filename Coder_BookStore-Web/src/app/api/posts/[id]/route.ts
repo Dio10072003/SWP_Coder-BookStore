@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/posts/[id] - Get a single post by ID
-export async function GET(request: Request, context: { params: { id: string } }) {
+export async function GET(request: Request, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('posts')
@@ -17,7 +17,7 @@ export async function GET(request: Request, context: { params: { id: string } })
 }
 
 // PUT /api/posts/[id] - Update a post by ID
-export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: any) {
   const { id } = context.params;
   const body = await request.json();
   const { title, content, image } = body;
@@ -43,7 +43,7 @@ export async function PUT(request: NextRequest, context: { params: { id: string 
 }
 
 // DELETE /api/posts/[id] - Delete a post by ID
-export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, context: any) {
   const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('posts')
