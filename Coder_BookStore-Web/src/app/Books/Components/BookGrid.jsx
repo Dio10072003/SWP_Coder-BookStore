@@ -51,13 +51,13 @@ const BookGrid = ({ books = [] }) => {
                 Mới ra mắt
               </span>
             )}
-            <div className="relative w-full aspect-[3/4] mb-4 rounded-lg overflow-hidden">
+            <div className="relative w-full aspect-[3/4] mb-4 rounded-xl overflow-hidden border-2 border-white shadow">
               <Image
                 src={book.img || 'https://placehold.co/300x400?text=No+Image'}
                 alt={book.title}
                 fill
                 style={{ objectFit: 'cover' }}
-                className="rounded-lg group-hover:scale-105 transition-transform duration-300 shadow-md"
+                className="rounded-xl group-hover:scale-105 transition-transform duration-300"
                 sizes="(max-width: 768px) 100vw, 33vw"
               />
             </div>
@@ -80,7 +80,7 @@ const BookGrid = ({ books = [] }) => {
                 </span>
               </div>
               <p className="text-xs text-gray-700 dark:text-gray-200 mb-3 line-clamp-3 min-h-[48px]">{book.description}</p>
-              <p className="text-xl font-bold text-pink-600 mb-2">{book.price}</p>
+              <p className="text-xl font-bold text-pink-600 mb-2">{Number(book.price).toLocaleString()} VND</p>
             </div>
             <Link
               href={`/Books/${book.id}`}
