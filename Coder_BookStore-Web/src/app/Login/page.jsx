@@ -19,6 +19,7 @@ export default function LoginPage() {
     const data = await res.json();
     if (res.ok) {
       localStorage.setItem('user', JSON.stringify(data.user));
+      window.dispatchEvent(new Event('storage'));
       router.push('/Profile');
     } else {
       setError(data.error || 'Đăng nhập thất bại');

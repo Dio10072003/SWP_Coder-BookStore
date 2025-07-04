@@ -64,7 +64,6 @@ const initialCategoryFormData: CreateCategoryData = {
 
 const TABS = [
   { key: 'books', label: 'Sách', icon: <FaBook /> },
-  { key: 'users', label: 'Người dùng', icon: <FaUser /> },
   { key: 'authors', label: 'Tác giả', icon: <FaUserTie /> },
   { key: 'categories', label: 'Thể loại', icon: <FaTags /> },
 ];
@@ -107,6 +106,32 @@ export default function AdminPage() {
   const [categoryFormLoading, setCategoryFormLoading] = useState(false);
   const [categoryFormError, setCategoryFormError] = useState<string | null>(null);
   const [categorySuccessMessage, setCategorySuccessMessage] = useState<string | null>(null);
+
+  const [accessDenied, setAccessDenied] = useState(false);
+  const [userRole, setUserRole] = useState("");
+
+  useEffect(() => {
+    const userStr = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+    if (!userStr) {
+      setAccessDenied(true);
+      return;
+    }
+    try {
+      const user = JSON.parse(userStr);
+      if (user.role !== 'Admin') {
+        setAccessDenied(true);
+      }
+    } catch {
+      setAccessDenied(true);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const user = localStorage.getItem('user');
+      setUserRole(user ? JSON.parse(user).role : "");
+    }
+  }, []);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -506,6 +531,17 @@ export default function AdminPage() {
     }
   };
 
+  if (accessDenied) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="bg-white p-8 rounded shadow text-center">
+          <h2 className="text-2xl font-bold text-red-600 mb-4">Bạn không có phận sự để truy cập tính năng này</h2>
+          <a href="/" className="text-blue-600 underline">Quay về trang chủ</a>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
@@ -876,141 +912,6 @@ export default function AdminPage() {
           </div>
         )}
 
-        {/* Users Tab Content */}
-        {tab === 'users' && (
-          <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
-            <div className="max-w-7xl mx-auto">
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-                <div className="flex justify-between items-center">
-                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                    Quản lý người dùng - Admin Panel
-                  </h1>
-                  <button
-                    onClick={() => { resetUserForm(); setShowUserForm(true); }}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
-                  >
-                    <FaPlus /> Thêm người dùng mới
-                  </button>
-                </div>
-              </div>
-
-              {userSuccessMessage && (
-                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                  {userSuccessMessage}
-                </div>
-              )}
-              {userFormError && (
-                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                  {userFormError}
-                </div>
-              )}
-
-              {showUserForm && (
-                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
-                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
-                    {editingUser ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới'}
-                  </h2>
-                  <form onSubmit={handleUserSubmit} className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={userFormData.email}
-                        onChange={handleUserInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Họ tên</label>
-                      <input
-                        type="text"
-                        name="name"
-                        value={userFormData.name}
-                        onChange={handleUserInputChange}
-                        required
-                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      />
-                    </div>
-                    <div className="flex gap-3">
-                      <button
-                        type="submit"
-                        disabled={userFormLoading}
-                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
-                      >
-                        {userFormLoading ? 'Đang xử lý...' : (editingUser ? 'Cập nhật' : 'Thêm người dùng')}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setShowUserForm(false); resetUserForm(); }}
-                        className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
-                      >
-                        Hủy
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              )}
-
-              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
-                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
-                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Danh sách người dùng ({stats.users})
-                  </h2>
-                </div>
-                {userFormLoading && <Loading message="Đang tải danh sách người dùng..." />}
-                {users.length === 0 && !userFormLoading && (
-                  <div className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
-                    Không có người dùng nào.
-                  </div>
-                )}
-                {users.length > 0 && (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed admin-table">
-                      <thead className="bg-gray-50 dark:bg-gray-700">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tên</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Vai trò</th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Thao tác</th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                        {users.map(user => (
-                          <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{user.name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{user.email}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{user.role}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                              <div className="flex items-center space-x-2">
-                                <button
-                                  onClick={() => handleEditUser(user)}
-                                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                                  title="Chỉnh sửa"
-                                >
-                                  <FaEdit className="w-5 h-5" />
-                                </button>
-                                <button
-                                  onClick={() => handleDeleteUser(user.id)}
-                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
-                                  title="Xóa"
-                                >
-                                  <FaTrash className="w-5 h-5" />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Authors Tab Content */}
         {tab === 'authors' && (
           <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
@@ -1308,6 +1209,9 @@ export default function AdminPage() {
           </div>
         )}
       </div>
+      {userRole === 'Admin' && (
+        <a href="/admin/StaffManagement" className="inline-block mb-4 px-4 py-2 bg-blue-700 text-white rounded-lg font-bold shadow hover:bg-blue-800 transition">Quản lý Staff</a>
+      )}
     </div>
   );
 }
