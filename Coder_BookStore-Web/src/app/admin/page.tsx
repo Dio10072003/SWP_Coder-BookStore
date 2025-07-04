@@ -15,7 +15,7 @@ import { Category } from '../services/categoryService';
 import Image from "next/image";
 
 interface BookFormData {
-  id?: number;
+  id?: number; // Make ID optional for new books
   title: string;
   author: string;
   price: string;
@@ -237,7 +237,7 @@ export default function AdminPage() {
       language: book.language,
       isbn: book.isbn
     });
-    setEditingBook(book.id ?? null);
+    setEditingBook(book.id ?? null); // Use nullish coalescing for cleaner ID handling
     setShowForm(true);
   };
 
@@ -584,7 +584,7 @@ export default function AdminPage() {
                   <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
                     {editingBook ? 'Chỉnh sửa sách' : 'Thêm sách mới'}
                   </h2>
-                  
+
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
@@ -773,7 +773,7 @@ export default function AdminPage() {
               <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
                 <div className="p-6 border-b border-gray-200 dark:border-gray-700">
                   <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                    Danh sách sách ({books.length})
+                    Danh sách sách ({stats.books})
                   </h2>
                 </div>
 
@@ -817,48 +817,186 @@ export default function AdminPage() {
                                   />
                                 </div>
                                 <div className="ml-3 flex flex-col justify-center">
-                                  <span className="font-bold text-base text-gray-900 dark:text-white leading-tight break-words" style={{lineHeight: '1.3'}}>{book.title}</span>
-                                  <span className="text-sm text-gray-500 dark:text-gray-300 leading-snug" style={{lineHeight: '1.2'}}>Tác giả: <span className="font-medium text-blue-700 dark:text-blue-300">{book.author}</span></span>
+                                  <span className="font-bold text-base text-gray-900 dark:text-white leading-tight break-words" style={{ lineHeight: '1.3' }}>{book.title}</span>
+                                  <span className="text-sm text-gray-500 dark:text-gray-400">{book.author}</span>
                                 </div>
                               </div>
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap align-top">
-                              <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
-                                {book.category}
-                              </span>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 align-top">
+                              {book.category}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap align-top text-sm text-gray-900 dark:text-white font-bold">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400 align-top">
                               {book.price}
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap align-top text-sm text-gray-900 dark:text-white">
-                              <span className="inline-flex items-center gap-1">
-                                <span className="text-yellow-400">★</span>
-                                <span className="font-semibold">{book.rating}</span>
-                                <span className="text-xs text-gray-400">/5</span>
-                              </span>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-yellow-500 align-top">
+                              {'⭐'.repeat(Math.floor(book.rating))} ({book.rating})
                             </td>
-                            <td className="px-6 py-4 whitespace-nowrap align-top text-sm font-medium">
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => window.open(`/Books/${book.id}`, '_blank')}
-                                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
-                                  title="Xem chi tiết"
-                                >
-                                  <FaEye />
-                                </button>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium align-top">
+                              <div className="flex items-center space-x-2">
                                 <button
                                   onClick={() => handleEdit(book)}
-                                  className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
+                                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
                                   title="Chỉnh sửa"
                                 >
-                                  <FaEdit />
+                                  <FaEdit className="w-5 h-5" />
                                 </button>
                                 <button
-                                  onClick={() => handleDelete(book.id)}
+                                  onClick={() => handleDelete(book.id!)} // Assuming book.id is always present for existing books
                                   className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
                                   title="Xóa"
                                 >
-                                  <FaTrash />
+                                  <FaTrash className="w-5 h-5" />
+                                </button>
+                                {/* <a
+                                  href={`/books/${book.id}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-green-600 hover:text-green-900 dark:text-green-400 dark:hover:text-green-300"
+                                  title="Xem chi tiết"
+                                >
+                                  <FaEye className="w-5 h-5" />
+                                </a> */}
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                        {books.length === 0 && (
+                          <tr>
+                            <td colSpan={5} className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                              Không có sách nào.
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Users Tab Content */}
+        {tab === 'users' && (
+          <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Quản lý người dùng - Admin Panel
+                  </h1>
+                  <button
+                    onClick={() => { resetUserForm(); setShowUserForm(true); }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  >
+                    <FaPlus /> Thêm người dùng mới
+                  </button>
+                </div>
+              </div>
+
+              {userSuccessMessage && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                  {userSuccessMessage}
+                </div>
+              )}
+              {userFormError && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                  {userFormError}
+                </div>
+              )}
+
+              {showUserForm && (
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                    {editingUser ? 'Chỉnh sửa người dùng' : 'Thêm người dùng mới'}
+                  </h2>
+                  <form onSubmit={handleUserSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={userFormData.email}
+                        onChange={handleUserInputChange}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Họ tên</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={userFormData.name}
+                        onChange={handleUserInputChange}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
+                    </div>
+                    <div className="flex gap-3">
+                      <button
+                        type="submit"
+                        disabled={userFormLoading}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                      >
+                        {userFormLoading ? 'Đang xử lý...' : (editingUser ? 'Cập nhật' : 'Thêm người dùng')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setShowUserForm(false); resetUserForm(); }}
+                        className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                      >
+                        Hủy
+                      </button>
+                    </div>
+                  </form>
+                </div>
+              )}
+
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Danh sách người dùng ({stats.users})
+                  </h2>
+                </div>
+                {userFormLoading && <Loading message="Đang tải danh sách người dùng..." />}
+                {users.length === 0 && !userFormLoading && (
+                  <div className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                    Không có người dùng nào.
+                  </div>
+                )}
+                {users.length > 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed admin-table">
+                      <thead className="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tên</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Email</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Vai trò</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {users.map(user => (
+                          <tr key={user.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{user.name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{user.email}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{user.role}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <div className="flex items-center space-x-2">
+                                <button
+                                  onClick={() => handleEditUser(user)}
+                                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                  title="Chỉnh sửa"
+                                >
+                                  <FaEdit className="w-5 h-5" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteUser(user.id)}
+                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                  title="Xóa"
+                                >
+                                  <FaTrash className="w-5 h-5" />
                                 </button>
                               </div>
                             </td>
@@ -872,203 +1010,304 @@ export default function AdminPage() {
             </div>
           </div>
         )}
-        {tab === 'users' && (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Quản lý người dùng</h2>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700"
-                onClick={() => { resetUserForm(); setShowUserForm(true); }}
-              >
-                <FaPlus className="inline mr-2" /> Thêm người dùng
-              </button>
-            </div>
-            {userFormError && <Error message={userFormError} />}
-            {userSuccessMessage && <div className="text-green-600 mb-2">{userSuccessMessage}</div>}
-            <table className="min-w-full bg-white border rounded-lg">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b">Email</th>
-                  <th className="py-2 px-4 border-b">Tên</th>
-                  <th className="py-2 px-4 border-b">Ngày tạo</th>
-                  <th className="py-2 px-4 border-b">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map(user => (
-                  <tr key={user.id}>
-                    <td className="py-2 px-4 border-b">{user.email}</td>
-                    <td className="py-2 px-4 border-b">{user.name}</td>
-                    <td className="py-2 px-4 border-b">{user.created_at ? new Date(user.created_at).toLocaleString() : ''}</td>
-                    <td className="py-2 px-4 border-b">
-                      <button className="mr-2 text-blue-600 hover:underline" onClick={() => handleEditUser(user)}><FaEdit /></button>
-                      <button className="text-red-600 hover:underline" onClick={() => handleDeleteUser(user.id)}><FaTrash /></button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {showUserForm && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
-                  <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-800" onClick={() => setShowUserForm(false)}>&times;</button>
-                  <h3 className="text-xl font-bold mb-4">{editingUser ? 'Chỉnh sửa người dùng' : 'Thêm người dùng'}</h3>
-                  <form onSubmit={handleUserSubmit}>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Email</label>
-                      <input type="email" name="email" value={userFormData.email} onChange={handleUserInputChange} className="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Tên</label>
-                      <input type="text" name="name" value={userFormData.name} onChange={handleUserInputChange} className="w-full border rounded px-3 py-2" required />
-                    </div>
-                    <div className="flex justify-end">
-                      <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded" onClick={() => setShowUserForm(false)}>Hủy</button>
-                      <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={userFormLoading}>{userFormLoading ? 'Đang lưu...' : 'Lưu'}</button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
+
+        {/* Authors Tab Content */}
         {tab === 'authors' && (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Quản lý tác giả</h2>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700"
-                onClick={() => { resetAuthorForm(); setShowAuthorForm(true); }}
-              >
-                <FaPlus className="inline mr-2" /> Thêm tác giả
-              </button>
-            </div>
-            {authorFormError && <Error message={authorFormError} />}
-            {authorSuccessMessage && <div className="text-green-600 mb-2">{authorSuccessMessage}</div>}
-            <table className="min-w-full bg-white border rounded-lg">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b">Tên</th>
-                  <th className="py-2 px-4 border-b">Quốc gia</th>
-                  <th className="py-2 px-4 border-b">Năm sinh</th>
-                  <th className="py-2 px-4 border-b">Thể loại</th>
-                  <th className="py-2 px-4 border-b">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {authors.map(author => (
-                  <tr key={author.id}>
-                    <td className="py-2 px-4 border-b">{author.name}</td>
-                    <td className="py-2 px-4 border-b">{author.country}</td>
-                    <td className="py-2 px-4 border-b">{author.birth_year}</td>
-                    <td className="py-2 px-4 border-b">{Array.isArray(author.genres) ? author.genres.join(', ') : ''}</td>
-                    <td className="py-2 px-4 border-b">
-                      <button className="mr-2 text-blue-600 hover:underline" onClick={() => handleEditAuthor(author)}><FaEdit /></button>
-                      <button className="text-red-600 hover:underline" onClick={() => handleDeleteAuthor(author.id)}><FaTrash /></button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {showAuthorForm && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
-                  <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-800" onClick={() => setShowAuthorForm(false)}>&times;</button>
-                  <h3 className="text-xl font-bold mb-4">{editingAuthor ? 'Chỉnh sửa tác giả' : 'Thêm tác giả'}</h3>
-                  <form onSubmit={handleAuthorSubmit}>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Tên</label>
-                      <input type="text" name="name" value={authorFormData.name} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" required />
+          <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Quản lý tác giả - Admin Panel
+                  </h1>
+                  <button
+                    onClick={() => { resetAuthorForm(); setShowAuthorForm(true); }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  >
+                    <FaPlus /> Thêm tác giả mới
+                  </button>
+                </div>
+              </div>
+
+              {authorSuccessMessage && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                  {authorSuccessMessage}
+                </div>
+              )}
+              {authorFormError && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                  {authorFormError}
+                </div>
+              )}
+
+              {showAuthorForm && (
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                    {editingAuthor ? 'Chỉnh sửa tác giả' : 'Thêm tác giả mới'}
+                  </h2>
+                  <form onSubmit={handleAuthorSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tên tác giả *</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={authorFormData.name}
+                        onChange={handleAuthorInputChange}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Quốc gia</label>
-                      <input type="text" name="country" value={authorFormData.country} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tiểu sử</label>
+                      <textarea
+                        name="bio"
+                        value={authorFormData.bio || ''}
+                        onChange={handleAuthorInputChange}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Năm sinh</label>
-                      <input type="number" name="birth_year" value={authorFormData.birth_year || ''} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Avatar URL</label>
+                      <input
+                        type="text"
+                        name="avatar"
+                        value={authorFormData.avatar || ''}
+                        onChange={handleAuthorInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Thể loại (phân cách bằng dấu phẩy)</label>
-                      <input type="text" name="genres" value={Array.isArray(authorFormData.genres) ? authorFormData.genres.join(', ') : ''} onChange={e => setAuthorFormData(prev => ({ ...prev, genres: e.target.value.split(',').map(g => g.trim()).filter(Boolean) }))} className="w-full border rounded px-3 py-2" />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Quốc gia</label>
+                      <input
+                        type="text"
+                        name="country"
+                        value={authorFormData.country || ''}
+                        onChange={handleAuthorInputChange}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Ảnh đại diện (URL)</label>
-                      <input type="text" name="avatar" value={authorFormData.avatar} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Năm sinh</label>
+                      <input
+                        type="number"
+                        name="birth_year"
+                        value={authorFormData.birth_year || ''}
+                        onChange={(e) => setAuthorFormData(prev => ({ ...prev, birth_year: parseInt(e.target.value) || undefined }))}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Tiểu sử</label>
-                      <textarea name="bio" value={authorFormData.bio} onChange={handleAuthorInputChange} className="w-full border rounded px-3 py-2" rows={3} />
-                    </div>
-                    <div className="flex justify-end">
-                      <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded" onClick={() => setShowAuthorForm(false)}>Hủy</button>
-                      <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={authorFormLoading}>{authorFormLoading ? 'Đang lưu...' : 'Lưu'}</button>
+                    {/* Genres can be handled with a comma-separated input or multi-select */}
+                    <div className="flex gap-3">
+                      <button
+                        type="submit"
+                        disabled={authorFormLoading}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                      >
+                        {authorFormLoading ? 'Đang xử lý...' : (editingAuthor ? 'Cập nhật' : 'Thêm tác giả')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setShowAuthorForm(false); resetAuthorForm(); }}
+                        className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                      >
+                        Hủy
+                      </button>
                     </div>
                   </form>
                 </div>
+              )}
+
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Danh sách tác giả ({stats.authors})
+                  </h2>
+                </div>
+                {authorFormLoading && <Loading message="Đang tải danh sách tác giả..." />}
+                {authors.length === 0 && !authorFormLoading && (
+                  <div className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                    Không có tác giả nào.
+                  </div>
+                )}
+                {authors.length > 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed admin-table">
+                      <thead className="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tên</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Quốc gia</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Năm sinh</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {authors.map(author => (
+                          <tr key={author.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{author.name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{author.country}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{author.birth_year}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <div className="flex items-center space-x-2">
+                                <button
+                                  onClick={() => handleEditAuthor(author)}
+                                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                  title="Chỉnh sửa"
+                                >
+                                  <FaEdit className="w-5 h-5" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteAuthor(author.id)}
+                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                  title="Xóa"
+                                >
+                                  <FaTrash className="w-5 h-5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
+
+        {/* Categories Tab Content */}
         {tab === 'categories' && (
-          <div>
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-2xl font-bold">Quản lý thể loại</h2>
-              <button
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold shadow hover:bg-blue-700"
-                onClick={() => { resetCategoryForm(); setShowCategoryForm(true); }}
-              >
-                <FaPlus className="inline mr-2" /> Thêm thể loại
-              </button>
-            </div>
-            {categoryFormError && <Error message={categoryFormError} />}
-            {categorySuccessMessage && <div className="text-green-600 mb-2">{categorySuccessMessage}</div>}
-            <table className="min-w-full bg-white border rounded-lg">
-              <thead>
-                <tr>
-                  <th className="py-2 px-4 border-b">Tên</th>
-                  <th className="py-2 px-4 border-b">Mô tả</th>
-                  <th className="py-2 px-4 border-b">Hành động</th>
-                </tr>
-              </thead>
-              <tbody>
-                {categoriesData.map(category => (
-                  <tr key={category.id}>
-                    <td className="py-2 px-4 border-b">{category.name}</td>
-                    <td className="py-2 px-4 border-b">{category.description}</td>
-                    <td className="py-2 px-4 border-b">
-                      <button className="mr-2 text-blue-600 hover:underline" onClick={() => handleEditCategory(category)}><FaEdit /></button>
-                      <button className="text-red-600 hover:underline" onClick={() => handleDeleteCategory(category.id)}><FaTrash /></button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            {showCategoryForm && (
-              <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-30 z-50">
-                <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md relative">
-                  <button className="absolute top-2 right-2 text-gray-500 hover:text-gray-800" onClick={() => setShowCategoryForm(false)}>&times;</button>
-                  <h3 className="text-xl font-bold mb-4">{editingCategory ? 'Chỉnh sửa thể loại' : 'Thêm thể loại'}</h3>
-                  <form onSubmit={handleCategorySubmit}>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Tên</label>
-                      <input type="text" name="name" value={categoryFormData.name} onChange={handleCategoryInputChange} className="w-full border rounded px-3 py-2" required />
+          <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
+            <div className="max-w-7xl mx-auto">
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                <div className="flex justify-between items-center">
+                  <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Quản lý thể loại - Admin Panel
+                  </h1>
+                  <button
+                    onClick={() => { resetCategoryForm(); setShowCategoryForm(true); }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  >
+                    <FaPlus /> Thêm thể loại mới
+                  </button>
+                </div>
+              </div>
+
+              {categorySuccessMessage && (
+                <div className="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                  {categorySuccessMessage}
+                </div>
+              )}
+              {categoryFormError && (
+                <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                  {categoryFormError}
+                </div>
+              )}
+
+              {showCategoryForm && (
+                <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-6">
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                    {editingCategory ? 'Chỉnh sửa thể loại' : 'Thêm thể loại mới'}
+                  </h2>
+                  <form onSubmit={handleCategorySubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Tên thể loại *</label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={categoryFormData.name}
+                        onChange={handleCategoryInputChange}
+                        required
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
-                    <div className="mb-4">
-                      <label className="block mb-1 font-semibold">Mô tả</label>
-                      <textarea name="description" value={categoryFormData.description} onChange={handleCategoryInputChange} className="w-full border rounded px-3 py-2" rows={3} />
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mô tả</label>
+                      <textarea
+                        name="description"
+                        value={categoryFormData.description || ''}
+                        onChange={handleCategoryInputChange}
+                        rows={3}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      />
                     </div>
-                    <div className="flex justify-end">
-                      <button type="button" className="mr-2 px-4 py-2 bg-gray-300 rounded" onClick={() => setShowCategoryForm(false)}>Hủy</button>
-                      <button type="submit" className="px-4 py-2 bg-blue-600 text-white rounded" disabled={categoryFormLoading}>{categoryFormLoading ? 'Đang lưu...' : 'Lưu'}</button>
+                    <div className="flex gap-3">
+                      <button
+                        type="submit"
+                        disabled={categoryFormLoading}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
+                      >
+                        {categoryFormLoading ? 'Đang xử lý...' : (editingCategory ? 'Cập nhật' : 'Thêm thể loại')}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => { setShowCategoryForm(false); resetCategoryForm(); }}
+                        className="bg-gray-600 text-white px-6 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+                      >
+                        Hủy
+                      </button>
                     </div>
                   </form>
                 </div>
+              )}
+
+              <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md">
+                <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+                  <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
+                    Danh sách thể loại ({stats.categories})
+                  </h2>
+                </div>
+                {categoryFormLoading && <Loading message="Đang tải danh sách thể loại..." />}
+                {categoriesData.length === 0 && !categoryFormLoading && (
+                  <div className="px-6 py-4 text-center text-gray-500 dark:text-gray-400">
+                    Không có thể loại nào.
+                  </div>
+                )}
+                {categoriesData.length > 0 && (
+                  <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700 table-fixed admin-table">
+                      <thead className="bg-gray-50 dark:bg-gray-700">
+                        <tr>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Tên</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Mô tả</th>
+                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Thao tác</th>
+                        </tr>
+                      </thead>
+                      <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                        {categoriesData.map(category => (
+                          <tr key={category.id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
+                            <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-white">{category.name}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">{category.description}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                              <div className="flex items-center space-x-2">
+                                <button
+                                  onClick={() => handleEditCategory(category)}
+                                  className="text-blue-600 hover:text-blue-900 dark:text-blue-400 dark:hover:text-blue-300"
+                                  title="Chỉnh sửa"
+                                >
+                                  <FaEdit className="w-5 h-5" />
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteCategory(category.id)}
+                                  className="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+                                  title="Xóa"
+                                >
+                                  <FaTrash className="w-5 h-5" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                )}
               </div>
-            )}
+            </div>
           </div>
         )}
       </div>
     </div>
   );
-} 
+}
