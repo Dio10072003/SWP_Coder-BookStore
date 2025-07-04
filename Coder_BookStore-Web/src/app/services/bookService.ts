@@ -184,6 +184,18 @@ class BookService {
     return Array.from(new Set(data.map((b: Book) => b.publishYear))).filter(Boolean).sort((a, b) => b - a);
   }
 
+  async getAuthors(): Promise<string[]> {
+    const { data } = await this.getAllBooksWithTotal();
+    if (!data) return [];
+    return Array.from(new Set(data.map((b: Book) => b.author))).filter(Boolean);
+  }
+
+  async getLanguages(): Promise<string[]> {
+    const { data } = await this.getAllBooksWithTotal();
+    if (!data) return [];
+    return Array.from(new Set(data.map((b: Book) => b.language))).filter(Boolean);
+  }
+
   async getAllBooksWithTotal(filters?: BookFilters & { page?: number; limit?: number }): Promise<{ data: Book[]; total: number }> {
     try {
       const params = new URLSearchParams();

@@ -26,7 +26,7 @@ export default function BooksPage() {
     maxPrice: undefined
   });
   const [page, setPage] = useState(1);
-  const limit = 50;
+  const limit = 10;
   const memoizedFilters = useMemo(() => ({ ...filters, page, limit }), [filters, page, limit]);
   const { books, loading, error, total } = useBooks(memoizedFilters);
 

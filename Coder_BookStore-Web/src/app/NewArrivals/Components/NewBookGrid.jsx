@@ -85,7 +85,7 @@ export default function NewBookGrid({ books, onQuickView, isNewBook }) {
                 <span key={i} className={`px-2 py-1 rounded-full text-xs font-semibold flex items-center gap-1 ${tagColors[i % tagColors.length]}`}><FaTag className="text-xs" />{tag}</span>
               ))}
             </div>
-            <div className="text-lg font-bold text-pink-600 mb-2">{book.price?.toLocaleString?.() || book.price}₫</div>
+            <div className="text-lg font-bold text-pink-600 mb-2">{Number(book.price).toLocaleString()} VND</div>
             <div className="text-xs text-gray-400 mb-2">Phát hành: {book.releaseDate || book.publishYear}</div>
             {isNewBook && isNewBook(book) && (
               <div className="absolute top-4 left-4 bg-gradient-to-br from-yellow-400 to-pink-400 text-white px-3 py-1 rounded-full shadow-lg text-xs font-bold rotate-[-8deg] group-hover:scale-110 transition-transform">Mới</div>
