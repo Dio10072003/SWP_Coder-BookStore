@@ -4,6 +4,9 @@ export interface User {
   name: string
   created_at: string
   updated_at: string
+  password?: string // plain text (for demo only, không dùng thực tế)
+  passwordHash?: string // hashed password
+  role: 'Admin' | 'Staff' | 'User'
 }
 
 export interface Post {
