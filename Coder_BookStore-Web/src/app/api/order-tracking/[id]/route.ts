@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/order-tracking/[id] - Get a single order tracking record by ID
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function GET(request: Request, { params }: any) {
-  const { id } = params;
+export async function GET(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('order_tracking')
     .select('id, order_code, status, location, note, updated_at, created_at')
@@ -17,9 +16,8 @@ export async function GET(request: Request, { params }: any) {
 }
 
 // PUT /api/order-tracking/[id] - Update an order tracking record by ID
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function PUT(request: Request, { params }: any) {
-  const { id } = params;
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const body = await request.json();
   const { order_code, status, location, note } = body;
   if (!order_code || !status || !location || !note) {
@@ -38,9 +36,8 @@ export async function PUT(request: Request, { params }: any) {
 }
 
 // DELETE /api/order-tracking/[id] - Delete an order tracking record by ID
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function DELETE(request: Request, { params }: any) {
-  const { id } = params;
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('order_tracking')
     .delete()

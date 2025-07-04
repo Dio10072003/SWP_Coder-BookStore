@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/support-tickets/[id] - Get a single support ticket by ID
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('support_tickets')
     .select('id, name, email, subject, message, status, created_at, updated_at')
@@ -16,8 +16,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PUT /api/support-tickets/[id] - Update a support ticket by ID
-export async function PUT(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const body = await request.json();
   const { name, email, subject, message, status } = body;
   if (!name || !email || !subject || !message || !status) {
@@ -36,8 +36,8 @@ export async function PUT(request: Request, { params }: { params: { id: string }
 }
 
 // DELETE /api/support-tickets/[id] - Delete a support ticket by ID
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('support_tickets')
     .delete()

@@ -1,9 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/promotions/[id] - Get single promotion by id
-export async function GET(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function GET(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('promotions')
     .select('*')
@@ -16,8 +16,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 }
 
 // PATCH /api/promotions/[id] - Update promotion by id
-export async function PATCH(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function PATCH(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const body = await request.json();
   // Cho phép update linh hoạt mọi trường
   type PromotionUpdate = {
@@ -48,8 +48,8 @@ export async function PATCH(request: Request, { params }: { params: { id: string
 }
 
 // DELETE /api/promotions/[id] - Delete promotion by id
-export async function DELETE(request: Request, { params }: { params: { id: string } }) {
-  const { id } = params;
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('promotions')
     .delete()

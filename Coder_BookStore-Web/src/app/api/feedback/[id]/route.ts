@@ -1,10 +1,9 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/feedback/[id] - Lấy chi tiết feedback
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function GET(request: Request, { params }: any) {
-  const { id } = params;
+export async function GET(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('feedback')
     .select('id, name, email, content, rating, created_at, updated_at')
@@ -15,9 +14,8 @@ export async function GET(request: Request, { params }: any) {
 }
 
 // PUT /api/feedback/[id] - Update feedback
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function PUT(request: Request, { params }: any) {
-  const { id } = params;
+export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const body = await request.json();
   const { name, email, content, rating } = body;
   if (!name || !email || !content) {
@@ -34,9 +32,8 @@ export async function PUT(request: Request, { params }: any) {
 }
 
 // DELETE /api/feedback/[id] - Xóa feedback
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function DELETE(request: Request, { params }: any) {
-  const { id } = params;
+export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+  const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('feedback')
     .delete()
