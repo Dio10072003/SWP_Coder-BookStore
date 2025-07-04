@@ -7,9 +7,7 @@ import Loading from '../components/Loading';
 import Error from '../components/Error';
 import { FaPlus, FaEdit, FaTrash, FaBook, FaUser, FaUserTie, FaTags } from 'react-icons/fa';
 import { authorService, CreateAuthorData } from '../services/authorService';
-import { userService, CreateUserData } from '../services/userService';
 import { categoryService, CreateCategoryData } from '../services/categoryService';
-import { User } from '../api/types/database';
 import { Author } from '../services/authorService';
 import { Category } from '../services/categoryService';
 import Image from "next/image";
@@ -51,11 +49,6 @@ const initialAuthorFormData: CreateAuthorData = {
   country: '',
   birth_year: undefined,
   genres: [],
-};
-
-const initialUserFormData: CreateUserData = {
-  email: '',
-  name: '',
 };
 
 const initialCategoryFormData: CreateCategoryData = {
