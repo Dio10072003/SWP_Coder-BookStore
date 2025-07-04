@@ -1,4 +1,4 @@
-import { NextResponse, NextRequest } from 'next/server';
+import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
 type RouteContext = { params: { id: string } };
