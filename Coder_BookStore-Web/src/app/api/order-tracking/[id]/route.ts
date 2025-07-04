@@ -1,8 +1,10 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
+type RouteContext = { params: { id: string } };
+
 // GET /api/order-tracking/[id] - Get a single order tracking record by ID
-export async function GET(request: Request, context: any) {
+export async function GET(request: Request, context: RouteContext) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('order_tracking')
@@ -16,7 +18,7 @@ export async function GET(request: Request, context: any) {
 }
 
 // PUT /api/order-tracking/[id] - Update an order tracking record by ID
-export async function PUT(request: NextRequest, context: { params: { id: string } }) {
+export async function PUT(request: NextRequest, context: RouteContext) {
   const { id } = context.params;
   const body = await request.json();
   const { order_code, status, location, note } = body;
@@ -36,7 +38,7 @@ export async function PUT(request: NextRequest, context: { params: { id: string 
 }
 
 // DELETE /api/order-tracking/[id] - Delete an order tracking record by ID
-export async function DELETE(request: NextRequest, context: { params: { id: string } }) {
+export async function DELETE(request: NextRequest, context: RouteContext) {
   const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('order_tracking')

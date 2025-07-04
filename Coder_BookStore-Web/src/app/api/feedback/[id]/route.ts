@@ -1,8 +1,10 @@
 import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
+type RouteContext = { params: { id: string } };
+
 // GET /api/feedback/[id] - Lấy chi tiết feedback
-export async function GET(request: Request, context: any) {
+export async function GET(request: Request, context: RouteContext) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('feedback')
