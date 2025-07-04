@@ -13,6 +13,7 @@ export default function Header(): JSX.Element {
   const [currentLocation] = useState("An Nhơn, Bình Định");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     const getGreeting = (hour: number) => {
@@ -55,10 +56,12 @@ export default function Header(): JSX.Element {
       setIsLoggedIn(!!localStorage.getItem('user'));
       const user = localStorage.getItem('user');
       setUserName(user ? JSON.parse(user).name : "");
+      setUserRole(user ? JSON.parse(user).role : "");
       window.addEventListener('storage', () => {
         setIsLoggedIn(!!localStorage.getItem('user'));
         const user = localStorage.getItem('user');
         setUserName(user ? JSON.parse(user).name : "");
+        setUserRole(user ? JSON.parse(user).role : "");
       });
     }
   }, []);
@@ -96,7 +99,16 @@ export default function Header(): JSX.Element {
 
         {/* Actions */}
         <div className="flex items-center gap-2">
-          <Link href="/admin" className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-700 to-purple-700 text-white font-bold shadow hover:from-blue-800 hover:to-purple-800 transition">Admin</Link>
+          {/* Admin/Staff Buttons */}
+          {userRole === 'Admin' && (
+            <>
+              <Link href="/admin" className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-700 to-purple-700 text-white font-bold shadow hover:from-blue-800 hover:to-purple-800 transition">Admin</Link>
+              <Link href="/staff" className="px-4 py-2 rounded-full bg-gradient-to-r from-green-700 to-cyan-700 text-white font-bold shadow hover:from-green-800 hover:to-cyan-800 transition">Staff</Link>
+            </>
+          )}
+          {userRole === 'Staff' && (
+            <Link href="/staff" className="px-4 py-2 rounded-full bg-gradient-to-r from-green-700 to-cyan-700 text-white font-bold shadow hover:from-green-800 hover:to-cyan-800 transition">Staff</Link>
+          )}
           {isLoggedIn ? (
             <Link href="/Profile" className="px-4 py-2 rounded-full border border-green-400 text-green-900 bg-green-100 hover:bg-green-200 shadow transition font-bold">Profile</Link>
           ) : (

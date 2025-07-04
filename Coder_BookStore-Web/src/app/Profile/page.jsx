@@ -14,6 +14,7 @@ export default function ProfilePage() {
 
   const handleLogout = () => {
     localStorage.removeItem('user');
+    window.dispatchEvent(new Event('storage'));
     router.push('/Login');
   };
 
