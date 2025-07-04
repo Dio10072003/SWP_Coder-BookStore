@@ -1,9 +1,9 @@
 import React from 'react';
 
 const picks = [
-  { title: 'Python Crash Course', price: '250K' },
-  { title: 'The Pragmatic Programmer', price: '300K' },
-  { title: 'Eloquent JavaScript', price: '200K' },
+  { title: 'Python Crash Course', price: 250000 },
+  { title: 'The Pragmatic Programmer', price: 300000 },
+  { title: 'Eloquent JavaScript', price: 200000 },
 ];
 
 const BestPicksSection = () => {
@@ -26,7 +26,7 @@ const BestPicksSection = () => {
               <path d="M8 11h8" strokeWidth={2} />
             </svg>
             <h3 className="text-base font-bold text-white mb-1 line-clamp-2 min-h-[28px]">{pick.title}</h3>
-            <p className="text-cyan-400 mb-2 text-sm font-semibold">{pick.price}</p>
+            <p className="text-cyan-400 mb-2 text-sm font-semibold">{Number(pick.price).toLocaleString()} VND</p>
             <button className="mt-auto px-4 py-1.5 bg-gradient-to-r from-cyan-400 to-yellow-400 text-indigo-900 font-bold rounded-full shadow hover:scale-105 hover:shadow-lg text-sm">Thêm Vào Giỏ</button>
           </div>
         ))}

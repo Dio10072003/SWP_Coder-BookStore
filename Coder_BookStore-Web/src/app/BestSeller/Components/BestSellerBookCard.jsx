@@ -1,8 +1,57 @@
 import React from 'react';
 
+const categoryIcons = {
+  Programming: '💻',
+  'Data Science': '📊',
+  Design: '🎨',
+  Architecture: '🏛️',
+  Security: '🔒',
+  Mobile: '📱',
+  Database: '🗄️',
+  'Game Development': '🎮',
+  Blockchain: '⛓️',
+  Cloud: '☁️',
+  'Project Management': '📋',
+  Biography: '👤',
+  Fantasy: '🧙',
+  Fiction: '📖',
+  History: '🏺',
+  Mystery: '🕵️',
+  Nonfiction: '📚',
+  Romance: '💖',
+  ScienceFiction: '🚀',
+  'Science Fiction': '🚀',
+  SelfHelp: '🌱',
+  'Self Help': '🌱',
+  Thriller: '🔎',
+  'True Crime': '🕵️‍♂️',
+  Horror: '👻',
+  Poetry: '📝',
+  Adventure: '🏞️',
+  Philosophy: '🤔',
+  Business: '💼',
+  Children: '🧒',
+  Comics: '🦸',
+  Cooking: '🍳',
+  Health: '💪',
+  Travel: '✈️',
+  Art: '🖼️',
+  Religion: '⛪',
+  Sports: '🏅',
+  Memoir: '📔',
+  Classic: '🏛️',
+};
+
+const sizeMap = {
+  xl: 'w-72 h-96 text-xl p-6',
+  lg: 'w-60 h-80 text-lg p-5',
+  md: 'w-48 h-64 text-base p-4',
+  sm: 'w-36 h-52 text-[15px] p-3',
+};
+
 const Star = ({ filled }) => (
   <svg
-    className={`w-5 h-5 ${filled ? 'text-yellow-400' : 'text-gray-300'}`}
+    className={`w-4 h-4 ${filled ? 'text-yellow-400' : 'text-gray-300'}`}
     fill={filled ? 'currentColor' : 'none'}
     viewBox="0 0 20 20"
     stroke="currentColor"
@@ -11,27 +60,41 @@ const Star = ({ filled }) => (
   </svg>
 );
 
-const BestSellerBookCard = ({ id, title, author, price, imageUrl, rating, description }) => {
-    return (
-        <div className="relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col items-center p-5 text-center group border border-transparent hover:border-yellow-300 animate-fade-in">
-            <img src={imageUrl} alt={title} className="w-32 h-40 object-cover rounded-md mb-4 shadow-md group-hover:scale-105 transition-transform duration-300" />
-            <div className="flex-grow w-full">
-                <h3 className="text-lg font-bold text-gray-800 mb-1 line-clamp-2 min-h-[48px]">{title}</h3>
-                <p className="text-sm text-gray-600 mb-2">Tác giả: <span className="font-medium text-blue-700">{author}</span></p>
-                <div className="flex items-center justify-center mb-2">
-                    {[...Array(5)].map((_, i) => (
-                        <Star key={i} filled={i < rating} />
-                    ))}
-                    <span className="text-sm text-gray-500 ml-1">({rating}/5)</span>
-                </div>
-                <p className="text-xl font-bold text-pink-600 mb-2">{price} VND</p>
-                <p className="text-xs text-gray-700 mb-4 line-clamp-3 min-h-[48px]">{description}</p>
-            </div>
-            <button className="bg-gradient-to-r from-yellow-400 to-pink-400 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-xl transition-all duration-300 mt-auto">
-                Xem chi tiết
-            </button>
-        </div>
-    );
-};
+const DEFAULT_IMG =
+  'https://cdn.pixabay.com/photo/2016/09/01/09/29/book-1639736_1280.jpg';
 
-export default BestSellerBookCard;
+export default function BestSellerBookCard({ book, size = 'md', onQuickView, highlight }) {
+  const displayCategory = decodeURIComponent(book.category || '');
+  const imgSrc = book.img || book.imageUrl || DEFAULT_IMG;
+  return (
+    <div
+      className={`relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col items-center text-center group border border-transparent hover:border-yellow-300 animate-fade-in cursor-pointer ${sizeMap[size]} ${highlight ? 'border-4 border-yellow-400 shadow-2xl scale-105 ring-2 ring-yellow-200 ring-offset-2' : ''}`}
+      style={highlight ? { boxShadow: '0 0 32px 0 #fde68a, 0 8px 32px 0 #fbbf24' } : {}}
+      onClick={() => onQuickView && onQuickView(book)}
+    >
+      {/* Badge Best Seller */}
+      <div className="absolute top-2 left-2 bg-gradient-to-br from-yellow-400 to-pink-400 text-white px-2 py-0.5 rounded-full shadow-lg text-[11px] font-bold rotate-[-8deg] group-hover:scale-110 transition-transform z-10 whitespace-nowrap">Best Seller</div>
+      {/* Icon thể loại */}
+      <div className="absolute top-2 right-2 text-lg">{categoryIcons[displayCategory] || '📚'}</div>
+      <img src={imgSrc} alt={book.title} className="w-full h-[60%] object-cover rounded-md mb-1 shadow-md group-hover:scale-105 transition-transform duration-300 bg-gray-100" />
+      <div className="flex-grow w-full flex flex-col items-center">
+        <h3 className="font-bold text-gray-800 mb-1 line-clamp-2 min-h-[38px] text-sm md:min-h-[32px]">{book.title}</h3>
+        <p className="text-[11px] text-gray-600 mb-0.5">Tác giả: <span className="font-medium text-blue-700">{book.author}</span></p>
+        <div className="flex items-center justify-center mb-0.5">
+          {[...Array(5)].map((_, i) => (
+            <Star key={i} filled={i < book.rating} />
+          ))}
+          <span className="text-[10px] text-gray-500 ml-1">({book.rating}/5)</span>
+        </div>
+        <p className="text-pink-600 font-bold mb-0.5 text-sm">{Number(book.price).toLocaleString()}₫</p>
+        <p className="text-[10px] text-gray-700 mb-1 line-clamp-2 min-h-[24px] md:min-h-[20px]">{book.description}</p>
+      </div>
+      <button
+        className="bg-gradient-to-r from-yellow-400 to-pink-400 text-white px-2 py-0.5 rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-xl transition-all duration-300 mt-auto text-[12px] md:text-[11px]"
+        onClick={e => { e.stopPropagation(); onQuickView && onQuickView(book); }}
+      >
+        Xem nhanh
+      </button>
+    </div>
+  );
+}

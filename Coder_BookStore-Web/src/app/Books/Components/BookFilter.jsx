@@ -5,7 +5,8 @@ import { bookService } from '../../services/bookService';
 
 const BookFilter = ({ onCategoryChange, onYearChange, onRatingChange, onPriceChange }) => {
   const [category, setCategory] = useState('All');
-  const [year, setYear] = useState('All');
+  const [minYear, setMinYear] = useState('All');
+  const [maxYear, setMaxYear] = useState('All');
   const [rating, setRating] = useState('All');
   const [maxPrice, setMaxPrice] = useState('');
   const [categories, setCategories] = useState(['All']);
@@ -36,11 +37,19 @@ const BookFilter = ({ onCategoryChange, onYearChange, onRatingChange, onPriceCha
     }
   };
 
-  const handleYearChange = (e) => {
-    const selectedYear = e.target.value;
-    setYear(selectedYear);
+  const handleMinYearChange = (e) => {
+    const selected = e.target.value;
+    setMinYear(selected);
     if (onYearChange) {
-      onYearChange(selectedYear === 'All' ? undefined : parseInt(selectedYear));
+      onYearChange({ min: selected === 'All' ? undefined : parseInt(selected), max: maxYear === 'All' ? undefined : parseInt(maxYear) });
+    }
+  };
+
+  const handleMaxYearChange = (e) => {
+    const selected = e.target.value;
+    setMaxYear(selected);
+    if (onYearChange) {
+      onYearChange({ min: minYear === 'All' ? undefined : parseInt(minYear), max: selected === 'All' ? undefined : parseInt(selected) });
     }
   };
 
@@ -79,20 +88,33 @@ const BookFilter = ({ onCategoryChange, onYearChange, onRatingChange, onPriceCha
           </select>
         </div>
 
-        {/* Year Filter */}
+        {/* Year Range Filter */}
         <div>
           <label className="block text-yellow-400 text-sm font-medium mb-2">Năm xuất bản</label>
-          <select
-            value={year}
-            onChange={handleYearChange}
-            className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-          >
-            {years.map((y) => (
-              <option key={y} value={y}>
-                {y}
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-2">
+            <select
+              value={minYear}
+              onChange={handleMinYearChange}
+              className="w-1/2 px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            >
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  Từ {y}
+                </option>
+              ))}
+            </select>
+            <select
+              value={maxYear}
+              onChange={handleMaxYearChange}
+              className="w-1/2 px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400"
+            >
+              {years.map((y) => (
+                <option key={y} value={y}>
+                  Đến {y}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         {/* Rating Filter */}
@@ -113,14 +135,17 @@ const BookFilter = ({ onCategoryChange, onYearChange, onRatingChange, onPriceCha
 
         {/* Price Filter */}
         <div>
-          <label className="block text-yellow-400 text-sm font-medium mb-2">Giá tối đa (VND)</label>
-          <input
-            type="number"
-            value={maxPrice}
-            onChange={handlePriceChange}
-            placeholder="Nhập giá tối đa"
-            className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400"
-          />
+          <label className="block text-yellow-400 text-sm font-medium mb-2">Giá tối đa</label>
+          <div className="relative flex items-center">
+            <input
+              type="number"
+              value={maxPrice}
+              onChange={handlePriceChange}
+              placeholder="Nhập giá tối đa"
+              className="w-full px-4 py-2 bg-gray-800 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-cyan-400 pr-16"
+            />
+            <span className="absolute right-4 text-gray-400 font-semibold pointer-events-none">VND</span>
+          </div>
         </div>
       </div>
     </div>

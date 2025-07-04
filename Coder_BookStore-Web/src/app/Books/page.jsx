@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import BookFilter from './Components/BookFilter.jsx';
 import BookGrid from './Components/BookGrid.jsx';
 import Pagination from './Components/Pagination.jsx';
@@ -26,8 +26,9 @@ export default function BooksPage() {
     maxPrice: undefined
   });
   const [page, setPage] = useState(1);
-  const limit = 12;
-  const { books, loading, error, total } = useBooks({ ...filters, page, limit });
+  const limit = 10;
+  const memoizedFilters = useMemo(() => ({ ...filters, page, limit }), [filters, page, limit]);
+  const { books, loading, error, total } = useBooks(memoizedFilters);
 
   const handleCategoryChange = (category) => {
     setFilters(prev => ({ ...prev, category }));

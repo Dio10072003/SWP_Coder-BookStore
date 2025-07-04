@@ -1,54 +1,96 @@
 // app/best-seller/page.jsx
 'use client'; // Dòng này là cần thiết nếu bạn sử dụng useState và các Hook khác của React trong App Router
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 // Import các component từ đúng đường dẫn components/best-seller
 import BestSellerHeader from './Components/BestSellerHeader';
 import FilterOptions from './Components/FilterOptions';
 import BookGrid from './Components/BookGrid';
-import Pagination from './Components/Pagination';
+import { bookService } from '../services/bookService';
+import { categoryService } from '../services/categoryService';
 
+// Modal xem nhanh chi tiết sách (tương tự NewArrivals)
+function BookQuickViewModal({ book, onClose }) {
+  if (!book) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+      <div className="bg-white rounded-2xl shadow-2xl p-8 max-w-lg w-full relative animate-fade-in-up">
+        <button onClick={onClose} className="absolute top-3 right-3 text-2xl text-gray-400 hover:text-pink-500">×</button>
+        <div className="flex flex-col md:flex-row gap-6">
+          <img src={book.img || book.imageUrl} alt={book.title} className="w-32 h-44 object-cover rounded-xl shadow" />
+          <div className="flex-1 flex flex-col gap-2">
+            <h2 className="text-2xl font-bold text-yellow-700 mb-1">{book.title}</h2>
+            <div className="text-gray-600 text-sm mb-1">Tác giả: <span className="font-semibold">{book.author}</span></div>
+            <div className="text-yellow-500 font-semibold mb-1">★ {book.rating} / 5</div>
+            <div className="text-pink-600 font-bold mb-2">{Number(book.price).toLocaleString()}₫</div>
+            <div className="text-xs text-gray-400 mb-2">{book.publishYear} • {book.language}</div>
+            <div className="text-xs text-gray-500 mb-2">{book.description}</div>
+            <button onClick={() => { window.location.href = `/Books/${book.id}`; }} className="mt-2 px-5 py-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-white rounded-xl font-semibold shadow hover:from-pink-400 hover:to-yellow-400 transition-all">Xem chi tiết</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function BestSellerPage() {
-    // Dữ liệu sách bán chạy (có thể lấy từ API thực tế)
-    const bestSellerBooks = [
-        { id: 1, title: 'Clean Code: A Handbook of Agile Software Craftsmanship', author: 'Robert C. Martin', price: '250.000', imageUrl: 'https://via.placeholder.com/150/FF5733/FFFFFF?text=CleanCode', rating: 5, description: 'Cuốn sách kinh điển về cách viết code sạch và dễ bảo trì.' },
-        { id: 2, title: 'The Pragmatic Programmer: Your Journey To Mastery', author: 'Andrew Hunt & David Thomas', price: '220.000', imageUrl: 'https://via.placeholder.com/150/33FF57/FFFFFF?text=PragProg', rating: 5, description: 'Những lời khuyên thực tế để trở thành một lập trình viên hiệu quả.' },
-        { id: 3, title: 'Cracking the Coding Interview: 189 Programming Questions and Solutions', author: 'Gayle Laakmann McDowell', price: '350.000', imageUrl: 'https://via.placeholder.com/150/3357FF/FFFFFF?text=CodingInterview', rating: 4, description: 'Tài liệu không thể thiếu để chuẩn bị cho phỏng vấn lập trình.' },
-        { id: 4, title: 'Design Patterns: Elements of Reusable Object-Oriented Software', author: 'Erich Gamma, Richard Helm, Ralph Johnson, John Vlissides', price: '280.000', imageUrl: 'https://via.placeholder.com/150/FF33A1/FFFFFF?text=DesignPatterns', rating: 4, description: 'Giới thiệu các mẫu thiết kế phần mềm kinh điển.' },
-        { id: 5, title: 'Introduction to Algorithms', author: 'Thomas H. Cormen, Charles E. Leiserson, Ronald L. Rivest, Clifford Stein', price: '400.000', imageUrl: 'https://via.placeholder.com/150/5733FF/FFFFFF?text=Algorithms', rating: 5, description: 'Cuốn sách giáo trình toàn diện về thuật toán và cấu trúc dữ liệu.' },
-        { id: 6, title: 'You Don\'t Know JS Yet (Series)', author: 'Kyle Simpson', price: '180.000', imageUrl: 'https://via.placeholder.com/150/FF8C00/FFFFFF?text=YDKJS', rating: 5, description: 'Một series sách đi sâu vào các khía cạnh nâng cao của JavaScript.' },
-        { id: 7, title: 'Code Complete: A Practical Handbook of Software Construction', author: 'Steve McConnell', price: '290.000', imageUrl: 'https://via.placeholder.com/150/00FFFF/FFFFFF?text=CodeComplete', rating: 4, description: 'Hướng dẫn thực tế để xây dựng phần mềm chất lượng cao.' },
-        { id: 8, title: 'The Mythical Man-Month: Essays on Software Engineering', author: 'Frederick Brooks Jr.', price: '195.000', imageUrl: 'https://via.placeholder.com/150/8A2BE2/FFFFFF?text=ManMonth', rating: 4, description: 'Những bài luận kinh điển về quản lý dự án phần mềm.' },
-    ];
+    const [books, setBooks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [quickViewBook, setQuickViewBook] = useState(null);
 
-    const [currentPage, setCurrentPage] = React.useState(1);
-    const booksPerPage = 4; // Số sách hiển thị trên mỗi trang
+    useEffect(() => {
+        categoryService.getAllCategories()
+            .then(data => setCategories(data))
+            .catch(() => setCategories([]));
+    }, []);
 
-    // Tính toán số trang và sách hiển thị
-    const indexOfLastBook = currentPage * booksPerPage;
-    const indexOfFirstBook = indexOfLastBook - booksPerPage;
-    const currentBooks = bestSellerBooks.slice(indexOfFirstBook, indexOfLastBook);
-    const totalPages = Math.ceil(bestSellerBooks.length / booksPerPage);
+    useEffect(() => {
+        setLoading(true);
+        setError(null);
+        bookService.getAllBooksWithTotal({ limit: 50, ...(selectedCategory ? { category: selectedCategory } : {}) })
+            .then(({ data }) => {
+                // Lấy top 12 sách rating cao nhất, nếu trùng thì theo id giảm dần
+                const sorted = [...data].sort((a, b) => (b.rating - a.rating) || (b.id - a.id));
+                setBooks(sorted.slice(0, 12));
+            })
+            .catch(err => setError(err.message))
+            .finally(() => setLoading(false));
+    }, [selectedCategory]);
 
-    const handlePageChange = (pageNumber) => {
-        setCurrentPage(pageNumber);
-        // Có thể thêm cuộn lên đầu trang khi chuyển trang
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    };
+    // Loading skeleton
+    const Skeleton = () => (
+        <div className="flex flex-col items-center gap-8 my-8">
+            {Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-2xl h-40 animate-pulse" />
+            ))}
+        </div>
+    );
 
     return (
         <div className="best-seller-page-container min-h-screen bg-gray-50">
             <BestSellerHeader />
             <main className="best-seller-main-content max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-                <FilterOptions />
-                <BookGrid books={currentBooks} />
-                <Pagination
-                    currentPage={currentPage}
-                    totalPages={totalPages}
-                    onPageChange={handlePageChange}
-                />
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
+                    <div className="flex-1">
+                        <FilterOptions
+                            categories={categories}
+                            selectedCategory={selectedCategory}
+                            onCategoryChange={setSelectedCategory}
+                        />
+                    </div>
+                </div>
+                {loading ? (
+                    <Skeleton />
+                ) : error ? (
+                    <div className="text-center py-8 text-red-500">Lỗi: {error}</div>
+                ) : (
+                    <BookGrid books={books} onQuickView={setQuickViewBook} />
+                )}
             </main>
+            <BookQuickViewModal book={quickViewBook} onClose={() => setQuickViewBook(null)} />
         </div>
     );
 }
