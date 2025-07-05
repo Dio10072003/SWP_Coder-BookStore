@@ -2,7 +2,6 @@
 // export const runtime = 'nodejs';
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '../lib/supabase';
-import bcrypt from 'bcryptjs';
 
 // GET /api/users – tất cả user
 export async function GET() {
