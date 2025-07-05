@@ -36,12 +36,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Hash password
-    const passwordHash = await bcrypt.hash(password, 10);
-
+    // KHÔNG hash password ở đây, chỉ lưu plain text và passwordHash null
     const { data, error } = await supabaseAdmin
       .from('users')
-      .insert([{ email, name, passwordHash, role: role || 'User' }])
+      .insert([{ email, name, password, passwordHash: null, role: role || 'User' }])
       .select()
       .single();
 

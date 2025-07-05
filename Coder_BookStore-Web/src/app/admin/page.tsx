@@ -154,12 +154,13 @@ export default function AdminPage() {
   useEffect(() => {
     Promise.all([
       fetch('/api/books').then(res => res.json()),
+      fetch('/api/users').then(res => res.json()),
       fetch('/api/authors').then(res => res.json()),
       fetch('/api/categories').then(res => res.json()),
-    ]).then(([books, authors, categories]) => {
+    ]).then(([books, users, authors, categories]) => {
       setStats({
         books: Array.isArray(books) ? books.length : 0,
-        users: 0, // No longer tracking users here
+        users: Array.isArray(users) ? users.length : 0,
         authors: Array.isArray(authors) ? authors.length : 0,
         categories: Array.isArray(categories) ? categories.length : 0,
       });
@@ -433,6 +434,14 @@ export default function AdminPage() {
     }
   };
 
+  // Thêm màu sắc cho từng ô thống kê
+  const statColors = [
+    '#2563eb', // Sách - xanh dương
+    '#22c55e', // Người dùng - xanh lá
+    '#a21caf', // Tác giả - tím
+    '#ec4899', // Thể loại - hồng
+  ];
+
   if (accessDenied) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -448,27 +457,19 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Thống kê tổng quan */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col items-center">
-            <FaBook className="text-3xl text-blue-600 mb-2" />
-            <div className="text-2xl font-bold">{stats.books}</div>
-            <div className="text-gray-600 dark:text-gray-300">Sách</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col items-center">
-            <FaUser className="text-3xl text-green-600 mb-2" />
-            <div className="text-2xl font-bold">{stats.users}</div>
-            <div className="text-gray-600 dark:text-gray-300">Người dùng</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col items-center">
-            <FaUserTie className="text-3xl text-purple-600 mb-2" />
-            <div className="text-2xl font-bold">{stats.authors}</div>
-            <div className="text-gray-600 dark:text-gray-300">Tác giả</div>
-          </div>
-          <div className="bg-white dark:bg-gray-800 rounded-lg shadow p-4 flex flex-col items-center">
-            <FaTags className="text-3xl text-pink-600 mb-2" />
-            <div className="text-2xl font-bold">{stats.categories}</div>
-            <div className="text-gray-600 dark:text-gray-300">Thể loại</div>
-          </div>
+        <div className="flex gap-4">
+          {[
+            { label: 'Sách', value: stats.books, icon: <FaBook />, color: statColors[0] },
+            { label: 'Người dùng', value: stats.users, icon: <FaUser />, color: statColors[1] },
+            { label: 'Tác giả', value: stats.authors, icon: <FaUserTie />, color: statColors[2] },
+            { label: 'Thể loại', value: stats.categories, icon: <FaTags />, color: statColors[3] },
+          ].map((stat) => (
+            <div key={stat.label} style={{ borderTop: `4px solid ${stat.color}` }} className="rounded shadow p-4 flex-1 text-center bg-white">
+              <div style={{ color: stat.color, fontSize: 32 }}>{stat.icon}</div>
+              <div style={{ color: stat.color, fontWeight: 700, fontSize: 28 }}>{stat.value}</div>
+              <div>{stat.label}</div>
+            </div>
+          ))}
         </div>
 
         {/* Tabs */}
