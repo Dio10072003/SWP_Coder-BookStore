@@ -88,21 +88,22 @@ export default function Home() {
       <Image src="/next.svg" alt="Next.js Logo" width={80} height={80} />
       {/* Section banner sự kiện đặc biệt */}
       <motion.section
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1 }}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
         className="relative py-10 px-2 max-w-5xl mx-auto mb-10 animate-fade-in-up bg-white/80 rounded-3xl shadow-2xl border-4 border-pink-100"
       >
         <span className="absolute -top-8 -left-8 w-40 h-40 bg-gradient-to-br from-yellow-400 via-pink-300 to-fuchsia-400 opacity-30 rounded-full blur-2xl animate-blob z-0" />
         <span className="absolute -bottom-8 -right-8 w-40 h-40 bg-gradient-to-br from-pink-200 via-yellow-200 to-purple-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 bg-gradient-to-r from-yellow-100 via-pink-100 to-fuchsia-100 rounded-2xl shadow-xl border-4 border-pink-200 p-8">
           <div className="flex-1 text-center md:text-left">
-            <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-400 to-fuchsia-500 drop-shadow mb-2">🎉 Sự kiện "Book Week" Đặc Biệt!</h2>
+            <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-400 to-fuchsia-500 drop-shadow mb-2">
+              🎉 Sự kiện &quot;Book Week&quot; Đặc Biệt!
+            </h2>
             <p className="text-lg text-gray-700 mb-2">Giảm giá đến <span className="font-bold text-pink-600">50%</span> cho hàng trăm đầu sách lập trình, tặng voucher cho thành viên mới!</p>
             <Link href="/Promotions" className="inline-block px-6 py-2 bg-gradient-to-r from-pink-500 to-yellow-400 text-white rounded-full font-bold shadow hover:scale-110 hover:shadow-xl transition-all mt-2">Xem ưu đãi</Link>
           </div>
-          <img src="/public/images/Coder-BookStore-Logo.svg" alt="Book Week" className="w-32 h-32 object-contain mx-auto md:mx-0 animate-bounce-slow" />
+          <Image src="/images/Coder-BookStore-Logo.svg" alt="Book Week" width={128} height={128} className="w-32 h-32 object-contain mx-auto md:mx-0 animate-bounce-slow" />
         </div>
       </motion.section>
 
@@ -118,10 +119,9 @@ export default function Home() {
 
       {/* Featured Books Section - làm mới style */}
       <motion.section
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, delay: 0.3 }}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
         className="relative py-20 px-2 max-w-7xl mx-auto animate-fade-in-up bg-white/80 rounded-3xl shadow-2xl border-4 border-yellow-100 mb-10"
       >
         <span className="absolute -top-16 -left-16 w-72 h-72 bg-gradient-to-br from-pink-300 via-yellow-200 to-fuchsia-300 opacity-30 rounded-full blur-3xl animate-blob z-0" />
@@ -137,16 +137,18 @@ export default function Home() {
             {books.map(({ id, title, author, price, img, rating }, idx) => (
               <motion.div
                 key={id}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+                variants={sectionVariants}
+                initial="hidden"
+                animate="visible"
                 transition={{ duration: 0.7, delay: 0.1 * idx }}
                 className="rounded-3xl shadow-2xl bg-gradient-to-br from-yellow-50 via-pink-50 to-fuchsia-100 border-4 border-pink-200 p-6 flex flex-col items-center hover:scale-105 hover:shadow-3xl transition-transform duration-300 group relative overflow-hidden"
               >
                 <span className="absolute -top-8 -right-8 w-24 h-24 bg-pink-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
-                <img
+                <Image
                   src={img}
                   alt={title}
+                  width={128}
+                  height={176}
                   className="w-32 h-44 object-cover rounded-xl mb-4 border-2 border-white shadow-lg group-hover:scale-105 transition"
                 />
                 <h3 className="text-lg font-bold text-pink-700 mb-1 text-center drop-shadow-lg">{title}</h3>
@@ -169,10 +171,9 @@ export default function Home() {
       {/* Section cảm nhận khách hàng - lấy động từ API */}
       {feedbacks.length > 0 && (
         <motion.section
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 1, delay: 0.2 }}
+          variants={sectionVariants}
+          initial="hidden"
+          animate="visible"
           className="relative py-16 px-2 max-w-3xl mx-auto animate-fade-in-up bg-gradient-to-br from-pink-50 via-yellow-50 to-fuchsia-50 rounded-3xl shadow-2xl border-4 border-pink-100 mb-10"
         >
           <span className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-pink-300 via-yellow-200 to-fuchsia-300 opacity-30 rounded-full blur-2xl animate-blob z-0" />
@@ -189,8 +190,13 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="bg-white/80 rounded-2xl shadow-xl p-8 flex flex-col items-center max-w-xl mx-auto border-4 border-pink-200"
             >
-              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(feedbacks[testimonialIdx].name || 'user')}`} alt={feedbacks[testimonialIdx].name} className="w-20 h-20 rounded-full border-4 border-yellow-300 shadow mb-4" />
-              <blockquote className="text-lg italic text-gray-700 text-center mb-2">“{feedbacks[testimonialIdx].content}”</blockquote>
+              <Image src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(feedbacks[testimonialIdx].name || 'user')}`}
+                alt={feedbacks[testimonialIdx].name || 'user'}
+                width={80}
+                height={80}
+                className="w-20 h-20 rounded-full border-4 border-yellow-300 shadow mb-4"
+              />
+              <blockquote className="text-lg italic text-gray-700 text-center mb-2">&quot;{feedbacks[testimonialIdx].content}&quot;</blockquote>
               <span className="font-bold text-pink-600">{feedbacks[testimonialIdx].name}</span>
               <div className="flex items-center gap-1 mt-2">
                 {Array.from({ length: 5 }).map((_, i) => (
@@ -204,10 +210,9 @@ export default function Home() {
 
       {/* Explore More Section - làm mới style */}
       <motion.section
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, delay: 0.3 }}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="visible"
         className="relative py-16 px-2 max-w-7xl mx-auto animate-fade-in-up bg-gradient-to-br from-blue-50 via-green-50 to-cyan-50 rounded-3xl shadow-2xl border-4 border-blue-100 mb-10"
       >
         <span className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-blue-300 via-green-200 to-cyan-300 opacity-30 rounded-full blur-2xl animate-blob z-0" />
@@ -222,6 +227,7 @@ export default function Home() {
               <span className="text-xl font-bold text-blue-700 mb-2 drop-shadow-lg">{item.label}</span>
               <span className="text-gray-500 text-center mb-2">{item.desc}</span>
               <span className="mt-auto inline-block px-4 py-1 bg-gradient-to-r from-blue-400 to-green-400 text-white rounded-full font-semibold shadow hover:scale-110 hover:shadow-lg transition-all text-sm">Khám phá <FaChevronRight className="inline-block ml-1 text-xs" /></span>
+              <span className="sr-only">{`Thứ tự: ${idx + 1}`}</span>
             </Link>
           ))}
         </div>
