@@ -457,17 +457,17 @@ export default function AdminPage() {
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 p-6">
       <div className="max-w-7xl mx-auto">
         {/* Thống kê tổng quan */}
-        <div className="flex gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 my-6">
           {[
             { label: 'Sách', value: stats.books, icon: <FaBook />, color: statColors[0] },
             { label: 'Người dùng', value: stats.users, icon: <FaUser />, color: statColors[1] },
             { label: 'Tác giả', value: stats.authors, icon: <FaUserTie />, color: statColors[2] },
             { label: 'Thể loại', value: stats.categories, icon: <FaTags />, color: statColors[3] },
           ].map((stat) => (
-            <div key={stat.label} style={{ borderTop: `4px solid ${stat.color}` }} className="rounded shadow p-4 flex-1 text-center bg-white">
-              <div style={{ color: stat.color, fontSize: 32 }}>{stat.icon}</div>
-              <div style={{ color: stat.color, fontWeight: 700, fontSize: 28 }}>{stat.value}</div>
-              <div>{stat.label}</div>
+            <div key={stat.label} style={{ borderTop: `8px solid ${stat.color}` }} className="rounded-xl shadow bg-white flex flex-col items-center p-8">
+              <div style={{ color: stat.color, fontSize: 40, marginBottom: 8 }}>{stat.icon}</div>
+              <div style={{ color: stat.color, fontWeight: 700, fontSize: 32 }}>{stat.value}</div>
+              <div className="text-gray-700 font-semibold mt-1">{stat.label}</div>
             </div>
           ))}
         </div>

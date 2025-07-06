@@ -5,6 +5,14 @@ import NotificationModal from '../admin/StaffManagement/Components/NotificationM
 import Loading from '../components/Loading';
 import { userService } from '../services/userService';
 
+const emptyUser = {
+  name: '',
+  email: '',
+  role: 'User',
+  avatar: '',
+  status: 'active',
+};
+
 export default function StaffPanel() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -14,6 +22,13 @@ export default function StaffPanel() {
   const [showNotifyModal, setShowNotifyModal] = useState(false);
   const [notifyUser, setNotifyUser] = useState(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState('create');
+  const [form, setForm] = useState(emptyUser);
+  const [editingId, setEditingId] = useState(null);
+  const [formError, setFormError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     const userStr = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
@@ -34,7 +49,6 @@ export default function StaffPanel() {
 
   useEffect(() => {
     if (!accessDenied) fetchUsers();
-    // eslint-disable-next-line
   }, [accessDenied]);
 
   const fetchUsers = async () => {
@@ -46,6 +60,62 @@ export default function StaffPanel() {
     } catch {
       setUsers([]);
       setLoading(false);
+    }
+  };
+
+  // CRUD
+  const openCreateModal = () => {
+    setForm(emptyUser);
+    setModalType('create');
+    setShowModal(true);
+    setEditingId(null);
+    setFormError(null);
+  };
+  const openEditModal = (user) => {
+    setForm({
+      name: user.name || '',
+      email: user.email || '',
+      role: user.role || 'User',
+      avatar: user.avatar || '',
+      status: user.status || 'active',
+    });
+    setModalType('edit');
+    setShowModal(true);
+    setEditingId(user.id);
+    setFormError(null);
+  };
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setForm(f => ({ ...f, [name]: value }));
+  };
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setFormError(null);
+    try {
+      if (modalType === 'create') {
+        await userService.createUser(form);
+        setSuccessMsg('Đã thêm user!');
+      } else if (modalType === 'edit' && editingId) {
+        await userService.updateUser(editingId, form);
+        setSuccessMsg('Đã cập nhật user!');
+      }
+      setShowModal(false);
+      fetchUsers();
+    } catch (err) {
+      setFormError(err.message || 'Lỗi không xác định');
+    }
+  };
+  const handleDelete = async (user) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa user này?')) return;
+    setDeleteLoading(true);
+    try {
+      await userService.deleteUser(user.id);
+      setSuccessMsg('Đã xóa user!');
+      fetchUsers();
+    } catch (err) {
+      setFormError(err.message || 'Lỗi không xác định');
+    } finally {
+      setDeleteLoading(false);
     }
   };
 
@@ -79,15 +149,23 @@ export default function StaffPanel() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-100 to-cyan-200 flex flex-col items-center justify-center p-6">
       <div className="bg-white p-8 rounded-lg shadow max-w-3xl w-full">
-        <h1 className="text-3xl font-bold text-green-700 mb-4 text-center">Staff Panel</h1>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-3xl font-bold text-green-700 text-center">Staff Panel</h1>
+          {isAdmin && <button onClick={openCreateModal} className="bg-gradient-to-r from-green-500 to-cyan-500 hover:from-cyan-500 hover:to-green-500 text-white font-bold py-2 px-6 rounded-full shadow-lg transition">+ Thêm user</button>}
+        </div>
         <p className="text-center text-gray-600 mb-6">Chào mừng bạn đến với bảng điều khiển dành cho Staff.<br/>Bạn có thể xem danh sách người dùng, xem chi tiết và gửi thông báo.</p>
+        {successMsg && <div className="text-green-600 mb-2">{successMsg}</div>}
+        {formError && <div className="text-red-500 mb-2">{formError}</div>}
         {loading ? <Loading /> : (
           <StaffTable
             users={users}
             onDetail={handleDetail}
+            onDelete={isAdmin ? handleDelete : undefined}
+            onRoleChange={isAdmin ? async (user, newRole) => { await userService.updateUser(user.id, { role: newRole }); fetchUsers(); } : undefined}
+            onResetPassword={isAdmin ? (user) => alert('Chức năng reset mật khẩu đang phát triển!') : undefined}
+            onLockToggle={isAdmin ? async (user) => { await userService.updateUser(user.id, { status: user.status === 'locked' ? 'active' : 'locked' }); fetchUsers(); } : undefined}
             onNotify={handleNotify}
             isAdmin={isAdmin}
-            // Không truyền các callback thao tác nâng cao nếu không phải Admin
           />
         )}
       </div>
@@ -119,6 +197,40 @@ export default function StaffPanel() {
               </div>
             </div>
           </div>
+        </div>
+      )}
+      {/* Modal thêm/sửa user */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <form onSubmit={handleFormSubmit} className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+            <h2 className="text-xl font-bold mb-4">{modalType === 'create' ? 'Thêm user' : 'Sửa user'}</h2>
+            <label className="block mb-2">Tên
+              <input name="name" value={form.name} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
+            </label>
+            <label className="block mb-2">Email
+              <input name="email" value={form.email} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
+            </label>
+            <label className="block mb-2">Vai trò
+              <select name="role" value={form.role} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2">
+                <option value="User">User</option>
+                <option value="Staff">Staff</option>
+                <option value="Admin">Admin</option>
+              </select>
+            </label>
+            <label className="block mb-2">Avatar (URL)
+              <input name="avatar" value={form.avatar} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
+            </label>
+            <label className="block mb-2">Trạng thái
+              <select name="status" value={form.status} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2">
+                <option value="active">Hoạt động</option>
+                <option value="locked">Đã khóa</option>
+              </select>
+            </label>
+            <div className="flex justify-end gap-2 mt-4">
+              <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Hủy</button>
+              <button type="submit" className="px-4 py-2 rounded bg-green-500 hover:bg-green-600 text-white font-bold">Lưu</button>
+            </div>
+          </form>
         </div>
       )}
     </div>
