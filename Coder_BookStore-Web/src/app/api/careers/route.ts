@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import { supabaseAdmin } from '../lib/supabase';
 
 // GET /api/careers – tất cả vị trí nghề nghiệp
-export async function GET() {
+export async function GET(request: NextRequest) {
   const { data, error } = await supabaseAdmin
     .from('careers')
     .select('*')

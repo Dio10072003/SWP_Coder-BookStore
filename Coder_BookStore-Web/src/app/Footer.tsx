@@ -1,37 +1,21 @@
 'use client';
 
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaGithub, FaYoutube, FaEnvelope, FaPhone, FaMapMarkerAlt, FaHeart, FaArrowUp } from 'react-icons/fa';
-import { JSX } from 'react';
 import React from 'react';
+import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaGithub, FaYoutube, FaEnvelope, FaPhone, FaMapMarkerAlt, FaHeart, FaArrowUp } from 'react-icons/fa';
 
 interface FooterProps {
   backgroundClass?: string;
   textClass?: string;
-  iconColorClass?: string;
   className?: string;
 }
 
 const Footer: React.FC<FooterProps> = ({
   backgroundClass = 'bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-950',
   textClass = 'text-cyan-100',
-  iconColorClass = 'text-cyan-300',
   className = '',
 }) => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
-
-  const fadeInVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
-  };
-  const staggerContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.08 },
-    },
-  };
 
   return (
     <footer className={`pt-10 pb-4 px-2 relative overflow-hidden ${backgroundClass} ${textClass} ${className} font-sans`}>
@@ -48,32 +32,32 @@ const Footer: React.FC<FooterProps> = ({
         <div className="text-center md:text-left">
           <h4 className="text-base font-bold mb-3 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Khám phá</h4>
           <ul className="space-y-1 text-sm font-light">
-            <li><a href="/" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Trang chủ</a></li>
-            <li><a href="/Books" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Tất cả sách</a></li>
-            <li><a href="/Categories" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Danh mục sách</a></li>
-            <li><a href="/Authors" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Tác giả nổi bật</a></li>
-            <li><a href="/NewArrivals" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Sách mới về</a></li>
-            <li><a href="/BestSeller" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Sách bán chạy</a></li>
-            <li><a href="/Promotions" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Ưu đãi &amp; Khuyến mãi</a></li>
-            <li><a href="/Blog" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Bài viết &amp; Tin tức</a></li>
-            <li><a href="/Events" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Sự kiện</a></li>
-            <li><a href="/AboutPage" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Về chúng tôi</a></li>
-            <li><a href="/Career" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Cơ hội nghề nghiệp</a></li>
+            <li><Link href="/">Trang chủ</Link></li>
+            <li><Link href="/Books">Tất cả sách</Link></li>
+            <li><Link href="/Categories">Danh mục sách</Link></li>
+            <li><Link href="/Authors">Tác giả nổi bật</Link></li>
+            <li><Link href="/NewArrivals">Sách mới về</Link></li>
+            <li><Link href="/BestSeller">Sách bán chạy</Link></li>
+            <li><Link href="/Promotions">Ưu đãi &amp; Khuyến mãi</Link></li>
+            <li><Link href="/Blog">Bài viết &amp; Tin tức</Link></li>
+            <li><Link href="/Events">Sự kiện</Link></li>
+            <li><Link href="/AboutPage">Về chúng tôi</Link></li>
+            <li><Link href="/Career">Cơ hội nghề nghiệp</Link></li>
           </ul>
         </div>
         {/* Dịch vụ khách hàng */}
         <div className="text-center md:text-left">
           <h4 className="text-base font-bold mb-3 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Dịch vụ khách hàng</h4>
           <ul className="space-y-1 text-sm font-light">
-            <li><a href="/Privacy" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Chính sách bảo mật</a></li>
-            <li><a href="/Terms" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Điều khoản dịch vụ</a></li>
-            <li><a href="/Faq" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Câu hỏi thường gặp</a></li>
-            <li><a href="/ShipReturns" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Vận chuyển &amp; Đổi trả</a></li>
-            <li><a href="/Support-Center" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Trung tâm hỗ trợ</a></li>
-            <li><a href="/Payment" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Phương thức thanh toán</a></li>
-            <li><a href="/OrderTracking" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Theo dõi đơn hàng</a></li>
-            <li><a href="/Feedback" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Gửi phản hồi</a></li>
-            <li><a href="/Contact" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Liên hệ</a></li>
+            <li><Link href="/Privacy">Chính sách bảo mật</Link></li>
+            <li><Link href="/Terms">Điều khoản dịch vụ</Link></li>
+            <li><Link href="/Faq">Câu hỏi thường gặp</Link></li>
+            <li><Link href="/ShipReturns">Vận chuyển &amp; Đổi trả</Link></li>
+            <li><Link href="/Support-Center">Trung tâm hỗ trợ</Link></li>
+            <li><Link href="/Payment">Phương thức thanh toán</Link></li>
+            <li><Link href="/OrderTracking">Theo dõi đơn hàng</Link></li>
+            <li><Link href="/Feedback">Gửi phản hồi</Link></li>
+            <li><Link href="/Contact">Liên hệ</Link></li>
           </ul>
         </div>
       </div>
@@ -96,7 +80,7 @@ const Footer: React.FC<FooterProps> = ({
               <span>KĐT An Phú Thịnh, Nhơn Bình, Quy Nhơn, Gia Lai</span>
             </p>
           </div>
-          <blockquote className="italic text-cyan-300/80 mt-3 text-sm">"Mỗi trang sách là một bước tiến trên hành trình khám phá thế giới muôn màu của bạn."</blockquote>
+          <blockquote className="italic text-cyan-300/80 mt-3 text-sm">&quot;Mỗi trang sách là một bước tiến trên hành trình khám phá thế giới muôn màu của bạn.&quot;</blockquote>
         </div>
         {/* Social Icons */}
         <div className="text-center md:text-right">
