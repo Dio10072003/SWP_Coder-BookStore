@@ -3,7 +3,7 @@ import { supabaseAdmin } from '../../lib/supabase';
 
 // GET /api/users/[id] - Lấy thông tin user theo id
 export async function GET(request: NextRequest, { params }) {
-  const { id } = params;
+  const { id } = params as { id: string };
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('*')
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest, { params }) {
 
 // PUT /api/users/[id] - Cập nhật user theo id
 export async function PUT(request: NextRequest, { params }) {
-  const { id } = params;
+  const { id } = params as { id: string };
   const body = await request.json();
   const { data, error } = await supabaseAdmin
     .from('users')
@@ -42,7 +42,7 @@ export async function PUT(request: NextRequest, { params }) {
 
 // DELETE /api/users/[id] - Xóa user theo id
 export async function DELETE(request: NextRequest, { params }) {
-  const { id } = params;
+  const { id } = params as { id: string };
   const { error } = await supabaseAdmin
     .from('users')
     .delete()
