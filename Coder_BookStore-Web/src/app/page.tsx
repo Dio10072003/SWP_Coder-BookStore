@@ -94,7 +94,7 @@ export default function Home() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1 }}
-        className="relative py-10 px-2 max-w-5xl mx-auto mb-10 animate-fade-in-up"
+        className="relative py-10 px-2 max-w-5xl mx-auto mb-10 animate-fade-in-up bg-white/80 rounded-3xl shadow-2xl border-4 border-pink-100"
       >
         <span className="absolute -top-8 -left-8 w-40 h-40 bg-gradient-to-br from-yellow-400 via-pink-300 to-fuchsia-400 opacity-30 rounded-full blur-2xl animate-blob z-0" />
         <span className="absolute -bottom-8 -right-8 w-40 h-40 bg-gradient-to-br from-pink-200 via-yellow-200 to-purple-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
@@ -109,12 +109,12 @@ export default function Home() {
       </motion.section>
 
       {/* Hero Section mới */}
-      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }}>
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="mb-10 bg-white/80 rounded-3xl shadow-2xl border-4 border-yellow-100 p-2">
         <HeroSection />
       </motion.div>
 
       {/* Best Picks Section mới */}
-      <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }}>
+      <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }} className="mb-10 bg-gradient-to-br from-yellow-50 via-pink-50 to-fuchsia-50 rounded-3xl shadow-2xl border-4 border-pink-100 p-2">
         <BestPicksSection />
       </motion.div>
 
@@ -124,7 +124,7 @@ export default function Home() {
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 1, delay: 0.3 }}
-        className="relative py-20 px-2 max-w-7xl mx-auto animate-fade-in-up"
+        className="relative py-20 px-2 max-w-7xl mx-auto animate-fade-in-up bg-white/80 rounded-3xl shadow-2xl border-4 border-yellow-100 mb-10"
       >
         <span className="absolute -top-16 -left-16 w-72 h-72 bg-gradient-to-br from-pink-300 via-yellow-200 to-fuchsia-300 opacity-30 rounded-full blur-3xl animate-blob z-0" />
         <span className="absolute -bottom-16 -right-16 w-72 h-72 bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-200 opacity-20 rounded-full blur-3xl animate-blob2 z-0" />
@@ -175,7 +175,7 @@ export default function Home() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.2 }}
-          className="relative py-16 px-2 max-w-3xl mx-auto animate-fade-in-up"
+          className="relative py-16 px-2 max-w-3xl mx-auto animate-fade-in-up bg-gradient-to-br from-pink-50 via-yellow-50 to-fuchsia-50 rounded-3xl shadow-2xl border-4 border-pink-100 mb-10"
         >
           <span className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-pink-300 via-yellow-200 to-fuchsia-300 opacity-30 rounded-full blur-2xl animate-blob z-0" />
           <span className="absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
@@ -204,35 +204,13 @@ export default function Home() {
         </motion.section>
       )}
 
-      {/* Section đối tác */}
-      <motion.section
-        initial={{ opacity: 0, y: 60 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 1, delay: 0.3 }}
-        className="relative py-16 px-2 max-w-6xl mx-auto animate-fade-in-up"
-      >
-        <span className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-blue-300 via-green-200 to-cyan-300 opacity-30 rounded-full blur-2xl animate-blob z-0" />
-        <span className="absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br from-green-200 via-blue-200 to-cyan-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
-        <h2 className="text-2xl md:text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-green-400 to-cyan-400 drop-shadow mb-10">
-          Đối Tác & Nhà Xuất Bản
-        </h2>
-        <div className="flex flex-wrap justify-center gap-8 items-center">
-          <img src="/public/images/Coder-BookStore-Logo.svg" alt="Coder Bookstore" className="h-16 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/4/4a/Logo_NXB_Tre.png" alt="NXB Trẻ" className="h-14 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Logo_NXB_Giao_Duc.png" alt="NXB Giáo Dục" className="h-14 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/7/7e/Logo_NXB_Hong_Duc.png" alt="NXB Hồng Đức" className="h-14 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/2/2e/Logo_NXB_Kim_Dong.png" alt="NXB Kim Đồng" className="h-14 w-auto grayscale hover:grayscale-0 transition-all duration-300" />
-        </div>
-      </motion.section>
-
       {/* Explore More Section - làm mới style */}
       <motion.section
         initial={{ opacity: 0, y: 60 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 1, delay: 0.3 }}
-        className="relative py-16 px-2 max-w-7xl mx-auto animate-fade-in-up"
+        className="relative py-16 px-2 max-w-7xl mx-auto animate-fade-in-up bg-gradient-to-br from-blue-50 via-green-50 to-cyan-50 rounded-3xl shadow-2xl border-4 border-blue-100 mb-10"
       >
         <span className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-blue-300 via-green-200 to-cyan-300 opacity-30 rounded-full blur-2xl animate-blob z-0" />
         <span className="absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br from-green-200 via-blue-200 to-cyan-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
@@ -257,7 +235,7 @@ export default function Home() {
         whileInView={{ opacity: 1, scale: 1 }}
         viewport={{ once: true }}
         transition={{ duration: 1, delay: 0.2 }}
-        className="text-center py-16 bg-gradient-to-br from-pink-100 via-purple-100 to-yellow-100 rounded-2xl shadow-lg border-4 border-pink-200 max-w-4xl mx-auto my-12 animate-fade-in-up"
+        className="text-center py-16 bg-gradient-to-br from-pink-100 via-purple-100 to-yellow-100 rounded-2xl shadow-lg border-4 border-pink-200 max-w-4xl mx-auto my-12 animate-fade-in-up border-4"
       >
         <h2 className="text-2xl font-extrabold text-pink-700 mb-4">
           Sẵn Sàng Nâng Tầm Kỹ Năng Của Bạn?
