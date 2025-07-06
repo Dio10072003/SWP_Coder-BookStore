@@ -4,24 +4,16 @@ import Link from 'next/link';
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 // Đã thêm FaStarHalfAlt để hiển thị nửa sao chính xác hơn
-import { FaBookOpen, FaInfoCircle, FaPhoneAlt, FaChevronRight, FaStar, FaFire, FaFeatherAlt, FaStarHalfAlt } from 'react-icons/fa'; 
-import Image from 'next/image';
+import { FaBookOpen, FaInfoCircle, FaPhoneAlt, FaChevronRight, FaStar, FaFire, FaStarHalfAlt, FaFeatherAlt } from 'react-icons/fa'; 
 import { useFeaturedBooks } from './hooks/useBooks';
 import Loading from './components/Loading';
 import Error from './components/Error';
 import HeroSection from './HomePage/Components/HeroSection';
 import BestPicksSection from './HomePage/Components/BestPicksSection';
+import Image from 'next/image';
 
 export default function Home() {
-  const [greet, setGreet] = useState('Hello');
   const { books, loading, error } = useFeaturedBooks(6);
-
-  useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreet('Good Morning');
-    else if (hour < 18) setGreet('Good Afternoon');
-    else setGreet('Good Evening');
-  }, []);
 
   const explore = [
     {
@@ -69,7 +61,8 @@ export default function Home() {
   };
 
   // Lấy feedback động từ API
-  const [feedbacks, setFeedbacks] = useState<any[]>([]);
+  type Feedback = { name?: string; content?: string; rating?: number };
+  const [feedbacks, setFeedbacks] = useState<Feedback[]>([]);
   const [testimonialIdx, setTestimonialIdx] = useState(0);
   const testimonialTimeout = useRef<NodeJS.Timeout | null>(null);
   useEffect(() => {
@@ -90,6 +83,9 @@ export default function Home() {
 
   return (
     <>
+      <h1>Hello, World!</h1>
+      <FaFeatherAlt className="text-2xl text-blue-500" />
+      <Image src="/next.svg" alt="Next.js Logo" width={80} height={80} />
       {/* Section banner sự kiện đặc biệt */}
       <motion.section
         initial={{ opacity: 0, scale: 0.95 }}
@@ -138,13 +134,13 @@ export default function Home() {
         {error && <Error message={`Lỗi: ${error}`} />}
         {!loading && !error && (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
-            {books.map(({ id, title, author, price, img, rating }) => (
+            {books.map(({ id, title, author, price, img, rating }, idx) => (
               <motion.div
                 key={id}
                 initial={{ opacity: 0, y: 40 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: 0.1 * id }}
+                transition={{ duration: 0.7, delay: 0.1 * idx }}
                 className="rounded-3xl shadow-2xl bg-gradient-to-br from-yellow-50 via-pink-50 to-fuchsia-100 border-4 border-pink-200 p-6 flex flex-col items-center hover:scale-105 hover:shadow-3xl transition-transform duration-300 group relative overflow-hidden"
               >
                 <span className="absolute -top-8 -right-8 w-24 h-24 bg-pink-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
