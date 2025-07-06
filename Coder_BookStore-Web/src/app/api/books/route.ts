@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
   const from = (page - 1) * limit;
   const to = from + limit - 1;
 
-  let query = supabaseAdmin.from('books').select('*', { count: 'exact' });
+  let query = supabaseAdmin.from('books').select('*, created_at', { count: 'exact' });
   if (category && category !== 'All') query = query.eq('category', category);
   if (search) query = query.ilike('title', `%${search}%`);
   if (year) query = query.eq('publishYear', parseInt(year));

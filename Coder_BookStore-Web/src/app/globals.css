@@ -3,6 +3,10 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --universe-bg: linear-gradient(135deg, #181c3a 0%, #2a225a 40%, #1a2a4f 100%);
+  --universe-text: #a5f3fc;
+  --universe-neon: #67e8f9;
+  --universe-glow: 0 0 8px #67e8f9, 0 0 16px #0ea5e9;
 }
 
 @theme inline {
@@ -16,13 +20,43 @@
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
+    --universe-bg: linear-gradient(135deg, #0a102a 0%, #1e1b3a 40%, #0a1a2f 100%);
+    --universe-text: #a5f3fc;
+    --universe-neon: #67e8f9;
+    --universe-glow: 0 0 12px #67e8f9, 0 0 24px #0ea5e9;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Geist', 'Inter', Arial, Helvetica, sans-serif;
+}
+
+.universe-bg {
+  background: var(--universe-bg) !important;
+}
+.universe-text {
+  color: var(--universe-text) !important;
+}
+.neon {
+  color: var(--universe-neon) !important;
+  text-shadow: var(--universe-glow) !important;
+}
+.star-glow {
+  filter: drop-shadow(0 0 6px #67e8f9) drop-shadow(0 0 12px #0ea5e9);
+}
+.footer-nebula {
+  background: radial-gradient(circle at 60% 40%, #67e8f9 0%, #312e81 60%, transparent 100%);
+  opacity: 0.18;
+  pointer-events: none;
+  position: absolute;
+  width: 60vw;
+  height: 60vw;
+  left: 20vw;
+  top: 30vh;
+  z-index: 0;
+  filter: blur(60px);
 }
 
 /* Animation cho hiệu ứng blob, float, fade-in, gradient-move */

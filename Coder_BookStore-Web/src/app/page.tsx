@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 // Đã thêm FaStarHalfAlt để hiển thị nửa sao chính xác hơn
 import { FaBookOpen, FaInfoCircle, FaPhoneAlt, FaChevronRight, FaStar, FaFire, FaFeatherAlt, FaStarHalfAlt } from 'react-icons/fa'; 
@@ -9,6 +9,8 @@ import Image from 'next/image';
 import { useFeaturedBooks } from './hooks/useBooks';
 import Loading from './components/Loading';
 import Error from './components/Error';
+import HeroSection from './HomePage/Components/HeroSection';
+import BestPicksSection from './HomePage/Components/BestPicksSection';
 
 export default function Home() {
   const [greet, setGreet] = useState('Hello');
@@ -66,202 +68,188 @@ export default function Home() {
     return <div className="flex items-center gap-1">{stars}</div>;
   };
 
+  // Lấy feedback động từ API
+  const [feedbacks, setFeedbacks] = useState<any[]>([]);
+  const [testimonialIdx, setTestimonialIdx] = useState(0);
+  const testimonialTimeout = useRef<NodeJS.Timeout | null>(null);
+  useEffect(() => {
+    fetch('/api/feedback')
+      .then(res => res.json())
+      .then(data => Array.isArray(data) ? setFeedbacks(data) : setFeedbacks([]));
+  }, []);
+  useEffect(() => {
+    if (!feedbacks.length) return;
+    if (testimonialTimeout.current) clearTimeout(testimonialTimeout.current);
+    testimonialTimeout.current = setTimeout(() => {
+      setTestimonialIdx(i => (i + 1) % feedbacks.length);
+    }, 4000);
+    return () => {
+      if (testimonialTimeout.current) clearTimeout(testimonialTimeout.current);
+    };
+  }, [testimonialIdx, feedbacks]);
+
   return (
-    // ĐÃ XÓA THẺ <main> BÊN NGOÀI NÀY
-    <> {/* Sử dụng Fragment thay vì thẻ <main> */}
-      {/* Hero Section */}
+    <>
+      {/* Section banner sự kiện đặc biệt */}
       <motion.section
-        initial={{ opacity: 0, y: -50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.9 }}
-        className="relative text-center mb-14 bg-white dark:bg-gray-800 p-5 md:p-8 rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-700 overflow-hidden"
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1 }}
+        className="relative py-10 px-2 max-w-5xl mx-auto mb-10 animate-fade-in-up bg-white/80 rounded-3xl shadow-2xl border-4 border-pink-100"
       >
-        {/* Blob nền động */}
-        <span className="absolute -top-10 -left-10 w-56 h-56 bg-pink-200 opacity-20 rounded-full blur-2xl animate-blob z-0" />
-        <span className="absolute -bottom-10 -right-10 w-56 h-56 bg-yellow-200 opacity-10 rounded-full blur-2xl animate-blob2 z-0" />
-        {/* Icon sách phía trên */}
-        <div className="flex justify-center mb-2 relative z-10">
-          <span className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-br from-yellow-300 via-pink-300 to-purple-300 shadow-lg animate-bounce-slow">
-            <svg width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-yellow-500"><rect x="4" y="7" width="16" height="10" rx="2" strokeWidth={2} /><path d="M8 11h8" strokeWidth={2} /></svg>
-          </span>
-        </div>
-        <div className="relative z-10">
-          <h1 className="text-3xl md:text-5xl font-extrabold mb-4 leading-tight animate-bounce-slow">
-            <span className="block text-lg font-semibold text-gray-700 dark:text-gray-300 mb-1">{greet},</span>
-            <span className="bg-gradient-to-r from-yellow-400 via-pink-500 to-fuchsia-500 bg-clip-text text-transparent drop-shadow-lg">
-              Welcome to Coder-Bookstore!
-            </span>
-          </h1>
-          <div className="flex flex-col items-center">
-            <p className="text-base md:text-lg text-gray-700 dark:text-gray-300 max-w-2xl mx-auto mb-2 leading-relaxed relative">
-              Your ultimate destination for inspiring coding books and resources to elevate your skills and fuel your passion.
-              <span className="block h-1 w-32 mx-auto mt-2 bg-gradient-to-r from-yellow-400 via-pink-400 to-fuchsia-400 rounded-full opacity-70" />
-            </p>
+        <span className="absolute -top-8 -left-8 w-40 h-40 bg-gradient-to-br from-yellow-400 via-pink-300 to-fuchsia-400 opacity-30 rounded-full blur-2xl animate-blob z-0" />
+        <span className="absolute -bottom-8 -right-8 w-40 h-40 bg-gradient-to-br from-pink-200 via-yellow-200 to-purple-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8 bg-gradient-to-r from-yellow-100 via-pink-100 to-fuchsia-100 rounded-2xl shadow-xl border-4 border-pink-200 p-8">
+          <div className="flex-1 text-center md:text-left">
+            <h2 className="text-2xl md:text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-500 via-yellow-400 to-fuchsia-500 drop-shadow mb-2">🎉 Sự kiện "Book Week" Đặc Biệt!</h2>
+            <p className="text-lg text-gray-700 mb-2">Giảm giá đến <span className="font-bold text-pink-600">50%</span> cho hàng trăm đầu sách lập trình, tặng voucher cho thành viên mới!</p>
+            <Link href="/Promotions" className="inline-block px-6 py-2 bg-gradient-to-r from-pink-500 to-yellow-400 text-white rounded-full font-bold shadow hover:scale-110 hover:shadow-xl transition-all mt-2">Xem ưu đãi</Link>
           </div>
-          <Link
-            href="/Books"
-            className="inline-block px-8 py-3 bg-gradient-to-r from-pink-500 via-yellow-400 to-fuchsia-500 text-white text-base rounded-full font-bold shadow-xl hover:scale-105 hover:shadow-2xl transition-all duration-300 ease-in-out mt-4 animate-fade-in"
-            aria-label="Browse all books at Coder-Bookstore"
-          >
-            Explore Our Collection <FaChevronRight className="inline-block ml-2 -mr-1 text-xs" />
-          </Link>
+          <img src="/public/images/Coder-BookStore-Logo.svg" alt="Book Week" className="w-32 h-32 object-contain mx-auto md:mx-0 animate-bounce-slow" />
         </div>
       </motion.section>
 
-      {/* Featured Books Section */}
+      {/* Hero Section mới */}
+      <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1 }} className="mb-10 bg-white/80 rounded-3xl shadow-2xl border-4 border-yellow-100 p-2">
+        <HeroSection />
+      </motion.div>
+
+      {/* Best Picks Section mới */}
+      <motion.div initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1, delay: 0.2 }} className="mb-10 bg-gradient-to-br from-yellow-50 via-pink-50 to-fuchsia-50 rounded-3xl shadow-2xl border-4 border-pink-100 p-2">
+        <BestPicksSection />
+      </motion.div>
+
+      {/* Featured Books Section - làm mới style */}
       <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={sectionVariants}
-        className="mb-16"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.3 }}
+        className="relative py-20 px-2 max-w-7xl mx-auto animate-fade-in-up bg-white/80 rounded-3xl shadow-2xl border-4 border-yellow-100 mb-10"
       >
-        <h2 className="text-2xl md:text-3xl font-extrabold text-purple-700 dark:text-purple-400 mb-8 text-center drop-shadow-md">
-          <FaFire className="inline-block text-yellow-500 mr-2 align-middle" />
-          Sách Nổi Bật <span className="text-pink-500">& Mới Nhất</span>
+        <span className="absolute -top-16 -left-16 w-72 h-72 bg-gradient-to-br from-pink-300 via-yellow-200 to-fuchsia-300 opacity-30 rounded-full blur-3xl animate-blob z-0" />
+        <span className="absolute -bottom-16 -right-16 w-72 h-72 bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-200 opacity-20 rounded-full blur-3xl animate-blob2 z-0" />
+        <h2 className="text-3xl md:text-4xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 via-pink-500 to-fuchsia-500 drop-shadow mb-10">
+          <FaFire className="inline-block text-yellow-400 mr-2 align-middle animate-pulse" />
+          Sách Nổi Bật & Mới Nhất
         </h2>
-        
         {loading && <Loading message="Đang tải sách..." />}
         {error && <Error message={`Lỗi: ${error}`} />}
-        
         {!loading && !error && (
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={{
-              hidden: {},
-              visible: {
-                transition: {
-                  staggerChildren: 0.1,
-                },
-              },
-            }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6"
-          >
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
             {books.map(({ id, title, author, price, img, rating }) => (
-              <motion.article
+              <motion.div
                 key={id}
-                variants={{
-                  hidden: { opacity: 0, y: 50, scale: 0.95 },
-                  visible: { opacity: 1, y: 0, scale: 1 },
-                }}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group border border-gray-100 dark:border-gray-700 flex flex-col hover:-translate-y-1 hover:scale-[1.025]"
+                initial={{ opacity: 0, y: 40 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: 0.1 * id }}
+                className="rounded-3xl shadow-2xl bg-gradient-to-br from-yellow-50 via-pink-50 to-fuchsia-100 border-4 border-pink-200 p-6 flex flex-col items-center hover:scale-105 hover:shadow-3xl transition-transform duration-300 group relative overflow-hidden"
               >
-                <div className="relative w-full aspect-[3/4] overflow-hidden rounded-t-xl bg-gray-100 dark:bg-gray-700">
-                  <Image
-                    src={img}
-                    alt={title}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    priority={id <= 3}
-                    className="group-hover:scale-105 transition-transform duration-500 ease-in-out rounded-t-xl"
-                  />
+                <span className="absolute -top-8 -right-8 w-24 h-24 bg-pink-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
+                <img
+                  src={img}
+                  alt={title}
+                  className="w-32 h-44 object-cover rounded-xl mb-4 border-2 border-white shadow-lg group-hover:scale-105 transition"
+                />
+                <h3 className="text-lg font-bold text-pink-700 mb-1 text-center drop-shadow-lg">{title}</h3>
+                <p className="text-sm text-gray-500 mb-1">by <span className="font-semibold text-blue-700">{author}</span></p>
+                <div className="flex items-center mb-1">
+                  {renderStars(rating)}
+                  <span className="text-xs text-gray-600 ml-2">({rating})</span>
                 </div>
-                
-                <div className="p-4 flex flex-col flex-grow">
-                  <div>
-                    <h3 className="text-base font-bold text-pink-600 dark:text-pink-400 mb-1 leading-snug line-clamp-2 min-h-[40px]">{title}</h3>
-                    <p className="text-xs text-gray-500 dark:text-gray-400 mb-1">by <span className="font-semibold">{author}</span></p>
-                    <div className="flex items-center mb-1">
-                      {renderStars(rating)}
-                      <span className="text-xs text-gray-600 dark:text-gray-400 ml-2">({rating})</span>
-                    </div>
-                    <p className="font-extrabold text-base text-yellow-600 dark:text-yellow-400 mb-2">{price}</p>
-                  </div>
-                  <Link
-                    href={`/Books/${id}`}
-                    className="inline-flex items-center justify-center gap-2 text-pink-500 font-semibold hover:text-white transition-colors duration-200 mt-auto bg-pink-100 dark:bg-gray-700 py-1.5 rounded-lg hover:bg-gradient-to-r hover:from-pink-500 hover:to-yellow-400 hover:shadow-lg text-xs border border-pink-200 dark:border-gray-600"
-                    aria-label={`Details about ${title}`}
-                  >
-                    Xem chi tiết <FaChevronRight className="text-xs" />
-                  </Link>
-                </div>
-              </motion.article>
+                <p className="font-extrabold text-lg text-yellow-600 mb-2">{Number(price).toLocaleString()}₫</p>
+                <Link href={`/Books/${id}`} className="inline-block px-5 py-2 bg-gradient-to-r from-pink-500 to-yellow-400 text-white rounded-full font-bold shadow hover:scale-110 hover:shadow-xl transition-all mt-auto">Xem chi tiết <FaChevronRight className="inline-block ml-1 text-xs" /></Link>
+              </motion.div>
             ))}
-          </motion.div>
+          </div>
         )}
-        
-        <div className="text-center mt-10">
-          <Link
-            href="/Books"
-            className="inline-block px-6 py-2 text-base bg-purple-600 text-white rounded-full font-semibold shadow-lg hover:bg-purple-700 hover:scale-105 transition-transform duration-300 ease-in-out"
-            aria-label="View all books"
-          >
-            Xem tất cả sách <FaChevronRight className="inline-block ml-2 text-xs" />
-          </Link>
+        <div className="text-center mt-12">
+          <Link href="/Books" className="inline-block px-8 py-3 text-lg bg-gradient-to-r from-purple-600 via-pink-400 to-yellow-400 text-white rounded-full font-extrabold shadow-xl hover:scale-110 hover:shadow-2xl transition-transform duration-300">Xem tất cả sách <FaChevronRight className="inline-block ml-2 text-xs" /></Link>
         </div>
       </motion.section>
 
-      {/* Explore More Section */}
+      {/* Section cảm nhận khách hàng - lấy động từ API */}
+      {feedbacks.length > 0 && (
+        <motion.section
+          initial={{ opacity: 0, scale: 0.95 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="relative py-16 px-2 max-w-3xl mx-auto animate-fade-in-up bg-gradient-to-br from-pink-50 via-yellow-50 to-fuchsia-50 rounded-3xl shadow-2xl border-4 border-pink-100 mb-10"
+        >
+          <span className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-pink-300 via-yellow-200 to-fuchsia-300 opacity-30 rounded-full blur-2xl animate-blob z-0" />
+          <span className="absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br from-yellow-200 via-pink-200 to-purple-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
+          <h2 className="text-2xl md:text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-pink-400 via-yellow-400 to-fuchsia-400 drop-shadow mb-10">
+            Cảm Nhận Khách Hàng
+          </h2>
+          <div className="flex flex-col items-center justify-center">
+            <motion.div
+              key={testimonialIdx}
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -30 }}
+              transition={{ duration: 0.7 }}
+              className="bg-white/80 rounded-2xl shadow-xl p-8 flex flex-col items-center max-w-xl mx-auto border-4 border-pink-200"
+            >
+              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(feedbacks[testimonialIdx].name || 'user')}`} alt={feedbacks[testimonialIdx].name} className="w-20 h-20 rounded-full border-4 border-yellow-300 shadow mb-4" />
+              <blockquote className="text-lg italic text-gray-700 text-center mb-2">“{feedbacks[testimonialIdx].content}”</blockquote>
+              <span className="font-bold text-pink-600">{feedbacks[testimonialIdx].name}</span>
+              <div className="flex items-center gap-1 mt-2">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <FaStar key={i} className={i < (feedbacks[testimonialIdx].rating || 0) ? 'text-yellow-400' : 'text-gray-300'} />
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </motion.section>
+      )}
+
+      {/* Explore More Section - làm mới style */}
       <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={sectionVariants}
-        className="mb-16"
+        initial={{ opacity: 0, y: 60 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.3 }}
+        className="relative py-16 px-2 max-w-7xl mx-auto animate-fade-in-up bg-gradient-to-br from-blue-50 via-green-50 to-cyan-50 rounded-3xl shadow-2xl border-4 border-blue-100 mb-10"
       >
-        <h2 className="text-2xl md:text-3xl font-extrabold text-pink-700 dark:text-pink-400 mb-8 text-center drop-shadow-md">
-          <FaFeatherAlt className="inline-block text-purple-500 mr-2 align-middle" />
+        <span className="absolute -top-10 -left-10 w-40 h-40 bg-gradient-to-br from-blue-300 via-green-200 to-cyan-300 opacity-30 rounded-full blur-2xl animate-blob z-0" />
+        <span className="absolute -bottom-10 -right-10 w-40 h-40 bg-gradient-to-br from-green-200 via-blue-200 to-cyan-200 opacity-20 rounded-full blur-2xl animate-blob2 z-0" />
+        <h2 className="text-2xl md:text-3xl font-extrabold text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-green-400 to-cyan-400 drop-shadow mb-10">
           Khám Phá Thêm
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {explore.map(({ href, icon, label, desc }) => (
-            <motion.div
-              key={href}
-              variants={{
-                hidden: { opacity: 0, y: 50 },
-                visible: { opacity: 1, y: 0 },
-              }}
-              className="bg-white dark:bg-gray-800 p-5 rounded-xl shadow-lg hover:shadow-2xl transition-transform hover:scale-105 duration-300 border border-gray-100 dark:border-gray-700 flex flex-col items-center text-center justify-center"
-            >
-              <div className="mb-3 p-3 rounded-full bg-gradient-to-br from-yellow-50 via-pink-50 to-purple-50 dark:from-yellow-950 dark:via-pink-950 dark:to-purple-950 shadow-inner">
-                {icon}
-              </div>
-              <h3 className="text-lg font-bold text-gray-800 dark:text-gray-200 mb-1">{label}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-400">{desc}</p>
-              <Link
-                href={href}
-                className="mt-4 inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 font-semibold hover:text-purple-800 dark:hover:text-purple-200 transition-colors duration-200 text-sm"
-                aria-label={`Go to ${label}`}
-              >
-                Tìm hiểu thêm <FaChevronRight className="text-xs" />
-              </Link>
-            </motion.div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {explore.map((item, idx) => (
+            <Link key={item.href} href={item.href} className="rounded-2xl shadow-xl bg-gradient-to-br from-white via-gray-50 to-blue-50 border-2 border-blue-200 p-8 flex flex-col items-center hover:scale-105 hover:shadow-2xl transition-transform duration-300 group relative">
+              <span className="mb-4">{item.icon}</span>
+              <span className="text-xl font-bold text-blue-700 mb-2 drop-shadow-lg">{item.label}</span>
+              <span className="text-gray-500 text-center mb-2">{item.desc}</span>
+              <span className="mt-auto inline-block px-4 py-1 bg-gradient-to-r from-blue-400 to-green-400 text-white rounded-full font-semibold shadow hover:scale-110 hover:shadow-lg transition-all text-sm">Khám phá <FaChevronRight className="inline-block ml-1 text-xs" /></span>
+            </Link>
           ))}
         </div>
       </motion.section>
 
-      {/* Call to Action or Testimonial Section (New) */}
+      {/* Section call-to-action cuối trang */}
       <motion.section
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, amount: 0.3 }}
-        variants={sectionVariants}
-        className="text-center py-10 bg-gradient-to-br from-pink-100 via-purple-100 to-yellow-100 dark:from-pink-900/50 dark:via-purple-900/50 dark:to-yellow-900/50 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700"
+        initial={{ opacity: 0, scale: 0.95 }}
+        whileInView={{ opacity: 1, scale: 1 }}
+        viewport={{ once: true }}
+        transition={{ duration: 1, delay: 0.2 }}
+        className="text-center py-16 bg-gradient-to-br from-pink-100 via-purple-100 to-yellow-100 rounded-2xl shadow-lg border-4 border-pink-200 max-w-4xl mx-auto my-12 animate-fade-in-up border-4"
       >
-        <h2 className="text-2xl font-extrabold text-pink-700 dark:text-pink-400 mb-4">
+        <h2 className="text-2xl font-extrabold text-pink-700 mb-4">
           Sẵn Sàng Nâng Tầm Kỹ Năng Của Bạn?
         </h2>
-        <p className="text-base text-gray-700 dark:text-gray-300 max-w-xl mx-auto mb-6">
+        <p className="text-base text-gray-700 max-w-xl mx-auto mb-6">
           Tham gia cộng đồng Coder-Bookstore ngay hôm nay để không bỏ lỡ những kiến thức mới nhất!
         </p>
         <div className="flex justify-center gap-3">
-          <Link
-            href="/Register"
-            className="inline-block px-6 py-2 bg-purple-600 text-white text-base rounded-full font-bold shadow-lg hover:bg-purple-700 hover:scale-105 transition-transform duration-300"
-            aria-label="Register now"
-          >
-            Đăng Ký Ngay
-          </Link>
-          <Link
-            href="/Contact"
-            className="inline-block px-6 py-2 bg-white dark:bg-gray-700 text-purple-600 dark:text-purple-300 text-base rounded-full font-bold shadow-lg hover:bg-gray-100 dark:hover:bg-gray-600 hover:scale-105 transition-transform duration-300 border border-purple-600 dark:border-purple-400"
-            aria-label="Learn more about us"
-          >
-            Tìm Hiểu Thêm
-          </Link>
+          <Link href="/Register" className="inline-block px-6 py-2 bg-purple-600 text-white text-base rounded-full font-bold shadow-lg hover:bg-purple-700 hover:scale-110 transition-transform duration-300">Đăng Ký Ngay</Link>
+          <Link href="/Contact" className="inline-block px-6 py-2 bg-white text-purple-600 text-base rounded-full font-bold shadow-lg hover:bg-gray-100 hover:scale-110 transition-transform duration-300 border border-purple-600">Tìm Hiểu Thêm</Link>
         </div>
       </motion.section>
-    </> // ĐÃ XÓA THẺ <main> BÊN NGOÀI NÀY
+    </>
   );
 }

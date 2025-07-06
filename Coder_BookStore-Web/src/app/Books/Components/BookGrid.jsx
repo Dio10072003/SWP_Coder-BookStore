@@ -1,15 +1,114 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaStar, FaStarHalfAlt, FaBookOpen, FaCrown, FaCalendarAlt, FaFileAlt } from 'react-icons/fa';
+import { bookService } from '../../services/bookService';
+
+const emptyBook = {
+  title: '',
+  author: '',
+  price: '',
+  img: '',
+  rating: 0,
+  description: '',
+  category: '',
+  publishYear: new Date().getFullYear(),
+  pages: 0,
+  language: '',
+  isbn: '',
+};
+
+const gradientColors = [
+  ['#6366f1', '#a21caf'], // tím xanh
+  ['#f59e42', '#f43f5e'], // cam hồng
+  ['#22d3ee', '#2563eb'], // xanh biển
+  ['#facc15', '#f472b6'], // vàng hồng
+  ['#34d399', '#3b82f6'], // xanh lá-xanh dương
+  ['#f87171', '#fbbf24'], // đỏ cam
+  ['#a3e635', '#06b6d4'], // xanh lá-xanh ngọc
+  ['#f472b6', '#6366f1'], // hồng tím
+];
+const borderColors = [
+  '#a21caf', '#f43f5e', '#2563eb', '#facc15', '#34d399', '#f87171', '#a3e635', '#f472b6',
+];
 
 const BookGrid = ({ books = [] }) => {
+  const [showModal, setShowModal] = useState(false);
+  const [modalType, setModalType] = useState('create');
+  const [form, setForm] = useState(emptyBook);
+  const [editingId, setEditingId] = useState(null);
+  const [formError, setFormError] = useState(null);
+  const [successMsg, setSuccessMsg] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const openCreateModal = () => {
+    setForm(emptyBook);
+    setModalType('create');
+    setShowModal(true);
+    setEditingId(null);
+    setFormError(null);
+  };
+
+  const openEditModal = (book) => {
+    setForm({
+      title: book.title || '',
+      author: book.author || '',
+      price: book.price || '',
+      img: book.img || '',
+      rating: book.rating || 0,
+      description: book.description || '',
+      category: book.category || '',
+      publishYear: book.publishYear || new Date().getFullYear(),
+      pages: book.pages || 0,
+      language: book.language || '',
+      isbn: book.isbn || '',
+    });
+    setModalType('edit');
+    setShowModal(true);
+    setEditingId(book.id);
+    setFormError(null);
+  };
+
+  const handleFormChange = (e) => {
+    const { name, value } = e.target;
+    setForm(f => ({ ...f, [name]: name === 'rating' || name === 'pages' || name === 'publishYear' ? Number(value) : value }));
+  };
+
+  const handleFormSubmit = async (e) => {
+    e.preventDefault();
+    setFormError(null);
+    try {
+      if (modalType === 'create') {
+        await bookService.createBook(form);
+        setSuccessMsg('Đã thêm sách!');
+      } else if (modalType === 'edit' && editingId) {
+        await bookService.updateBook(editingId, form);
+        setSuccessMsg('Đã cập nhật sách!');
+      }
+      setShowModal(false);
+    } catch (err) {
+      setFormError(err.message || 'Lỗi không xác định');
+    }
+  };
+
+  const handleDelete = async (id) => {
+    if (!window.confirm('Bạn có chắc chắn muốn xóa sách này?')) return;
+    setDeleteLoading(true);
+    try {
+      await bookService.deleteBook(id);
+      setSuccessMsg('Đã xóa sách!');
+    } catch (err) {
+      setFormError(err.message || 'Lỗi không xác định');
+    } finally {
+      setDeleteLoading(false);
+    }
+  };
+
   const renderStars = (rating) => {
     if (!rating) return null;
     const fullStars = Math.floor(rating);
     const hasHalfStar = rating % 1 !== 0;
     const stars = [];
-    
     for (let i = 0; i < fullStars; i++) {
       stars.push(<FaStar key={`full-${i}`} className="text-yellow-400" />);
     }
@@ -22,76 +121,100 @@ const BookGrid = ({ books = [] }) => {
     return <div className="flex items-center gap-1">{stars}</div>;
   };
 
-  if (books.length === 0) {
-    return (
-      <div className="text-center py-10">
-        <p className="text-yellow-400 text-lg">Không tìm thấy sách nào.</p>
-      </div>
-    );
+  if (!books || books.length === 0) {
+    return <div className="text-center py-10 text-yellow-400 text-lg">Không tìm thấy sách nào.</div>;
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {books.map((book) => {
-        const isBest = book.rating >= 4.7;
-        const isNew = book.publishYear >= 2023;
-        return (
+    <section className="py-10 px-4 max-w-7xl mx-auto">
+      <div className="flex justify-center items-center mb-6">
+        <h1 className="text-3xl font-bold text-pink-600">Danh sách sách</h1>
+      </div>
+      {successMsg && <div className="text-green-600 mb-2">{successMsg}</div>}
+      {formError && <div className="text-red-500 mb-2">{formError}</div>}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {books.map((book, idx) => (
           <div
             key={book.id}
-            className="relative bg-white dark:bg-gray-800 rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col items-center p-5 text-center group border border-transparent hover:border-yellow-300 animate-fade-in"
+            className="rounded-2xl shadow-xl p-6 flex flex-col items-center border-4 font-bold transition-transform duration-200 hover:scale-105 hover:shadow-2xl"
+            style={{
+              background: `linear-gradient(135deg, ${gradientColors[idx % gradientColors.length][0]}, ${gradientColors[idx % gradientColors.length][1]})`,
+              borderColor: borderColors[idx % borderColors.length],
+              color: '#fff',
+            }}
           >
-            {/* Badge nổi bật */}
-            {isBest && (
-              <span className="absolute top-3 left-3 bg-gradient-to-r from-yellow-400 to-pink-400 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow">
-                <FaCrown className="text-base" /> Best Rated
-              </span>
-            )}
-            {isNew && !isBest && (
-              <span className="absolute top-3 left-3 bg-gradient-to-r from-blue-500 to-green-400 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
-                Mới ra mắt
-              </span>
-            )}
-            <div className="relative w-full aspect-[3/4] mb-4 rounded-xl overflow-hidden border-2 border-white shadow">
-              <Image
-                src={book.img || 'https://placehold.co/300x400?text=No+Image'}
-                alt={book.title}
-                fill
-                style={{ objectFit: 'cover' }}
-                className="rounded-xl group-hover:scale-105 transition-transform duration-300"
-                sizes="(max-width: 768px) 100vw, 33vw"
-              />
+            <img
+              src={book.img || 'https://placehold.co/120x180?text=No+Image'}
+              alt={book.title}
+              className="w-28 h-40 object-cover rounded-lg mb-4 border-2 border-white shadow"
+            />
+            <div className="text-lg mb-1 truncate w-full text-center" title={book.title}>{book.title}</div>
+            <div className="text-sm mb-2 w-full text-center" style={{ color: '#facc15', fontWeight: 600 }}>by {book.author}</div>
+            <div className="flex gap-2 mb-2">
+              <span className="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">{book.category}</span>
+              <span className="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">{book.publishYear}</span>
             </div>
-            <div className="flex-1 flex flex-col justify-between w-full">
-              <h3 className="text-lg font-bold text-gray-800 dark:text-white mb-1 line-clamp-2 min-h-[48px]">{book.title}</h3>
-              <p className="text-sm text-gray-600 dark:text-gray-300 mb-1">Tác giả: <span className="font-medium text-blue-700 dark:text-blue-300">{book.author}</span></p>
-              <div className="flex items-center justify-center mb-2">
-                {renderStars(book.rating)}
-                <span className="text-sm text-gray-500 ml-1">({book.rating}/5)</span>
-              </div>
-              <div className="flex flex-wrap justify-center gap-2 mb-2">
-                <span className="inline-flex items-center gap-1 bg-purple-100 dark:bg-purple-900 text-purple-700 dark:text-purple-200 px-2 py-1 rounded text-xs font-semibold">
-                  <FaBookOpen /> {book.category}
-                </span>
-                <span className="inline-flex items-center gap-1 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 px-2 py-1 rounded text-xs font-semibold">
-                  <FaCalendarAlt /> {book.publishYear}
-                </span>
-                <span className="inline-flex items-center gap-1 bg-green-100 dark:bg-green-900 text-green-700 dark:text-green-200 px-2 py-1 rounded text-xs font-semibold">
-                  <FaFileAlt /> {book.pages} trang
-                </span>
-              </div>
-              <p className="text-xs text-gray-700 dark:text-gray-200 mb-3 line-clamp-3 min-h-[48px]">{book.description}</p>
-              <p className="text-xl font-bold text-pink-600 mb-2">{Number(book.price).toLocaleString()} VND</p>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-yellow-300">★</span>
+              <span>{book.rating || 0}</span>
             </div>
-            <Link
+            <div className="mb-4 text-lg">{book.price}₫</div>
+            <a
               href={`/Books/${book.id}`}
-              className="bg-gradient-to-r from-yellow-400 to-pink-400 text-white px-5 py-2 rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-xl transition-all duration-300 mt-auto"
+              className="mt-auto px-4 py-2 rounded-lg font-bold bg-white text-indigo-700 hover:bg-yellow-400 hover:text-indigo-900 transition-colors shadow border-2 border-white"
+              style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
             >
               Xem chi tiết
-            </Link>
+            </a>
           </div>
-        );
-      })}
-    </div>
+        ))}
+      </div>
+      {/* Modal thêm/sửa sách */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
+          <form onSubmit={handleFormSubmit} className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
+            <h2 className="text-xl font-bold mb-4">{modalType === 'create' ? 'Thêm sách' : 'Sửa sách'}</h2>
+            <label className="block mb-2">Tên sách
+              <input name="title" value={form.title} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
+            </label>
+            <label className="block mb-2">Tác giả
+              <input name="author" value={form.author} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
+            </label>
+            <label className="block mb-2">Giá (VND)
+              <input name="price" value={form.price} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
+            </label>
+            <label className="block mb-2">Ảnh bìa (URL)
+              <input name="img" value={form.img} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
+            </label>
+            <label className="block mb-2">Đánh giá (0-5)
+              <input name="rating" type="number" min="0" max="5" step="0.1" value={form.rating} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
+            </label>
+            <label className="block mb-2">Mô tả
+              <textarea name="description" value={form.description} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
+            </label>
+            <label className="block mb-2">Thể loại
+              <input name="category" value={form.category} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
+            </label>
+            <label className="block mb-2">Năm xuất bản
+              <input name="publishYear" type="number" value={form.publishYear} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
+            </label>
+            <label className="block mb-2">Số trang
+              <input name="pages" type="number" value={form.pages} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
+            </label>
+            <label className="block mb-2">Ngôn ngữ
+              <input name="language" value={form.language} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
+            </label>
+            <label className="block mb-2">ISBN
+              <input name="isbn" value={form.isbn} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
+            </label>
+            <div className="flex justify-end gap-2 mt-4">
+              <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Hủy</button>
+              <button type="submit" className="px-4 py-2 rounded bg-pink-500 hover:bg-pink-600 text-white font-bold">Lưu</button>
+            </div>
+          </form>
+        </div>
+      )}
+    </section>
   );
 };
 

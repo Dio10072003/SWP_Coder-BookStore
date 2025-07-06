@@ -109,11 +109,11 @@ export default function BooksPage() {
       
       {!loading && !error && (
         <>
-          <BookGrid books={books} />
+          <BookGrid books={Array.isArray(books) ? books : (books?.data || [])} />
           <Pagination
             page={page}
             setPage={setPage}
-            total={total ?? books.length}
+            total={total ?? (Array.isArray(books) ? books.length : (books?.data?.length || 0))}
             limit={limit}
           />
         </>
