@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
+type Context = { params: { id: string } };
+
 // GET /api/users/[id] - Lấy thông tin user theo id
-export async function GET(request: NextRequest, context) {
+export async function GET(request: NextRequest, context: Context) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('users')
@@ -21,7 +23,7 @@ export async function GET(request: NextRequest, context) {
 }
 
 // PUT /api/users/[id] - Cập nhật user theo id
-export async function PUT(request: NextRequest, context) {
+export async function PUT(request: NextRequest, context: Context) {
   const { id } = context.params;
   const body = await request.json();
   const { data, error } = await supabaseAdmin
@@ -41,7 +43,7 @@ export async function PUT(request: NextRequest, context) {
 }
 
 // DELETE /api/users/[id] - Xóa user theo id
-export async function DELETE(request: NextRequest, context) {
+export async function DELETE(request: NextRequest, context: Context) {
   const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('users')
