@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
 
-type Context = { params: { id: string } };
-
 // GET /api/users/[id] - Lấy thông tin user theo id
-export async function GET(request: NextRequest, context: Context) {
-  const { id } = context.params;
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('*')
@@ -23,8 +21,8 @@ export async function GET(request: NextRequest, context: Context) {
 }
 
 // PUT /api/users/[id] - Cập nhật user theo id
-export async function PUT(request: NextRequest, context: Context) {
-  const { id } = context.params;
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const body = await request.json();
   const { data, error } = await supabaseAdmin
     .from('users')
@@ -43,8 +41,8 @@ export async function PUT(request: NextRequest, context: Context) {
 }
 
 // DELETE /api/users/[id] - Xóa user theo id
-export async function DELETE(request: NextRequest, context: Context) {
-  const { id } = context.params;
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params;
   const { error } = await supabaseAdmin
     .from('users')
     .delete()
