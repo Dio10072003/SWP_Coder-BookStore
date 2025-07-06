@@ -10,7 +10,7 @@ export default function Header(): JSX.Element {
   const [open, setOpen] = useState(false);
   const [greet, setGreet] = useState("");
   const [currentTime, setCurrentTime] = useState("");
-  const [currentLocation] = useState("An Nhơn, Bình Định");
+  const [currentLocation] = useState("An Nhơn Nam, Gia Lai");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
   const [userRole, setUserRole] = useState("");
@@ -68,111 +68,111 @@ export default function Header(): JSX.Element {
 
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 shadow-lg text-white font-sans">
-      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-2 py-1 flex items-center justify-between gap-2 min-h-[56px]">
         {/* Logo + Brand */}
-        <Link href="/" className="flex items-center gap-3 min-w-[220px]">
+        <Link href="/" className="flex items-center gap-2 min-w-[140px]">
           <Image
             src="/images/Coder-BookStore-Logo.svg"
             alt="Coder-Bookstore Logo"
-            width={44}
-            height={44}
-            className="object-contain rounded-lg bg-white p-1 shadow"
+            width={32}
+            height={32}
+            className="object-contain rounded bg-white p-0.5 shadow"
             priority
           />
           <div className="flex flex-col justify-center">
-            <span className="text-xl font-extrabold tracking-wide text-white drop-shadow-sm leading-tight">
+            <span className="text-base font-extrabold tracking-wide text-white drop-shadow-sm leading-tight">
               CODER-BOOKSTORE
             </span>
-            <span className="text-xs text-blue-100 font-medium tracking-wider hidden md:inline leading-tight">
+            <span className="text-[10px] text-blue-100 font-medium tracking-wider hidden md:inline leading-tight">
               Knowledge • Code • Growth
             </span>
           </div>
         </Link>
 
         {/* Menu */}
-        <nav className="flex-1 flex justify-center gap-7">
-          <Link href="/" className="font-semibold text-white/90 hover:text-blue-200 transition">Trang Chủ</Link>
-          <Link href="/Books" className="font-semibold text-white/90 hover:text-blue-200 transition">Sách</Link>
-          <Link href="/AboutPage" className="font-semibold text-white/90 hover:text-blue-200 transition">Về Chúng Tôi</Link>
-          <Link href="/Contact" className="font-semibold text-white/90 hover:text-blue-200 transition">Liên Hệ</Link>
+        <nav className="flex-1 flex justify-center gap-4">
+          <Link href="/" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Trang Chủ</Link>
+          <Link href="/Books" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Sách</Link>
+          <Link href="/AboutPage" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Về Chúng Tôi</Link>
+          <Link href="/Contact" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Liên Hệ</Link>
         </nav>
 
         {/* Actions */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
           {/* Admin/Staff Buttons */}
           {userRole === 'Admin' && (
             <>
-              <Link href="/admin" className="px-4 py-2 rounded-full bg-gradient-to-r from-blue-700 to-purple-700 text-white font-bold shadow hover:from-blue-800 hover:to-purple-800 transition">Admin</Link>
-              <Link href="/staff" className="px-4 py-2 rounded-full bg-gradient-to-r from-green-700 to-cyan-700 text-white font-bold shadow hover:from-green-800 hover:to-cyan-800 transition">Staff</Link>
+              <Link href="/admin" className="px-3 py-1 rounded-full bg-gradient-to-r from-blue-700 to-purple-700 text-white font-bold shadow hover:from-blue-800 hover:to-purple-800 transition text-xs">Admin</Link>
+              <Link href="/staff" className="px-3 py-1 rounded-full bg-gradient-to-r from-green-700 to-cyan-700 text-white font-bold shadow hover:from-green-800 hover:to-cyan-800 transition text-xs">Staff</Link>
             </>
           )}
           {userRole === 'Staff' && (
-            <Link href="/staff" className="px-4 py-2 rounded-full bg-gradient-to-r from-green-700 to-cyan-700 text-white font-bold shadow hover:from-green-800 hover:to-cyan-800 transition">Staff</Link>
+            <Link href="/staff" className="px-3 py-1 rounded-full bg-gradient-to-r from-green-700 to-cyan-700 text-white font-bold shadow hover:from-green-800 hover:to-cyan-800 transition text-xs">Staff</Link>
           )}
           {isLoggedIn ? (
-            <Link href="/Profile" className="px-4 py-2 rounded-full border border-green-400 text-green-900 bg-green-100 hover:bg-green-200 shadow transition font-bold">Profile</Link>
+            <Link href="/Profile" className="px-3 py-1 rounded-full border border-green-400 text-green-900 bg-green-100 hover:bg-green-200 shadow transition font-bold text-xs">Profile</Link>
           ) : (
             <>
-              <Link href="/Login" className="px-4 py-2 rounded-full border border-blue-400 text-blue-100 bg-white/10 hover:bg-white/20 shadow transition">Đăng nhập</Link>
-              <Link href="/Register" className="px-4 py-2 rounded-full border border-purple-400 text-purple-100 bg-white/10 hover:bg-white/20 shadow transition">Đăng ký</Link>
+              <Link href="/Login" className="px-3 py-1 rounded-full border border-blue-400 text-blue-100 bg-white/10 hover:bg-white/20 shadow transition text-xs">Đăng nhập</Link>
+              <Link href="/Register" className="px-3 py-1 rounded-full border border-purple-400 text-purple-100 bg-white/10 hover:bg-white/20 shadow transition text-xs">Đăng ký</Link>
             </>
           )}
           {isLoggedIn && userName && (
-            <span className="font-bold text-green-300 mr-2">Xin chào, {userName}!</span>
+            <span className="font-bold text-green-300 mr-1 text-xs">Xin chào, {userName}!</span>
           )}
-          <div className="ml-2 px-4 py-2 rounded-xl bg-white/70 backdrop-blur-md shadow text-blue-900 text-xs font-semibold flex flex-col items-center min-w-[170px] border border-white/30">
-            <span className="font-bold text-center whitespace-nowrap">{greet}</span>
+          <div className="ml-1 px-2 py-1 rounded-lg bg-white/70 backdrop-blur-md shadow text-blue-900 text-[10px] font-semibold flex flex-col items-center min-w-[90px] border border-white/30">
+            <span className="font-bold text-center whitespace-nowrap text-xs">{greet}</span>
             <span
-              className="block text-center tracking-widest text-xs mt-1 font-mono"
+              className="block text-center tracking-widest text-[11px] mt-0.5 font-mono"
               style={{
                 fontFamily: 'DS-Digital, DSEG7Classic, Seven Segment, monospace',
-                fontSize: '1.5rem',
+                fontSize: '1.1rem',
                 color: '#19ff19',
-                textShadow: '0 0 8px #19ff19, 0 0 2px #fff',
-                letterSpacing: '0.15em',
+                textShadow: '0 0 6px #19ff19, 0 0 1px #fff',
+                letterSpacing: '0.12em',
                 lineHeight: 1.1,
               }}
             >
               {currentTime}
             </span>
-            <span className="text-gray-500 mt-1">{currentLocation}</span>
+            <span className="text-gray-500 mt-0.5 text-[10px]">{currentLocation}</span>
           </div>
         </div>
       </div>
       {/* Mobile menu toggle button */}
-      <div className="md:hidden flex justify-end px-4 pb-2">
+      <div className="md:hidden flex justify-end px-2 pb-1">
         <button
           onClick={() => setOpen(!open)}
           aria-label="Toggle menu"
-          className="p-2 rounded-lg bg-white/10 hover:bg-white/20 transition-colors duration-150 shadow"
+          className="p-1 rounded-lg bg-white/10 hover:bg-white/20 transition-colors duration-150 shadow"
         >
-          {open ? <FaTimes size={24} /> : <FaBars size={24} />}
+          {open ? <FaTimes size={20} /> : <FaBars size={20} />}
         </button>
       </div>
       {/* Mobile menu */}
       {open && (
-        <nav className="md:hidden bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 px-6 pb-6 space-y-3 text-white font-semibold uppercase tracking-wide text-sm rounded-b-xl shadow-xl">
-          <Link href="/" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Trang Chủ</Link>
-          <Link href="/Books" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Sách</Link>
-          <Link href="/AboutPage" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Về Chúng Tôi</Link>
-          <Link href="/Contact" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Liên Hệ</Link>
-          <hr className="border-t border-white border-opacity-20 my-3" />
-          <Link href="/admin" onClick={() => setOpen(false)} className="block hover:text-orange-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10 flex items-center gap-3">
+        <nav className="md:hidden bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 px-4 pb-4 space-y-2 text-white font-semibold uppercase tracking-wide text-xs rounded-b-xl shadow-xl">
+          <Link href="/" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Trang Chủ</Link>
+          <Link href="/Books" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Sách</Link>
+          <Link href="/AboutPage" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Về Chúng Tôi</Link>
+          <Link href="/Contact" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Liên Hệ</Link>
+          <hr className="border-t border-white border-opacity-20 my-2" />
+          <Link href="/admin" onClick={() => setOpen(false)} className="block hover:text-orange-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10 flex items-center gap-2">
             <FaCog /> Admin Panel
           </Link>
           {isLoggedIn ? (
-            <Link href="/Profile" onClick={() => setOpen(false)} className="block hover:text-green-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Profile</Link>
+            <Link href="/Profile" onClick={() => setOpen(false)} className="block hover:text-green-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Profile</Link>
           ) : (
             <>
-              <Link href="/Login" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng nhập</Link>
-              <Link href="/Register" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-2 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng ký</Link>
+              <Link href="/Login" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng nhập</Link>
+              <Link href="/Register" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng ký</Link>
             </>
           )}
-          <div className="flex justify-center pt-4">
-            <div className="text-xs font-bold text-blue-900 bg-white/70 backdrop-blur-md px-4 py-2 rounded-xl shadow border border-white/30 flex flex-col items-center min-w-[170px]">
-              <div className="text-center w-full text-sm leading-tight">{greet}</div>
-              <div className="block text-center w-full text-blue-700 tracking-widest text-xs mt-1 font-mono">{currentTime}</div>
-              <div className="text-gray-500 mt-1 text-center">{currentLocation}</div>
+          <div className="flex justify-center pt-2">
+            <div className="text-[10px] font-bold text-blue-900 bg-white/70 backdrop-blur-md px-2 py-1 rounded-xl shadow border border-white/30 flex flex-col items-center min-w-[90px]">
+              <div className="text-center w-full text-xs leading-tight">{greet}</div>
+              <div className="block text-center w-full text-blue-700 tracking-widest text-[11px] mt-0.5 font-mono">{currentTime}</div>
+              <div className="text-gray-500 mt-0.5 text-center text-[10px]">{currentLocation}</div>
             </div>
           </div>
         </nav>

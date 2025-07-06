@@ -83,7 +83,9 @@ export default function Home() {
     testimonialTimeout.current = setTimeout(() => {
       setTestimonialIdx(i => (i + 1) % feedbacks.length);
     }, 4000);
-    return () => testimonialTimeout.current && clearTimeout(testimonialTimeout.current);
+    return () => {
+      if (testimonialTimeout.current) clearTimeout(testimonialTimeout.current);
+    };
   }, [testimonialIdx, feedbacks]);
 
   return (

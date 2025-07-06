@@ -4,8 +4,21 @@ import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaGithub, FaYoutube, FaEnvelope, FaPhone, FaMapMarkerAlt, FaHeart, FaArrowUp } from 'react-icons/fa';
 import { JSX } from 'react';
+import React from 'react';
 
-export default function Footer(): JSX.Element {
+interface FooterProps {
+  backgroundClass?: string;
+  textClass?: string;
+  iconColorClass?: string;
+  className?: string;
+}
+
+const Footer: React.FC<FooterProps> = ({
+  backgroundClass = 'bg-gradient-to-br from-indigo-900 via-purple-900 to-blue-950',
+  textClass = 'text-cyan-100',
+  iconColorClass = 'text-cyan-300',
+  className = '',
+}) => {
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   const fadeInVariants = {
@@ -21,154 +34,108 @@ export default function Footer(): JSX.Element {
   };
 
   return (
-    <footer className="bg-gradient-to-br from-purple-900 via-pink-900 to-red-900 text-white py-8 px-2 mt-12 relative overflow-hidden rounded-t-lg">
-      {/* Blob nhỏ, mờ hơn */}
-      <div className="absolute top-0 left-0 w-full h-full pointer-events-none">
-        <div className="absolute w-20 h-20 bg-pink-600 rounded-full opacity-5 blur-2xl -top-4 -left-4 animate-blob" />
-        <div className="absolute w-28 h-28 bg-purple-600 rounded-full opacity-5 blur-2xl -bottom-8 -right-4 animate-blob animation-delay-2000" />
-        <div className="absolute w-24 h-24 bg-red-600 rounded-full opacity-5 blur-2xl top-1/3 left-1/3 transform -translate-x-1/2 -translate-y-1/2 animate-blob animation-delay-4000" />
-      </div>
-      <div className="max-w-4xl mx-auto relative z-10">
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-6 gap-x-4 pb-6 border-b border-white border-opacity-10"
-        >
-          {/* About */}
-          <motion.div variants={fadeInVariants} className="text-center md:text-left lg:col-span-1">
-            <h3 className="text-2xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-yellow-200 to-pink-200 drop-shadow-sm">
-              Coder-Bookstore
-            </h3>
-            <p className="text-sm text-gray-200 leading-relaxed max-w-xs mx-auto md:mx-0 font-light">
-              Nguồn tri thức lập trình, nơi đam mê và công nghệ hội tụ. Khám phá tuyển chọn sách chất lượng, từ cơ bản đến nâng cao.
-            </p>
-          </motion.div>
-          {/* Khám phá */}
-          <motion.div variants={fadeInVariants} className="text-center md:text-left">
-            <h4 className="text-base font-bold mb-3 text-yellow-200">Khám phá</h4>
-            <ul className="space-y-1 text-sm font-light">
-              <li><Link href="/" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Trang chủ</Link></li>
-              <li><Link href="/Books" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Tất cả sách</Link></li>
-              <li><Link href="/Categories" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Danh mục sách</Link></li>
-              <li><Link href="/Authors" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Tác giả nổi bật</Link></li>
-              <li><Link href="/NewArrivals" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Sách mới về</Link></li>
-              <li><Link href="/BestSeller" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Sách bán chạy</Link></li>
-              <li><Link href="/Promotions" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Ưu đãi &amp; Khuyến mãi</Link></li>
-              <li><Link href="/Blog" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Bài viết &amp; Tin tức</Link></li>
-              <li><Link href="/Events" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Sự kiện</Link></li>
-              <li><Link href="/AboutPage" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Về chúng tôi</Link></li>
-              <li><Link href="/Career" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Cơ hội nghề nghiệp</Link></li>
-            </ul>
-          </motion.div>
-          {/* Dịch vụ khách hàng */}
-          <motion.div variants={fadeInVariants} className="text-center md:text-left">
-            <h4 className="text-base font-bold mb-3 text-yellow-200">Dịch vụ khách hàng</h4>
-            <ul className="space-y-1 text-sm font-light">
-              <li><Link href="/Privacy" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Chính sách bảo mật</Link></li>
-              <li><Link href="/Terms" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Điều khoản dịch vụ</Link></li>
-              <li><Link href="/Faq" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Câu hỏi thường gặp</Link></li>
-              <li><Link href="/ShipReturns" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Vận chuyển &amp; Đổi trả</Link></li>
-              <li><Link href="/Support-Center" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Trung tâm hỗ trợ</Link></li>
-              <li><Link href="/Payment" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Phương thức thanh toán</Link></li>
-              <li><Link href="/OrderTracking" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Theo dõi đơn hàng</Link></li>
-              <li><Link href="/Feedback" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Gửi phản hồi</Link></li>
-              <li><Link href="/Contact" className="hover:text-pink-200 transition-colors duration-200 hover:underline">Liên hệ</Link></li>
-            </ul>
-          </motion.div>
-        </motion.div>
-        {/* Contact & Social */}
-        <motion.div
-          variants={fadeInVariants}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.1 }}
-          className="mt-6 pt-4 border-t border-white border-opacity-10 flex flex-col md:flex-row justify-between items-center gap-4"
-        >
-          {/* Contact Info */}
-          <div className="text-center md:text-left flex-grow">
-            <h4 className="text-base font-bold mb-2 text-yellow-200">Liên hệ chúng tôi</h4>
-            <div className="space-y-1 text-sm font-light">
-              <p className="flex items-center justify-center md:justify-start gap-1.5">
-                <FaEnvelope className="text-pink-300 text-base" />
-                <a href="mailto:support@coderbookstore.com" className="hover:text-pink-200 transition-colors duration-200">support@coderbookstore.com</a>
-              </p>
-              <p className="flex items-center justify-center md:justify-start gap-1.5">
-                <FaPhone className="text-pink-300 text-base" />
-                <a href="tel:+84123456789" className="hover:text-pink-200 transition-colors duration-200">+84 123 456 789 (24/7)</a>
-              </p>
-              <p className="flex items-center justify-center md:justify-start gap-1.5">
-                <FaMapMarkerAlt className="text-pink-300 text-base mt-0.5" />
-                <span>KĐT An Phú Thịnh, Nhơn Bình, Quy Nhơn, Bình Định</span>
-              </p>
-            </div>
-          </div>
-          {/* Social Icons */}
-          <div className="text-center md:text-right">
-            <h4 className="text-base font-bold mb-2 text-yellow-200">Kết nối với chúng tôi</h4>
-            <div className="flex justify-center md:justify-end space-x-2 text-white text-opacity-80">
-              {[
-                { href: 'https://facebook.com/coderbookstore', icon: <FaFacebookF size={16} />, label: 'Facebook' },
-                { href: 'https://twitter.com/coderbookstore', icon: <FaTwitter size={16} />, label: 'Twitter' },
-                { href: 'https://instagram.com/coderbookstore', icon: <FaInstagram size={16} />, label: 'Instagram' },
-                { href: 'https://linkedin.com/company/coderbookstore', icon: <FaLinkedinIn size={16} />, label: 'LinkedIn' },
-                { href: 'https://github.com/coderbookstore', icon: <FaGithub size={16} />, label: 'GitHub' },
-                { href: 'http://youtube.com/coderbookstore', icon: <FaYoutube size={16} />, label: 'YouTube' },
-              ].map((social) => (
-                <motion.a
-                  key={social.href}
-                  href={social.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-yellow-200 transition-colors duration-200 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-yellow-200 rounded-full"
-                  aria-label={`Theo dõi chúng tôi trên ${social.label}`}
-                  whileHover={{ rotate: 5 }}
-                >
-                  {social.icon}
-                </motion.a>
-              ))}
-            </div>
-          </div>
-        </motion.div>
-        {/* Bottom Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center pt-4 text-gray-300 text-opacity-80 gap-2">
-          <motion.p
-            variants={fadeInVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ delay: 0.2 }}
-            className="text-center md:text-left text-xs italic max-w-xs"
-          >
-            &quot;Mỗi trang sách là một bước tiến trên hành trình khám phá thế giới muôn màu của bạn.&quot;
-          </motion.p>
-          <motion.p
-            variants={fadeInVariants}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.1 }}
-            transition={{ delay: 0.3 }}
-            className="text-center md:text-right text-xs flex items-center gap-1"
-          >
-            © {new Date().getFullYear()} Coder-Bookstore. Crafted with <FaHeart className="text-pink-400 animate-pulse text-xs" /> in Vietnam. All rights reserved.
-          </motion.p>
+    <footer className={`pt-10 pb-4 px-2 relative overflow-hidden ${backgroundClass} ${textClass} ${className} font-sans`}>
+      {/* Universe blob/nebula effect */}
+      <span className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-700 via-purple-700 to-cyan-700 opacity-30 rounded-full blur-3xl animate-blob z-0" />
+      <span className="absolute -bottom-24 -right-24 w-[32rem] h-[32rem] bg-gradient-to-br from-cyan-700 via-indigo-800 to-purple-900 opacity-20 rounded-full blur-3xl animate-blob2 z-0" />
+      <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 pb-8">
+        {/* About */}
+        <div className="text-center md:text-left">
+          <h3 className="text-2xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 drop-shadow-[0_0_8px_cyan] animate-pulse-slow">Coder-Bookstore</h3>
+          <p className="text-base font-light text-cyan-200/80 mb-2">Nguồn tri thức lập trình, nơi đam mê và công nghệ hội tụ. Khám phá tuyển chọn sách chất lượng, từ cơ bản đến nâng cao.</p>
+        </div>
+        {/* Khám phá */}
+        <div className="text-center md:text-left">
+          <h4 className="text-base font-bold mb-3 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Khám phá</h4>
+          <ul className="space-y-1 text-sm font-light">
+            <li><a href="/" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Trang chủ</a></li>
+            <li><a href="/Books" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Tất cả sách</a></li>
+            <li><a href="/Categories" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Danh mục sách</a></li>
+            <li><a href="/Authors" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Tác giả nổi bật</a></li>
+            <li><a href="/NewArrivals" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Sách mới về</a></li>
+            <li><a href="/BestSeller" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Sách bán chạy</a></li>
+            <li><a href="/Promotions" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Ưu đãi &amp; Khuyến mãi</a></li>
+            <li><a href="/Blog" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Bài viết &amp; Tin tức</a></li>
+            <li><a href="/Events" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Sự kiện</a></li>
+            <li><a href="/AboutPage" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Về chúng tôi</a></li>
+            <li><a href="/Career" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Cơ hội nghề nghiệp</a></li>
+          </ul>
+        </div>
+        {/* Dịch vụ khách hàng */}
+        <div className="text-center md:text-left">
+          <h4 className="text-base font-bold mb-3 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Dịch vụ khách hàng</h4>
+          <ul className="space-y-1 text-sm font-light">
+            <li><a href="/Privacy" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Chính sách bảo mật</a></li>
+            <li><a href="/Terms" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Điều khoản dịch vụ</a></li>
+            <li><a href="/Faq" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Câu hỏi thường gặp</a></li>
+            <li><a href="/ShipReturns" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Vận chuyển &amp; Đổi trả</a></li>
+            <li><a href="/Support-Center" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Trung tâm hỗ trợ</a></li>
+            <li><a href="/Payment" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Phương thức thanh toán</a></li>
+            <li><a href="/OrderTracking" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Theo dõi đơn hàng</a></li>
+            <li><a href="/Feedback" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Gửi phản hồi</a></li>
+            <li><a href="/Contact" className="hover:text-blue-300 transition-colors duration-200 hover:underline">Liên hệ</a></li>
+          </ul>
         </div>
       </div>
-      {/* Scroll to Top Button */}
-      <motion.button
-        initial={{ opacity: 0, x: 60 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.4, delay: 0.5 }}
-        whileHover={{ scale: 1.08, backgroundColor: '#c026d3' }}
-        whileTap={{ scale: 0.95 }}
+      <hr className="my-6 border-cyan-700/40" />
+      <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        {/* Contact Info */}
+        <div className="text-center md:text-left flex-grow">
+          <h4 className="text-base font-bold mb-2 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Liên hệ chúng tôi</h4>
+          <div className="space-y-1 text-sm font-light">
+            <p className="flex items-center justify-center md:justify-start gap-1.5 text-cyan-200">
+              <FaEnvelope className="text-cyan-400 text-base" />
+              <a href="mailto:support@coderbookstore.com" className="hover:text-blue-300 transition-colors duration-200">support@coderbookstore.com</a>
+            </p>
+            <p className="flex items-center justify-center md:justify-start gap-1.5 text-cyan-200">
+              <FaPhone className="text-cyan-400 text-base" />
+              <a href="tel:+84123456789" className="hover:text-blue-300 transition-colors duration-200">+84 123 456 789 (24/7)</a>
+            </p>
+            <p className="flex items-center justify-center md:justify-start gap-1.5 text-cyan-200">
+              <FaMapMarkerAlt className="text-cyan-400 text-base mt-0.5" />
+              <span>KĐT An Phú Thịnh, Nhơn Bình, Quy Nhơn, Gia Lai</span>
+            </p>
+          </div>
+          <blockquote className="italic text-cyan-300/80 mt-3 text-sm">"Mỗi trang sách là một bước tiến trên hành trình khám phá thế giới muôn màu của bạn."</blockquote>
+        </div>
+        {/* Social Icons */}
+        <div className="text-center md:text-right">
+          <h4 className="text-base font-bold mb-2 text-cyan-300 drop-shadow-[0_0_6px_cyan]">Kết nối với chúng tôi</h4>
+          <div className="flex justify-center md:justify-end space-x-2 text-cyan-200">
+            {[{
+              href: 'https://facebook.com', icon: <FaFacebookF /> },
+              { href: 'https://twitter.com', icon: <FaTwitter /> },
+              { href: 'https://instagram.com', icon: <FaInstagram /> },
+              { href: 'https://linkedin.com', icon: <FaLinkedinIn /> },
+              { href: 'https://github.com', icon: <FaGithub /> },
+              { href: 'https://youtube.com', icon: <FaYoutube /> },
+            ].map((social, idx) => (
+              <a
+                key={idx}
+                href={social.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-cyan-400 transition-colors duration-200 transform hover:scale-110 focus:outline-none focus:ring-2 focus:ring-cyan-400 rounded-full text-xl drop-shadow-[0_0_6px_cyan]"
+                aria-label={`Theo dõi chúng tôi trên ${social.href}`}
+              >
+                {social.icon}
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="relative z-10 text-center text-xs text-cyan-400 mt-8">
+        © 2025 Coder-Bookstore. Crafted with <FaHeart className="inline-block text-pink-400 mx-1 animate-pulse" /> in Vietnam. All rights reserved.
+      </div>
+      <button
         onClick={scrollToTop}
-        className="fixed bottom-4 right-4 bg-fuchsia-600 text-white p-2.5 rounded-full shadow-lg hover:bg-fuchsia-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-fuchsia-400 focus:ring-opacity-60 z-50"
-        aria-label="Cuộn lên đầu trang"
-        title="Cuộn lên đầu trang"
+        className="fixed bottom-6 right-6 z-50 bg-cyan-600 hover:bg-cyan-400 text-white p-3 rounded-full shadow-lg transition-all duration-300 animate-bounce-slow border-2 border-cyan-300"
+        aria-label="Lên đầu trang"
       >
-        <FaArrowUp className="w-4 h-4" />
-      </motion.button>
+        <FaArrowUp className="text-xl" />
+      </button>
     </footer>
   );
-}
+};
+
+export default Footer;
