@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaMapMarkerAlt, FaClock, FaChevronRight } from 'react-icons/fa';
+import Link from 'next/link';
 
 const PositionCard = ({ title, location, type, description, requirements }) => {
     return (
@@ -20,9 +21,9 @@ const PositionCard = ({ title, location, type, description, requirements }) => {
                     ))}
                 </ul>
             </div>
-            <button className="mt-4 px-5 py-2 bg-pink-600 text-white rounded-lg font-semibold shadow hover:bg-pink-700 flex items-center gap-2 self-end transition-all">
+            <Link href="/Contact" className="mt-4 px-5 py-2 bg-pink-600 text-white rounded-lg font-semibold shadow hover:bg-pink-700 flex items-center gap-2 self-end transition-all">
                 Ứng tuyển ngay <FaChevronRight />
-            </button>
+            </Link>
         </div>
     );
 };
