@@ -3,8 +3,11 @@ import { supabaseAdmin } from '../../lib/supabase';
 import { User } from '../../types/database';
 
 // GET /api/users/[id] - Lấy thông tin user theo id
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params as { id: string };
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Record<string, string> }
+) {
+  const { id } = params;
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('*')
@@ -13,7 +16,7 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 404 });
   }
-  // Không trả về password hoặc hash, nhưng vẫn sử dụng biến
+  // Không trả về password hoặc hash
   const { password, passwordHash, ...safeUser } = data as User;
   if (password || passwordHash) {
     // Đã loại bỏ thông tin nhạy cảm
@@ -22,8 +25,11 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
 }
 
 // PUT /api/users/[id] - Cập nhật user theo id
-export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params as { id: string };
+export async function PUT(
+  request: NextRequest,
+  { params }: { params: Record<string, string> }
+) {
+  const { id } = params;
   const body: Partial<User> = await request.json();
   const { data, error } = await supabaseAdmin
     .from('users')
@@ -42,8 +48,11 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
 }
 
 // DELETE /api/users/[id] - Xóa user theo id
-export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
-  const { id } = params as { id: string };
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Record<string, string> }
+) {
+  const { id } = params;
   const { error } = await supabaseAdmin
     .from('users')
     .delete()
@@ -52,4 +61,4 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   return NextResponse.json({ message: 'User deleted successfully' });
-} 
+}
