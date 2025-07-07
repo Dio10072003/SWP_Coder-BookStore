@@ -10,7 +10,7 @@ const OpenPositions = () => {
     useEffect(() => {
         fetch('/api/careers')
             .then(res => res.json())
-            .then(data => Array.isArray(data) ? setPositions(data) : setPositions([]))
+            .then(data => Array.isArray(data.data) ? setPositions(data.data) : setPositions([]))
             .catch(e => setError(e.message))
             .finally(() => setLoading(false));
     }, []);
