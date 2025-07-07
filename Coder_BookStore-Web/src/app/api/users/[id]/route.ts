@@ -1,9 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '../../lib/supabase';
+import { User } from '../../types/database';
 
 // GET /api/users/[id] - Lấy thông tin user theo id
-export async function GET(request: NextRequest, context: any) {
-  const { id } = context.params;
+export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params as { id: string };
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('*')
@@ -13,7 +14,7 @@ export async function GET(request: NextRequest, context: any) {
     return NextResponse.json({ error: error.message }, { status: 404 });
   }
   // Không trả về password hoặc hash, nhưng vẫn sử dụng biến
-  const { password, passwordHash, ...safeUser } = data;
+  const { password, passwordHash, ...safeUser } = data as User;
   if (password || passwordHash) {
     // Đã loại bỏ thông tin nhạy cảm
   }
@@ -21,9 +22,9 @@ export async function GET(request: NextRequest, context: any) {
 }
 
 // PUT /api/users/[id] - Cập nhật user theo id
-export async function PUT(request: NextRequest, context: any) {
-  const { id } = context.params;
-  const body = await request.json();
+export async function PUT(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params as { id: string };
+  const body: Partial<User> = await request.json();
   const { data, error } = await supabaseAdmin
     .from('users')
     .update(body)
@@ -33,7 +34,7 @@ export async function PUT(request: NextRequest, context: any) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  const { password, passwordHash, ...safeUser } = data;
+  const { password, passwordHash, ...safeUser } = data as User;
   if (password || passwordHash) {
     // Đã loại bỏ thông tin nhạy cảm
   }
@@ -41,8 +42,8 @@ export async function PUT(request: NextRequest, context: any) {
 }
 
 // DELETE /api/users/[id] - Xóa user theo id
-export async function DELETE(request: NextRequest, context: any) {
-  const { id } = context.params;
+export async function DELETE(request: NextRequest, { params }: { params: { id: string } }) {
+  const { id } = params as { id: string };
   const { error } = await supabaseAdmin
     .from('users')
     .delete()
@@ -51,4 +52,4 @@ export async function DELETE(request: NextRequest, context: any) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
   return NextResponse.json({ message: 'User deleted successfully' });
-}
+} 
