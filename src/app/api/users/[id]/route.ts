@@ -1,4 +1,6 @@
-// @ts-nocheck
+import { NextRequest, NextResponse } from 'next/server';
+import { supabaseAdmin } from '../../lib/supabase';
+
 // GET /api/users/[id] - Lấy thông tin user theo id
 export async function GET(request: NextRequest, context: any) {
   const { id } = context.params;
