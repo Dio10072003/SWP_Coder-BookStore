@@ -83,9 +83,7 @@ export default function Home() {
 
   return (
     <>
-      <h1>Hello, World!</h1>
       <FaFeatherAlt className="text-2xl text-blue-500" />
-      <Image src="/next.svg" alt="Next.js Logo" width={80} height={80} />
       {/* Section banner sự kiện đặc biệt */}
       <motion.section
         variants={sectionVariants}
@@ -190,7 +188,7 @@ export default function Home() {
               transition={{ duration: 0.7 }}
               className="bg-white/80 rounded-2xl shadow-xl p-8 flex flex-col items-center max-w-xl mx-auto border-4 border-pink-200"
             >
-              <Image src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(feedbacks[testimonialIdx].name || 'user')}`}
+              <img src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(feedbacks[testimonialIdx].name || 'user')}`}
                 alt={feedbacks[testimonialIdx].name || 'user'}
                 width={80}
                 height={80}
