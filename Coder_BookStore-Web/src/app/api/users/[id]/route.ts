@@ -3,11 +3,9 @@ import { supabaseAdmin } from '../../lib/supabase';
 import { User } from '../../types/database';
 
 // GET /api/users/[id] - Lấy thông tin user theo id
-export async function GET(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function GET(request: NextRequest, context: any) {
+  const { id } = context.params;
   const { data, error } = await supabaseAdmin
     .from('users')
     .select('*')
@@ -16,16 +14,14 @@ export async function GET(
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 404 });
   }
-  const { password, passwordHash, ...safeUser } = data as User;
-  return NextResponse.json(safeUser);
+  const { id: uid, email, name, created_at, updated_at, role } = data as User;
+  return NextResponse.json({ id: uid, email, name, created_at, updated_at, role });
 }
 
 // PUT /api/users/[id] - Cập nhật user theo id
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function PUT(request: NextRequest, context: any) {
+  const { id } = context.params;
   const body: Partial<User> = await request.json();
   const { data, error } = await supabaseAdmin
     .from('users')
@@ -36,16 +32,14 @@ export async function PUT(
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
-  const { password, passwordHash, ...safeUser } = data as User;
-  return NextResponse.json(safeUser);
+  const { id: uid, email, name, created_at, updated_at, role } = data as User;
+  return NextResponse.json({ id: uid, email, name, created_at, updated_at, role });
 }
 
 // DELETE /api/users/[id] - Xóa user theo id
-export async function DELETE(
-  request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const { id } = params;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function DELETE(request: NextRequest, context: any) {
+  const { id } = context.params;
   const { error } = await supabaseAdmin
     .from('users')
     .delete()
