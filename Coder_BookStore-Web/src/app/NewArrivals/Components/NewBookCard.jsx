@@ -1,6 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { addToCartLocal } from '../../utils/cartUtils';
 
 const NewBookCard = ({ id, title, author, price, imageUrl, releaseDate, tags }) => {
+    const [added, setAdded] = useState(false);
+    const handleAdd = () => {
+        addToCartLocal({ id, title, author, price, imageUrl, releaseDate, tags });
+        setAdded(true);
+        setTimeout(() => setAdded(false), 1200);
+    };
     return (
         <div className="new-book-card" key={id}>
             <img src={imageUrl} alt={title} className="new-book-image" />
@@ -14,7 +21,14 @@ const NewBookCard = ({ id, title, author, price, imageUrl, releaseDate, tags }) 
                         <span key={index} className="tag">{tag}</span>
                     ))}
                 </div>
-                <button className="add-to-cart-button">Thêm vào giỏ</button>
+                <div className="relative">
+                  <button className="add-to-cart-button" onClick={handleAdd}>Thêm vào giỏ</button>
+                  {added && (
+                    <span className="absolute left-1/2 -translate-x-1/2 top-[-36px] bg-green-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow animate-bounce">
+                      Đã thêm!
+                    </span>
+                  )}
+                </div>
             </div>
         </div>
     );

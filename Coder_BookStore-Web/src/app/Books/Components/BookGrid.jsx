@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaStar, FaStarHalfAlt, FaBookOpen, FaCrown, FaCalendarAlt, FaFileAlt } from 'react-icons/fa';
 import { bookService } from '../../services/bookService';
+import { addToCartLocal } from '../../utils/cartUtils';
 
 const emptyBook = {
   title: '',
@@ -166,6 +167,7 @@ const BookGrid = ({ books = [] }) => {
             >
               Xem chi tiết
             </a>
+            <AddToCartButton book={book} />
           </div>
         ))}
       </div>
@@ -217,5 +219,29 @@ const BookGrid = ({ books = [] }) => {
     </section>
   );
 };
+
+function AddToCartButton({ book }) {
+  const [added, setAdded] = useState(false);
+  const handleAdd = () => {
+    addToCartLocal(book);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
+  };
+  return (
+    <div className="relative mt-2">
+      <button
+        onClick={handleAdd}
+        className="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+      >
+        Thêm vào giỏ hàng
+      </button>
+      {added && (
+        <span className="absolute left-1/2 -translate-x-1/2 top-[-36px] bg-green-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow animate-bounce">
+          Đã thêm!
+        </span>
+      )}
+    </div>
+  );
+}
 
 export default BookGrid;

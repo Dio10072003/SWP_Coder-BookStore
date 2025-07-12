@@ -172,6 +172,35 @@ class BookService {
     return data;
   }
 
+  async getBestPicks(limit: number = 6): Promise<Book[]> {
+    try {
+      // Fetch books with high ratings (4.0 and above) and limit the results
+      const params = new URLSearchParams();
+      params.append('minRating', '4.0');
+      params.append('limit', limit.toString());
+      
+      const url = `${this.baseUrl}?${params.toString()}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      // API returns { data, total } format
+      const books = result.data || [];
+      
+      // Sort by rating (highest first) and return limited results
+      return books
+        .sort((a: Book, b: Book) => (b.rating || 0) - (a.rating || 0))
+        .slice(0, limit);
+    } catch (error) {
+      console.error('Error fetching best picks:', error);
+      // Return empty array as fallback
+      return [];
+    }
+  }
+
   async getCategories(): Promise<string[]> {
     const { data } = await this.getAllBooksWithTotal();
     if (!data) return [];

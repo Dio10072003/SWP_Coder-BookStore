@@ -66,6 +66,12 @@ export default function Header(): JSX.Element {
     }
   }, []);
 
+  const CartInfo = (
+    <Link href="/CartPage" className="relative ml-4">
+      🛒 Cart
+    </Link>
+  );
+
   return (
     <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 shadow-lg text-white font-sans">
       <div className="max-w-7xl mx-auto px-2 py-1 flex items-center justify-between gap-2 min-h-[56px]">
@@ -137,6 +143,7 @@ export default function Header(): JSX.Element {
             </span>
             <span className="text-gray-500 mt-0.5 text-[10px]">{currentLocation}</span>
           </div>
+          {isLoggedIn && CartInfo}
         </div>
       </div>
       {/* Mobile menu toggle button */}
