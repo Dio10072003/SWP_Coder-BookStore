@@ -73,7 +73,7 @@ export default function Header(): JSX.Element {
   );
 
   return (
-    <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 shadow-lg text-white font-sans">
+    <header className="sticky top-0 z-50 bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 shadow-lg text-white font-heading">
       <div className="max-w-7xl mx-auto px-2 py-1 flex items-center justify-between gap-2 min-h-[56px]">
         {/* Logo + Brand */}
         <Link href="/" className="flex items-center gap-2 min-w-[140px]">
@@ -86,10 +86,10 @@ export default function Header(): JSX.Element {
             priority
           />
           <div className="flex flex-col justify-center">
-            <span className="text-base font-extrabold tracking-wide text-white drop-shadow-sm leading-tight">
+            <span className="text-base font-extrabold tracking-wide text-white drop-shadow-sm leading-tight font-heading">
               CODER-BOOKSTORE
             </span>
-            <span className="text-[10px] text-blue-100 font-medium tracking-wider hidden md:inline leading-tight">
+            <span className="text-[10px] text-blue-100 font-medium tracking-wider hidden md:inline leading-tight font-body">
               Knowledge • Code • Growth
             </span>
           </div>
@@ -97,11 +97,11 @@ export default function Header(): JSX.Element {
 
         {/* Menu */}
         <nav className="flex-1 flex justify-center gap-4">
-          <Link href="/" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Trang Chủ</Link>
-          <Link href="/Books" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Sách</Link>
-          <Link href="/Schedule" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Lịch phát sóng</Link>
-          <Link href="/AboutPage" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Về Chúng Tôi</Link>
-          <Link href="/Contact" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Liên Hệ</Link>
+          <Link href="/" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm font-heading">Trang Chủ</Link>
+          <Link href="/Books" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm font-heading">Sách</Link>
+          <Link href="/Schedule" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm font-heading">Lịch phát sóng</Link>
+          <Link href="/AboutPage" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm font-heading">Về Chúng Tôi</Link>
+          <Link href="/Contact" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm font-heading">Liên Hệ</Link>
         </nav>
 
         {/* Actions */}

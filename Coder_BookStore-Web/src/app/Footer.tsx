@@ -18,7 +18,7 @@ const Footer: React.FC<FooterProps> = ({
   const scrollToTop = () => window.scrollTo({ top: 0, behavior: 'smooth' });
 
   return (
-    <footer className={`pt-10 pb-4 px-2 relative overflow-hidden ${backgroundClass} ${textClass} ${className} font-sans`}>
+    <footer className={`pt-10 pb-4 px-2 relative overflow-hidden ${backgroundClass} ${textClass} ${className} font-body`}>
       {/* Universe blob/nebula effect */}
       <span className="absolute -top-20 -left-20 w-96 h-96 bg-gradient-to-br from-blue-700 via-purple-700 to-cyan-700 opacity-30 rounded-full blur-3xl animate-blob z-0" />
       <span className="absolute -bottom-24 -right-24 w-[32rem] h-[32rem] bg-gradient-to-br from-cyan-700 via-indigo-800 to-purple-900 opacity-20 rounded-full blur-3xl animate-blob2 z-0" />
@@ -26,7 +26,7 @@ const Footer: React.FC<FooterProps> = ({
         {/* About */}
         <div className="text-center md:text-left">
           <h3 className="text-2xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 drop-shadow-[0_0_8px_cyan] animate-pulse-slow">Coder-Bookstore</h3>
-          <p className="text-base font-light text-cyan-200/80 mb-2">Nguồn tri thức lập trình, nơi đam mê và công nghệ hội tụ. Khám phá tuyển chọn sách chất lượng, từ cơ bản đến nâng cao.</p>
+          <p className="text-base font-light text-cyan-200/80 mb-2">Nguồn tri thức lập trình, nơi đam mê và công nghệ hội tụ. Khám phá tuyển chọn sách chất lượng, đa thể loại, đa dạng nội dung.</p>
         </div>
         {/* Khám phá */}
         <div className="text-center md:text-left">
