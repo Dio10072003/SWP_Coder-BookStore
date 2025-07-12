@@ -23,16 +23,16 @@ export default function Intro() {
     <section className="bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-700 text-white py-14 px-4 text-center rounded-b-3xl shadow-xl relative">
       <div className="absolute top-4 right-4 flex gap-2 z-10">
         <button onClick={() => setLang("vi")}
-          className={`px-3 py-1 rounded-full text-sm font-bold transition-all ${lang === "vi" ? "bg-yellow-300 text-blue-900 shadow" : "bg-white/20 hover:bg-yellow-200/60"}`}>VI</button>
+          className={`px-3 py-1 rounded-full text-sm font-bold transition-all font-heading ${lang === "vi" ? "bg-yellow-300 text-blue-900 shadow" : "bg-white/20 hover:bg-yellow-200/60"}`}>VI</button>
         <button onClick={() => setLang("en")}
-          className={`px-3 py-1 rounded-full text-sm font-bold transition-all ${lang === "en" ? "bg-yellow-300 text-blue-900 shadow" : "bg-white/20 hover:bg-yellow-200/60"}`}>EN</button>
+          className={`px-3 py-1 rounded-full text-sm font-bold transition-all font-heading ${lang === "en" ? "bg-yellow-300 text-blue-900 shadow" : "bg-white/20 hover:bg-yellow-200/60"}`}>EN</button>
         <button onClick={() => setLang("ja")}
-          className={`px-3 py-1 rounded-full text-sm font-bold transition-all ${lang === "ja" ? "bg-yellow-300 text-blue-900 shadow" : "bg-white/20 hover:bg-yellow-200/60"}`}>日本語</button>
+          className={`px-3 py-1 rounded-full text-sm font-bold transition-all font-heading ${lang === "ja" ? "bg-yellow-300 text-blue-900 shadow" : "bg-white/20 hover:bg-yellow-200/60"}`}>日本語</button>
       </div>
-      <h1 className="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-lg tracking-wide animate-fade-in">
+      <h1 className="text-3xl md:text-4xl font-extrabold mb-4 drop-shadow-lg tracking-wide animate-fade-in font-heading">
         {content[lang].title}
       </h1>
-      <p className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed animate-fade-in-slow">
+      <p className="text-lg md:text-xl max-w-2xl mx-auto leading-relaxed animate-fade-in-slow font-body">
         {content[lang].story}
       </p>
     </section>

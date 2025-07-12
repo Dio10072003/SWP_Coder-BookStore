@@ -50,14 +50,14 @@ const AuthorHeader = () => (
         </svg>
       </div>
       <h1
-        className="text-6xl md:text-7xl font-extrabold mb-4 drop-shadow-2xl tracking-tight animate-fade-in"
-        style={{ fontFamily: 'Montserrat, Arial, sans-serif', letterSpacing: '-0.04em', lineHeight: 1.1 }}
+        className="text-6xl md:text-7xl font-extrabold mb-4 drop-shadow-2xl tracking-tight animate-fade-in font-heading"
+        style={{ letterSpacing: '-0.04em', lineHeight: 1.1 }}
       >
         <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-600 bg-clip-text text-transparent">Tác Giả Nổi Bật</span>
       </h1>
       <p
-        className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-lg animate-fade-in delay-200 font-normal md:font-semibold z-20 relative"
-        style={{ fontFamily: 'Inter, Arial, sans-serif', fontWeight: 400, letterSpacing: '0.01em' }}
+        className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-lg animate-fade-in delay-200 font-normal md:font-semibold z-20 relative font-body"
+        style={{ fontWeight: 400, letterSpacing: '0.01em' }}
       >
         Khám phá những tác giả xuất sắc và tác phẩm của họ tại <span className="font-bold text-white/95">Coder-BookStore</span>
       </p>

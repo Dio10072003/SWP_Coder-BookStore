@@ -19,6 +19,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="description" content={metadata.description} />
         <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#a78bfa" />
+        {/* Google Fonts */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
       <body className="min-h-screen flex flex-col text-gray-900 dark:text-gray-100 font-sans selection:bg-pink-500 selection:text-white">
         <Header />

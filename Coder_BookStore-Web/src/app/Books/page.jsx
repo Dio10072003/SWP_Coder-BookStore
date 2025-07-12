@@ -108,10 +108,10 @@ export default function BooksPage() {
               <path d="M24 18v12" stroke="#f472b6" strokeWidth="2" strokeLinecap="round" />
             </svg>
           </div>
-          <h1 className="text-4xl md:text-6xl font-extrabold mb-2 drop-shadow-2xl tracking-tight text-white" style={{ fontFamily: 'Montserrat, Arial, sans-serif', letterSpacing: '-0.04em', lineHeight: 1.1 }}>
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-2 drop-shadow-2xl tracking-tight text-white font-heading" style={{ letterSpacing: '-0.04em', lineHeight: 1.1 }}>
             <span className="bg-gradient-to-r from-yellow-300 via-pink-400 to-purple-600 bg-clip-text text-transparent">Kho Sách</span>
           </h1>
-          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-lg font-normal md:font-semibold z-20 relative">
+          <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto leading-relaxed drop-shadow-lg font-normal md:font-semibold z-20 relative font-body">
             Khám phá, tìm kiếm và mua những cuốn sách hay nhất dành cho lập trình viên tại <span className="font-bold text-white/95">Coder-BookStore</span>
           </p>
         </div>
