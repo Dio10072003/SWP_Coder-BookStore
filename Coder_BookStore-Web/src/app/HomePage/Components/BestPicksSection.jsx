@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, useEffect } from 'react';
 import { addToCartLocal } from '../../utils/cartUtils';
 import { bookService } from '../../services/bookService';
