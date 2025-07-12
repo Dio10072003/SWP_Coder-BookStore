@@ -30,6 +30,13 @@ const gradientColors = [
   ['#f472b6', '#6366f1'],
 ];
 
+// Format giá tiền VND
+function formatVND(price) {
+  if (typeof price === 'number') return price.toLocaleString('vi-VN') + '₫';
+  if (typeof price === 'string' && !isNaN(Number(price))) return Number(price).toLocaleString('vi-VN') + '₫';
+  return price;
+}
+
 const BookGrid = ({ books = [] }) => {
   const [showModal, setShowModal] = useState(false);
   const [modalType, setModalType] = useState('create');
@@ -169,7 +176,7 @@ const BookGrid = ({ books = [] }) => {
                 {renderStars(book.rating)}
                 <span className="text-sm text-gray-500">({book.rating || 0})</span>
               </div>
-              <div className="mb-4 text-2xl font-bold text-yellow-500 drop-shadow">{book.price}₫</div>
+              <div className="mb-4 text-2xl font-bold text-yellow-500 drop-shadow">{formatVND(book.price)}</div>
               <div className="flex gap-2 w-full">
                 <Link
                   href={`/Books/${book.id}`}
