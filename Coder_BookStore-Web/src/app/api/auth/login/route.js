@@ -20,6 +20,8 @@ export async function POST(request) {
     if (!isValid) {
       return NextResponse.json({ error: 'Invalid email or password' }, { status: 401 });
     }
+    // Destructure to exclude password fields from user data
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { password: _, passwordHash: __, ...userWithoutPassword } = data;
     return NextResponse.json({ user: userWithoutPassword }, { status: 200 });
   } catch (err) {

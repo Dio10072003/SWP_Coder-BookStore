@@ -5,14 +5,12 @@ import { useBooks } from '../hooks/useBooks';
 import { bookService } from '../services/bookService';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
-import { FaPlus, FaEdit, FaTrash, FaBook, FaUser, FaUserTie, FaTags, FaChartBar, FaCog, FaSignOutAlt, FaBell, FaSearch, FaFilter, FaDownload, FaEye, FaClock, FaStar, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaEdit, FaTrash, FaBook, FaUser, FaUserTie, FaTags, FaCog, FaSignOutAlt, FaClock, FaStar, FaTimes } from 'react-icons/fa';
 import { authorService, CreateAuthorData } from '../services/authorService';
 import { categoryService, CreateCategoryData } from '../services/categoryService';
 import { Author } from '../services/authorService';
 import { Category } from '../services/categoryService';
-import Image from "next/image";
 import Link from 'next/link';
-import coderTour from '@/assets/Coder-Tour.jpg';
 
 interface BookFormData {
   id?: number; // Make ID optional for new books
@@ -63,9 +61,7 @@ const TABS = [
   { key: 'categories', label: 'Quản lý Thể loại', icon: <FaTags />, color: 'from-orange-500 to-red-600' },
 ];
 
-function safeId(id: unknown): string | null {
-  return (typeof id === 'string' || typeof id === 'number') ? String(id) : null;
-}
+
 
 export default function AdminPage() {
   const [reloadBooks, setReloadBooks] = useState(0);
@@ -100,7 +96,6 @@ export default function AdminPage() {
   const [categorySuccessMessage, setCategorySuccessMessage] = useState<string | null>(null);
 
   const [accessDenied, setAccessDenied] = useState(false);
-  const [userRole, setUserRole] = useState("");
 
   // Cập nhật thời gian thực
   useEffect(() => {
@@ -126,12 +121,7 @@ export default function AdminPage() {
     }
   }, []);
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const user = localStorage.getItem('user');
-      setUserRole(user ? JSON.parse(user).role : "");
-    }
-  }, []);
+
 
   useEffect(() => {
     const fetchCategories = async () => {
