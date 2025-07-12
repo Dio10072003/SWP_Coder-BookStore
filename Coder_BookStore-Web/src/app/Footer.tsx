@@ -3,6 +3,8 @@
 import Link from 'next/link';
 import React from 'react';
 import { FaFacebookF, FaTwitter, FaInstagram, FaLinkedinIn, FaGithub, FaYoutube, FaEnvelope, FaPhone, FaMapMarkerAlt, FaHeart, FaArrowUp } from 'react-icons/fa';
+import Image from 'next/image';
+import coderTour from '@/assets/Coder-Tour.jpg';
 
 interface FooterProps {
   backgroundClass?: string;
@@ -24,7 +26,15 @@ const Footer: React.FC<FooterProps> = ({
       <span className="absolute -bottom-24 -right-24 w-[32rem] h-[32rem] bg-gradient-to-br from-cyan-700 via-indigo-800 to-purple-900 opacity-20 rounded-full blur-3xl animate-blob2 z-0" />
       <div className="relative z-10 max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8 pb-8">
         {/* About */}
-        <div className="text-center md:text-left">
+        <div className="text-center md:text-left flex flex-col items-center md:items-start">
+          <Image
+            src={coderTour}
+            alt="CoderTour Logo"
+            width={48}
+            height={48}
+            className="mb-2 rounded-full shadow-lg animate-float bg-white/80 p-1"
+            style={{ objectFit: 'contain' }}
+          />
           <h3 className="text-2xl font-extrabold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 drop-shadow-[0_0_8px_cyan] animate-pulse-slow">Coder-Bookstore</h3>
           <p className="text-base font-light text-cyan-200/80 mb-2">Nguồn tri thức lập trình, nơi đam mê và công nghệ hội tụ. Khám phá tuyển chọn sách chất lượng, đa thể loại, đa dạng nội dung.</p>
         </div>

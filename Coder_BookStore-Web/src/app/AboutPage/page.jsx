@@ -4,6 +4,7 @@ import ContactSection from './Components/ContactSection';
 import HistorySection from './Components/HistorySection';
 import MissionSection from './Components/MissionSection';
 import TeamSection from './Components/TeamSection';
+import Image from 'next/image';
 
 export default function AboutPage() {
   return (
