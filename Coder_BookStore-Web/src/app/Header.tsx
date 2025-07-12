@@ -99,6 +99,7 @@ export default function Header(): JSX.Element {
         <nav className="flex-1 flex justify-center gap-4">
           <Link href="/" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Trang Chủ</Link>
           <Link href="/Books" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Sách</Link>
+          <Link href="/Schedule" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Lịch phát sóng</Link>
           <Link href="/AboutPage" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Về Chúng Tôi</Link>
           <Link href="/Contact" className="font-semibold text-white/90 hover:text-blue-200 transition text-sm">Liên Hệ</Link>
         </nav>
@@ -161,6 +162,7 @@ export default function Header(): JSX.Element {
         <nav className="md:hidden bg-gradient-to-r from-blue-800 via-indigo-800 to-purple-800 px-4 pb-4 space-y-2 text-white font-semibold uppercase tracking-wide text-xs rounded-b-xl shadow-xl">
           <Link href="/" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Trang Chủ</Link>
           <Link href="/Books" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Sách</Link>
+          <Link href="/Schedule" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Lịch phát sóng</Link>
           <Link href="/AboutPage" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Về Chúng Tôi</Link>
           <Link href="/Contact" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Liên Hệ</Link>
           <hr className="border-t border-white border-opacity-20 my-2" />
