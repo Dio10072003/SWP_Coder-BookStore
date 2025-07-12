@@ -33,7 +33,17 @@ export default function EventsPage() {
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-fuchsia-50 to-cyan-50">
       <EventHeader />
       <EventList events={events} loading={loading} error={error} onSelect={handleSelectEvent} />
-      <EventDetail event={selectedEvent} onRefresh={handleCloseDetail} />
+      {selectedEvent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 animate-fade-in">
+          <div className="relative w-full max-w-2xl mx-auto">
+            <EventDetail event={selectedEvent} onRefresh={handleCloseDetail} />
+          </div>
+        </div>
+      )}
+      <style jsx global>{`
+        .animate-fade-in { animation: fade-in 0.3s ease both; }
+        @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+      `}</style>
     </div>
   );
 } 

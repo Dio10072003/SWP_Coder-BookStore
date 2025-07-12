@@ -20,6 +20,7 @@ export async function GET(request: NextRequest) {
 
   const category = searchParams.get('category');
   const search = searchParams.get('search');
+  const author = searchParams.get('author');
   const year = searchParams.get('year');
   const minRating = searchParams.get('minRating');
   const maxPrice = searchParams.get('maxPrice');
@@ -31,6 +32,7 @@ export async function GET(request: NextRequest) {
   let query = supabaseAdmin.from('books').select('*, created_at', { count: 'exact' });
   if (category && category !== 'All') query = query.eq('category', category);
   if (search) query = query.ilike('title', `%${search}%`);
+  if (author) query = query.eq('author', author);
   if (year) query = query.eq('publishYear', parseInt(year));
   if (minRating) query = query.gte('rating', parseFloat(minRating));
   if (maxPrice) query = query.lte('price', parseFloat(maxPrice));

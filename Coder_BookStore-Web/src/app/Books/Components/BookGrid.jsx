@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { FaStar, FaStarHalfAlt, FaBookOpen, FaCrown, FaCalendarAlt, FaFileAlt } from 'react-icons/fa';
+import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
 import { bookService } from '../../services/bookService';
 import { addToCartLocal } from '../../utils/cartUtils';
 
@@ -20,17 +20,14 @@ const emptyBook = {
 };
 
 const gradientColors = [
-  ['#6366f1', '#a21caf'], // tím xanh
-  ['#f59e42', '#f43f5e'], // cam hồng
-  ['#22d3ee', '#2563eb'], // xanh biển
-  ['#facc15', '#f472b6'], // vàng hồng
-  ['#34d399', '#3b82f6'], // xanh lá-xanh dương
-  ['#f87171', '#fbbf24'], // đỏ cam
-  ['#a3e635', '#06b6d4'], // xanh lá-xanh ngọc
-  ['#f472b6', '#6366f1'], // hồng tím
-];
-const borderColors = [
-  '#a21caf', '#f43f5e', '#2563eb', '#facc15', '#34d399', '#f87171', '#a3e635', '#f472b6',
+  ['#6366f1', '#a21caf'],
+  ['#f59e42', '#f43f5e'],
+  ['#22d3ee', '#2563eb'],
+  ['#facc15', '#f472b6'],
+  ['#34d399', '#3b82f6'],
+  ['#f87171', '#fbbf24'],
+  ['#a3e635', '#06b6d4'],
+  ['#f472b6', '#6366f1'],
 ];
 
 const BookGrid = ({ books = [] }) => {
@@ -123,51 +120,67 @@ const BookGrid = ({ books = [] }) => {
   };
 
   if (!books || books.length === 0) {
-    return <div className="text-center py-10 text-yellow-400 text-lg">Không tìm thấy sách nào.</div>;
+    return (
+      <div className="flex flex-col items-center justify-center py-16">
+        <div className="w-32 h-32 bg-gradient-to-br from-purple-100 to-pink-100 rounded-full flex items-center justify-center mb-6">
+          <svg className="w-16 h-16 text-purple-400" fill="currentColor" viewBox="0 0 20 20">
+            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        </div>
+        <h3 className="text-2xl font-bold text-gray-700 mb-2">Không tìm thấy sách nào</h3>
+        <p className="text-gray-500 mb-6">Hãy thử thay đổi bộ lọc hoặc tìm kiếm từ khóa khác.</p>
+      </div>
+    );
   }
 
   return (
     <section className="py-10 px-4 max-w-7xl mx-auto">
-      <div className="flex justify-center items-center mb-6">
-        <h1 className="text-3xl font-bold text-pink-600">Danh sách sách</h1>
-      </div>
-      {successMsg && <div className="text-green-600 mb-2">{successMsg}</div>}
-      {formError && <div className="text-red-500 mb-2">{formError}</div>}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
         {books.map((book, idx) => (
           <div
             key={book.id}
-            className="rounded-2xl shadow-xl p-6 flex flex-col items-center border-4 font-bold transition-transform duration-200 hover:scale-105 hover:shadow-2xl"
+            className="relative rounded-3xl shadow-2xl p-6 flex flex-col items-center border-4 font-bold transition-transform duration-300 hover:scale-105 hover:shadow-2xl bg-white/60 backdrop-blur-md group overflow-hidden"
             style={{
-              background: `linear-gradient(135deg, ${gradientColors[idx % gradientColors.length][0]}, ${gradientColors[idx % gradientColors.length][1]})`,
-              borderColor: borderColors[idx % borderColors.length],
-              color: '#fff',
+              borderImage: `linear-gradient(135deg, ${gradientColors[idx % gradientColors.length][0]}, ${gradientColors[idx % gradientColors.length][1]}) 1`,
+              borderWidth: 4,
+              borderStyle: 'solid',
             }}
           >
-            <img
-              src={book.img || 'https://placehold.co/120x180?text=No+Image'}
-              alt={book.title}
-              className="w-28 h-40 object-cover rounded-lg mb-4 border-2 border-white shadow"
-            />
-            <div className="text-lg mb-1 truncate w-full text-center" title={book.title}>{book.title}</div>
-            <div className="text-sm mb-2 w-full text-center" style={{ color: '#facc15', fontWeight: 600 }}>by {book.author}</div>
-            <div className="flex gap-2 mb-2">
-              <span className="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">{book.category}</span>
-              <span className="bg-white bg-opacity-20 px-2 py-1 rounded text-xs">{book.publishYear}</span>
+            {/* Animated border overlay */}
+            <div className="absolute inset-0 pointer-events-none rounded-3xl z-0 group-hover:opacity-100 opacity-0 transition-opacity duration-300" style={{
+              background: `linear-gradient(120deg, ${gradientColors[idx % gradientColors.length][0]}55, ${gradientColors[idx % gradientColors.length][1]}55)`
+            }} />
+            <div className="relative z-10 flex flex-col items-center w-full">
+              <Image
+                src={book.img || 'https://placehold.co/180x260?text=No+Image'}
+                alt={book.title}
+                width={180}
+                height={260}
+                className="rounded-xl mb-4 shadow-lg object-cover w-[180px] h-[260px]"
+                style={{ background: '#f3f3f3' }}
+              />
+              <div className="text-xl font-extrabold mb-1 truncate w-full text-center" title={book.title} style={{ fontFamily: 'Montserrat, Arial, sans-serif', letterSpacing: '-0.02em' }}>{book.title}</div>
+              <div className="text-base mb-2 w-full text-center text-pink-600 font-semibold" style={{ fontFamily: 'Inter, Arial, sans-serif' }}>by {book.author}</div>
+              <div className="flex gap-2 mb-2">
+                <span className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-xs font-bold">{book.category}</span>
+                <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">{book.publishYear}</span>
+              </div>
+              <div className="flex items-center gap-2 mb-2">
+                {renderStars(book.rating)}
+                <span className="text-sm text-gray-500">({book.rating || 0})</span>
+              </div>
+              <div className="mb-4 text-2xl font-bold text-yellow-500 drop-shadow">{book.price}₫</div>
+              <div className="flex gap-2 w-full">
+                <Link
+                  href={`/Books/${book.id}`}
+                  className="flex-1 px-4 py-2 rounded-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-lg text-center"
+                  style={{ fontFamily: 'Inter, Arial, sans-serif' }}
+                >
+                  Xem chi tiết
+                </Link>
+                <AddToCartButton book={book} />
+              </div>
             </div>
-            <div className="flex items-center gap-2 mb-2">
-              <span className="text-yellow-300">★</span>
-              <span>{book.rating || 0}</span>
-            </div>
-            <div className="mb-4 text-lg">{book.price}₫</div>
-            <a
-              href={`/Books/${book.id}`}
-              className="mt-auto px-4 py-2 rounded-lg font-bold bg-white text-indigo-700 hover:bg-yellow-400 hover:text-indigo-900 transition-colors shadow border-2 border-white"
-              style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.12)' }}
-            >
-              Xem chi tiết
-            </a>
-            <AddToCartButton book={book} />
           </div>
         ))}
       </div>
@@ -228,12 +241,13 @@ function AddToCartButton({ book }) {
     setTimeout(() => setAdded(false), 1200);
   };
   return (
-    <div className="relative mt-2">
+    <div className="relative flex-1">
       <button
         onClick={handleAdd}
-        className="px-4 py-2 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+        className="w-full px-4 py-2 bg-gradient-to-r from-yellow-400 to-pink-400 text-white rounded-xl font-bold hover:from-pink-400 hover:to-yellow-400 transition-all shadow-lg"
+        style={{ fontFamily: 'Inter, Arial, sans-serif' }}
       >
-        Thêm vào giỏ hàng
+        Thêm vào giỏ
       </button>
       {added && (
         <span className="absolute left-1/2 -translate-x-1/2 top-[-36px] bg-green-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow animate-bounce">

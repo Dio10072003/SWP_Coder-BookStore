@@ -105,4 +105,4 @@ const Pagination = ({ page, setPage, total, limit }) => {
   );
 };
 
-export default Pagination;
+export default Pagination; 
