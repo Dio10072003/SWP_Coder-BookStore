@@ -34,6 +34,7 @@ const Footer: React.FC<FooterProps> = ({
           <ul className="space-y-1 text-sm font-light">
             <li><Link href="/">Trang chủ</Link></li>
             <li><Link href="/Books">Tất cả sách</Link></li>
+            <li><Link href="/Schedule">Lịch phát sóng</Link></li>
             <li><Link href="/Categories">Danh mục sách</Link></li>
             <li><Link href="/Authors">Tác giả nổi bật</Link></li>
             <li><Link href="/NewArrivals">Sách mới về</Link></li>
