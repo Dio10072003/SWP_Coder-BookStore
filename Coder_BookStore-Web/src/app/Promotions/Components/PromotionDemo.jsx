@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import promotionService from '../../services/promotionService';
 
-export default function PromotionDemo() {
+export default function PromotionDemo({ onChange }) {
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(false);
   const [actionLoading, setActionLoading] = useState(false);
@@ -11,21 +11,18 @@ export default function PromotionDemo() {
   const [newDesc, setNewDesc] = useState('');
   const [newImage, setNewImage] = useState('');
   const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
   const [selectedId, setSelectedId] = useState('');
   const [selectedPromo, setSelectedPromo] = useState(null);
 
+  useEffect(() => { fetchList(); }, []);
   useEffect(() => {
-    fetchList();
-  }, []);
-
-  useEffect(() => {
-    if (message || error) {
-      const t = setTimeout(() => { setMessage(''); setError(''); }, 2000);
+    if (message) {
+      const t = setTimeout(() => { setMessage(''); }, 2000);
       return () => clearTimeout(t);
     }
-  }, [message, error]);
+  }, [message]);
 
+  // Always update form fields when selectedId or promotions change
   useEffect(() => {
     if (selectedId) {
       const promo = promotions.find(p => p.id === selectedId);
@@ -38,10 +35,7 @@ export default function PromotionDemo() {
       }
     } else {
       setSelectedPromo(null);
-      setNewTitle('');
-      setNewDesc('');
-      setNewDiscount(0);
-      setNewImage('');
+      setNewTitle(''); setNewDesc(''); setNewDiscount(0); setNewImage('');
     }
   }, [selectedId, promotions]);
 
@@ -49,9 +43,7 @@ export default function PromotionDemo() {
     setLoading(true);
     try {
       setPromotions(await promotionService.getAllPromotions());
-    } catch (e) {
-      setError('Không thể tải danh sách!');
-    }
+    } catch (e) {}
     setLoading(false);
   };
 
@@ -67,6 +59,16 @@ export default function PromotionDemo() {
           image: newImage
         });
         setMessage('Đã cập nhật promotion!');
+        await fetchList();
+        if (onChange) onChange();
+        // Update form fields with latest data
+        const updated = promotions.find(p => p.id === selectedId);
+        if (updated) {
+          setNewTitle(updated.title || '');
+          setNewDesc(updated.description || '');
+          setNewDiscount(updated.discount || 0);
+          setNewImage(updated.image || '');
+        }
       } else {
         await promotionService.createPromotion({
           title: newTitle,
@@ -77,13 +79,12 @@ export default function PromotionDemo() {
           image: newImage
         });
         setMessage('Tạo mới thành công!');
+        setSelectedId('');
+        setNewTitle(''); setNewDesc(''); setNewDiscount(0); setNewImage('');
+        await fetchList();
+        if (onChange) onChange();
       }
-      setSelectedId('');
-      setNewTitle(''); setNewDesc(''); setNewDiscount(0); setNewImage('');
-      fetchList();
-    } catch (e) {
-      setError(selectedId ? 'Có lỗi khi cập nhật!' : 'Có lỗi khi tạo mới!');
-    }
+    } catch (e) {}
     setActionLoading(false);
   };
 
@@ -96,37 +97,47 @@ export default function PromotionDemo() {
       setMessage('Đã xóa promotion!');
       setSelectedId('');
       setNewTitle(''); setNewDesc(''); setNewDiscount(0); setNewImage('');
-      fetchList();
-    } catch (e) {
-      setError('Có lỗi khi xóa!');
-    }
+      await fetchList();
+      if (onChange) onChange();
+    } catch (e) {}
     setActionLoading(false);
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-4 bg-white rounded-xl shadow mt-8">
-      <h2 className="text-xl font-bold mb-4">Demo Promotion CRUD</h2>
-      {message && <div className="mb-2 text-green-600 font-bold animate-pulse">{message}</div>}
-      {error && <div className="mb-2 text-red-500 font-bold animate-pulse">{error}</div>}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2 mb-6">
-        <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Tiêu đề" className="border p-2 rounded" required />
-        <input value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Mô tả" className="border p-2 rounded" />
-        <input value={newDiscount} onChange={e => setNewDiscount(e.target.value)} type="number" placeholder="Discount (%)" className="border p-2 rounded" required />
-        <input value={newImage} onChange={e => setNewImage(e.target.value)} placeholder="Image URL" className="border p-2 rounded" />
-        <button type="submit" className="bg-pink-500 text-white px-4 py-2 rounded disabled:opacity-60" disabled={actionLoading}>
+    <div className="max-w-2xl mx-auto p-6 bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl mt-8 border border-pink-200">
+      <h2 className="text-2xl font-extrabold mb-6 text-pink-500 tracking-tight text-center drop-shadow">Demo Promotion CRUD</h2>
+      {message && <div className="mb-4 text-green-600 font-bold text-center animate-fade-in">{message}</div>}
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4 mb-8">
+        <label className="flex flex-col gap-1 font-semibold text-gray-700">
+          Tiêu đề
+          <input value={newTitle} onChange={e => setNewTitle(e.target.value)} placeholder="Tiêu đề" className="rounded-full px-5 py-3 border-2 border-transparent focus:border-pink-400 bg-white/90 shadow focus:ring-2 focus:ring-pink-200 text-base font-semibold transition-all" required />
+        </label>
+        <label className="flex flex-col gap-1 font-semibold text-gray-700">
+          Mô tả
+          <input value={newDesc} onChange={e => setNewDesc(e.target.value)} placeholder="Mô tả" className="rounded-full px-5 py-3 border-2 border-transparent focus:border-pink-400 bg-white/90 shadow focus:ring-2 focus:ring-pink-200 text-base font-semibold transition-all" />
+        </label>
+        <label className="flex flex-col gap-1 font-semibold text-gray-700">
+          Discount (%)
+          <input value={newDiscount} onChange={e => setNewDiscount(e.target.value)} type="number" placeholder="Discount (%)" className="rounded-full px-5 py-3 border-2 border-transparent focus:border-pink-400 bg-white/90 shadow focus:ring-2 focus:ring-pink-200 text-base font-semibold transition-all" required />
+        </label>
+        <label className="flex flex-col gap-1 font-semibold text-gray-700">
+          Image URL
+          <input value={newImage} onChange={e => setNewImage(e.target.value)} placeholder="Image URL" className="rounded-full px-5 py-3 border-2 border-transparent focus:border-pink-400 bg-white/90 shadow focus:ring-2 focus:ring-pink-200 text-base font-semibold transition-all" />
+        </label>
+        <button type="submit" className="bg-gradient-to-r from-pink-400 to-yellow-400 text-white px-6 py-3 rounded-full font-bold shadow-lg hover:scale-105 hover:shadow-xl transition-all text-lg disabled:opacity-60" disabled={actionLoading}>
           {actionLoading ? 'Đang xử lý...' : (selectedId ? 'Cập nhật' : 'Tạo mới')}
         </button>
       </form>
       <div className="mb-4">
-        <label className="block mb-1 font-semibold">Chọn promotion để thao tác:</label>
+        <label className="block mb-2 font-semibold text-gray-700">Chọn promotion để thao tác:</label>
         <select
           value={selectedId}
           onChange={e => setSelectedId(e.target.value)}
-          className="border p-2 rounded w-full"
+          className="rounded-full px-5 py-3 border-2 border-pink-200 bg-white/90 shadow w-full text-base font-semibold focus:border-pink-400 focus:ring-2 focus:ring-pink-200 transition-all"
         >
           <option value="">-- Chọn promotion --</option>
           {promotions.map(promo => (
-            <option key={promo.id} value={promo.id}>
+            <option key={promo.id} value={promo.id} className="text-base">
               {promo.title} - {promo.discount}%
             </option>
           ))}
@@ -134,9 +145,13 @@ export default function PromotionDemo() {
       </div>
       {selectedPromo && (
         <div className="flex gap-4 justify-center mt-4">
-          <button onClick={handleDelete} className="bg-red-500 px-5 py-2 rounded text-white font-bold disabled:opacity-60" disabled={actionLoading}>Xóa</button>
+          <button onClick={handleDelete} className="bg-red-500 px-6 py-3 rounded-full text-white font-bold shadow hover:bg-red-600 transition-all text-base disabled:opacity-60" disabled={actionLoading}>Xóa</button>
         </div>
       )}
+      <style jsx>{`
+        .animate-fade-in { animation: fade-in 0.7s ease both; }
+        @keyframes fade-in { 0% { opacity: 0; } 100% { opacity: 1; } }
+      `}</style>
     </div>
   );
 } 

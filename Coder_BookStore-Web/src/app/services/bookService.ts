@@ -162,6 +162,28 @@ class BookService {
     return data;
   }
 
+  async getBooksByAuthor(authorName: string): Promise<Book[]> {
+    try {
+      const params = new URLSearchParams();
+      params.append('author', authorName);
+      
+      const url = `${this.baseUrl}?${params.toString()}`;
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const result = await response.json();
+      // API returns { data, total } format
+      return result.data || [];
+    } catch (error) {
+      console.error('Error fetching books by author:', error);
+      // Return empty array as fallback
+      return [];
+    }
+  }
+
   async getBooksByRating(minRating: number): Promise<Book[]> {
     const { data } = await this.getAllBooksWithTotal({ minRating });
     return data;

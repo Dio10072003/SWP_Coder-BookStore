@@ -13,7 +13,7 @@ const emptyPromo = {
   image: '',
 };
 
-const PromotionList = () => {
+const PromotionList = ({ refreshKey }) => {
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -35,7 +35,7 @@ const PromotionList = () => {
 
   useEffect(() => {
     fetchPromotions();
-  }, []);
+  }, [refreshKey]);
 
   const openCreateModal = () => {
     setForm(emptyPromo);
