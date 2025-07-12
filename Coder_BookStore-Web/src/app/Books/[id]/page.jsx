@@ -6,6 +6,8 @@ import Link from "next/link";
 import { useBook } from "../../hooks/useBooks";
 import Loading from "../../components/Loading";
 import Error from "../../components/Error";
+import { addToCartLocal } from '../../utils/cartUtils';
+import { useState } from 'react';
 
 export default function BookDetailPage() {
   const { id } = useParams();
@@ -119,9 +121,7 @@ export default function BookDetailPage() {
 
             {/* Action Buttons */}
             <div className="flex flex-col sm:flex-row gap-3">
-              <button className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors">
-                Thêm vào giỏ hàng
-              </button>
+              <AddToCartButton book={book} />
               <button className="px-6 py-3 bg-pink-600 text-white rounded-lg font-semibold hover:bg-pink-700 transition-colors">
                 Mua ngay
               </button>
@@ -135,6 +135,30 @@ export default function BookDetailPage() {
           </div>
         </div>
       </div>
+    </div>
+  );
+} 
+
+function AddToCartButton({ book }) {
+  const [added, setAdded] = useState(false);
+  const handleAdd = () => {
+    addToCartLocal(book);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
+  };
+  return (
+    <div className="relative">
+      <button
+        onClick={handleAdd}
+        className="px-6 py-3 bg-purple-600 text-white rounded-lg font-semibold hover:bg-purple-700 transition-colors"
+      >
+        Thêm vào giỏ hàng
+      </button>
+      {added && (
+        <span className="absolute left-1/2 -translate-x-1/2 top-[-36px] bg-green-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow animate-bounce">
+          Đã thêm!
+        </span>
+      )}
     </div>
   );
 } 

@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { addToCartLocal } from '../../utils/cartUtils';
+import { FaShoppingCart, FaCheckCircle } from 'react-icons/fa';
 
 const categoryIcons = {
   Programming: '💻',
@@ -64,8 +66,16 @@ const DEFAULT_IMG =
   'https://cdn.pixabay.com/photo/2016/09/01/09/29/book-1639736_1280.jpg';
 
 export default function BestSellerBookCard({ book, size = 'md', onQuickView, highlight }) {
+  const [added, setAdded] = useState(false);
   const displayCategory = decodeURIComponent(book.category || '');
   const imgSrc = book.img || book.imageUrl || DEFAULT_IMG;
+
+  const handleAdd = () => {
+    addToCartLocal(book);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1200);
+  };
+
   return (
     <div
       className={`relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col items-center text-center group border border-transparent hover:border-yellow-300 animate-fade-in cursor-pointer ${sizeMap[size]} ${highlight ? 'border-4 border-yellow-400 shadow-2xl scale-105 ring-2 ring-yellow-200 ring-offset-2' : ''}`}
@@ -89,12 +99,20 @@ export default function BestSellerBookCard({ book, size = 'md', onQuickView, hig
         <p className="text-pink-600 font-bold mb-0.5 text-sm">{Number(book.price).toLocaleString()}₫</p>
         <p className="text-[10px] text-gray-700 mb-1 line-clamp-2 min-h-[24px] md:min-h-[20px]">{book.description}</p>
       </div>
-      <button
-        className="bg-gradient-to-r from-yellow-400 to-pink-400 text-white px-2 py-0.5 rounded-full font-semibold shadow-md hover:scale-105 hover:shadow-xl transition-all duration-300 mt-auto text-[12px] md:text-[11px]"
-        onClick={e => { e.stopPropagation(); onQuickView && onQuickView(book); }}
-      >
-        Xem nhanh
-      </button>
+      <div className="relative">
+        <button
+          className="flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-400 to-yellow-400 text-white font-bold shadow-md hover:scale-105 hover:from-cyan-500 hover:to-yellow-500 transition-all duration-200"
+          onClick={handleAdd}
+        >
+          <FaShoppingCart />
+          Thêm Vào Giỏ
+        </button>
+        {added && (
+          <span className="absolute left-1/2 -translate-x-1/2 top-[-36px] bg-green-500 text-white px-3 py-1 rounded-full text-xs flex items-center gap-1 shadow animate-bounce">
+            <FaCheckCircle /> Đã thêm!
+          </span>
+        )}
+      </div>
     </div>
   );
 }
