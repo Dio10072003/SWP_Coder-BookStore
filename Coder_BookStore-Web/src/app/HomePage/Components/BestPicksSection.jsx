@@ -156,7 +156,12 @@ export default function BestPicksSection() {
 
 function AddToCartButton({ book }) {
   const [added, setAdded] = useState(false);
+  const isLoggedIn = typeof window !== 'undefined' && !!localStorage.getItem('user');
   const handleAdd = () => {
+    if (!isLoggedIn) {
+      alert("Bạn chỉ có thể làm điều đó với một tài khoản hợp lệ thôi");
+      return;
+    }
     addToCartLocal(book);
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);

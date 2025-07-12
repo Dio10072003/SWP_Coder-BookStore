@@ -70,7 +70,13 @@ export default function BestSellerBookCard({ book, size = 'md', onQuickView, hig
   const displayCategory = decodeURIComponent(book.category || '');
   const imgSrc = book.img || book.imageUrl || DEFAULT_IMG;
 
-  const handleAdd = () => {
+  const isLoggedIn = typeof window !== 'undefined' && !!localStorage.getItem('user');
+  const handleAdd = (e) => {
+    e.stopPropagation();
+    if (!isLoggedIn) {
+      alert("Bạn chỉ có thể làm điều đó với một tài khoản hợp lệ thôi");
+      return;
+    }
     addToCartLocal(book);
     setAdded(true);
     setTimeout(() => setAdded(false), 1200);
