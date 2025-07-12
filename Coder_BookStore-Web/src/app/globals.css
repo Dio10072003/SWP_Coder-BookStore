@@ -136,6 +136,40 @@ h3 {
   animation: gradient-move 10s ease-in-out infinite;
 }
 
+/* Hiệu ứng nghệ thuật cho HeroSection */
+@keyframes spin {
+  0% { transform: rotate(0); }
+  100% { transform: rotate(360deg); }
+}
+.animate-spin-slow {
+  animation: spin 12s linear infinite;
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.animate-bounce-slow {
+  animation: bounce 3s infinite;
+}
+@keyframes pulse-slow {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+.animate-pulse-slow {
+  animation: pulse-slow 2.5s infinite;
+}
+@keyframes glow {
+  0% { box-shadow: 0 0 32px 8px #fcb69f88, 0 0 64px 16px #a1c4fd55; }
+  100% { box-shadow: 0 0 48px 16px #fcb69faa, 0 0 80px 24px #a1c4fdaa; }
+}
+.animate-glow {
+  box-shadow: 0 0 32px 8px #fcb69f88, 0 0 64px 16px #a1c4fd55;
+  animation: glow 2s alternate infinite;
+}
+.outline-text {
+  text-shadow: 2px 2px 0 #fff, -2px -2px 0 #fff, 2px -2px 0 #fff, -2px 2px 0 #fff;
+}
+
 /* FIX TRIỆT ĐỂ LỖI GHI ĐÈ CHỮ TRONG BẢNG ADMIN */
 .admin-table td, .admin-table td * {
   position: static !important;

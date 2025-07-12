@@ -3,7 +3,12 @@ import { addToCartLocal } from '../../utils/cartUtils';
 
 const NewBookCard = ({ id, title, author, price, imageUrl, releaseDate, tags }) => {
     const [added, setAdded] = useState(false);
+    const isLoggedIn = typeof window !== 'undefined' && !!localStorage.getItem('user');
     const handleAdd = () => {
+        if (!isLoggedIn) {
+            alert("Bạn chỉ có thể làm điều đó với một tài khoản hợp lệ thôi");
+            return;
+        }
         addToCartLocal({ id, title, author, price, imageUrl, releaseDate, tags });
         setAdded(true);
         setTimeout(() => setAdded(false), 1200);

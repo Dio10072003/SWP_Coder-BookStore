@@ -141,6 +141,8 @@ export default function BookDetailPage() {
 
 function AddToCartButton({ book }) {
   const [added, setAdded] = useState(false);
+  const isLoggedIn = typeof window !== 'undefined' && !!localStorage.getItem('user');
+  if (!isLoggedIn) return null;
   const handleAdd = () => {
     addToCartLocal(book);
     setAdded(true);

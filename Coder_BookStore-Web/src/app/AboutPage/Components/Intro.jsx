@@ -1,6 +1,8 @@
 // AboutPage/Components/Intro.jsx
 "use client";
 import { useState } from "react";
+import Image from 'next/image';
+import coderTour from '@/assets/Coder-Tour.jpg';
 
 const content = {
   en: {
@@ -21,6 +23,16 @@ export default function Intro() {
   const [lang, setLang] = useState("vi");
   return (
     <section className="bg-gradient-to-br from-blue-700 via-indigo-700 to-purple-700 text-white py-14 px-4 text-center rounded-b-3xl shadow-xl relative">
+      <div className="flex justify-center mb-4 z-20">
+        <Image
+          src={coderTour}
+          alt="CoderTour Logo"
+          width={64}
+          height={64}
+          className="rounded-full shadow-lg animate-float bg-white/80 p-1"
+          style={{ objectFit: 'contain' }}
+        />
+      </div>
       <div className="absolute top-4 right-4 flex gap-2 z-10">
         <button onClick={() => setLang("vi")}
           className={`px-3 py-1 rounded-full text-sm font-bold transition-all font-heading ${lang === "vi" ? "bg-yellow-300 text-blue-900 shadow" : "bg-white/20 hover:bg-yellow-200/60"}`}>VI</button>
