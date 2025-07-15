@@ -193,3 +193,17 @@ h3 {
   font-weight: normal;
   font-style: normal;
 }
+
+/* LED 7 màu cho đồng hồ số */
+@keyframes rainbow-move {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+.rainbow-led-text {
+  background: linear-gradient(90deg, #ff0000, #ff9900, #ffff00, #00ff00, #00ffff, #0000ff, #9900ff, #ff0000 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 16px #fff, 0 0 8px #19ff19;
+  animation: rainbow-move 3s linear infinite;
+}

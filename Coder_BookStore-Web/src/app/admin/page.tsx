@@ -61,6 +61,40 @@ const TABS = [
   { key: 'categories', label: 'Quản lý Thể loại', icon: <FaTags />, color: 'from-orange-500 to-red-600' },
 ];
 
+function getClockTheme(hour: number) {
+  if (hour >= 5 && hour < 11) return { icon: '☀️', bg: 'bg-yellow-100', greeting: 'Chào buổi sáng!' };
+  if (hour >= 11 && hour < 14) return { icon: '🌤️', bg: 'bg-yellow-200', greeting: 'Buổi trưa vui vẻ!' };
+  if (hour >= 14 && hour < 18) return { icon: '🌇', bg: 'bg-orange-200', greeting: 'Buổi chiều năng động!' };
+  if (hour >= 18 && hour < 22) return { icon: '🌙', bg: 'bg-indigo-200', greeting: 'Chúc buổi tối an lành!' };
+  return { icon: '🌌', bg: 'bg-purple-300', greeting: 'Đêm khuya đọc sách!' };
+}
+
+function ClockWidget({ time, location }: { time: Date; location: string }) {
+  const hour = time.getHours();
+  const { icon, bg, greeting } = getClockTheme(hour);
+  return (
+    <>
+      {/* Mobile: icon + time */}
+      <div className={`flex items-center gap-2 px-3 py-1 rounded-full shadow ${bg} transition-colors duration-500 sm:hidden`}>
+        <span className="text-xl animate-bounce-slow">{icon}</span>
+        <span className="font-mono font-bold text-base">{time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
+      </div>
+      {/* Tablet: icon + greeting + time */}
+      <div className={`hidden sm:flex lg:hidden items-center gap-2 px-4 py-2 rounded-full shadow ${bg} transition-colors duration-500`}>
+        <span className="text-2xl animate-bounce-slow">{icon}</span>
+        <span className="font-bold text-base">{greeting}</span>
+        <span className="font-mono text-base">{time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
+      </div>
+      {/* Desktop: icon + greeting + time + location */}
+      <div className={`hidden lg:flex items-center gap-3 px-5 py-2 rounded-full shadow ${bg} transition-colors duration-500`}>
+        <span className="text-2xl animate-bounce-slow">{icon}</span>
+        <span className="font-bold text-lg">{greeting}</span>
+        <span className="font-mono text-lg">{time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
+        <span className="text-xs text-gray-500">{location}</span>
+      </div>
+    </>
+  );
+}
 
 
 export default function AdminPage() {
@@ -79,6 +113,7 @@ export default function AdminPage() {
   const [categoriesData, setCategoriesData] = useState<Category[]>([]);
   const [stats, setStats] = useState({ books: 0, users: 0, authors: 0, categories: 0 });
   const [currentTime, setCurrentTime] = useState(new Date());
+  const [isClient, setIsClient] = useState(false);
 
   // Keep all state declarations for both author and user management
   const [showAuthorForm, setShowAuthorForm] = useState(false);
@@ -103,6 +138,10 @@ export default function AdminPage() {
       setCurrentTime(new Date());
     }, 1000);
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    setIsClient(true);
   }, []);
 
   useEffect(() => {
@@ -423,6 +462,11 @@ export default function AdminPage() {
     }
   };
 
+  // MOBILE: List as accordion+actions for all tabs
+  const [openBookId, setOpenBookId] = useState<number | null>(null);
+  const [openAuthorId, setOpenAuthorId] = useState<string | null>(null);
+  const [openCategoryId, setOpenCategoryId] = useState<string | null>(null);
+
   if (accessDenied) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
@@ -440,309 +484,130 @@ export default function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      {/* Header */}
-      <header className="bg-white shadow-lg border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16">
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
-                  <FaCog className="text-white text-lg" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-gray-800">Admin Dashboard</h1>
-                  <p className="text-sm text-gray-500">CoderTour BookStore</p>
-                </div>
-              </div>
+      {/* Header Mobile */}
+      <header className="bg-white shadow-lg border-b border-gray-200 sm:hidden">
+        <div className="flex items-center justify-between px-4 py-2">
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
+              <FaCog className="text-white text-lg" />
             </div>
-            
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2 bg-gray-100 rounded-full px-4 py-2">
-                <FaClock className="text-gray-500 text-sm" />
-                <span className="text-sm font-mono text-gray-700">
-                  {currentTime.toLocaleTimeString('vi-VN', { 
-                    hour: '2-digit', 
-                    minute: '2-digit',
-                    second: '2-digit'
-                  })}
-                </span>
-              </div>
-              
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
-                  <FaUser className="text-white text-sm" />
-                </div>
-                <span className="text-sm font-semibold text-gray-700">Admin</span>
-              </div>
-              
-              <button className="p-2 text-gray-500 hover:text-red-500 transition-colors duration-300">
-                <FaSignOutAlt />
-              </button>
-            </div>
+            <span className="font-bold text-base bg-gradient-to-r from-pink-400 via-yellow-400 to-blue-400 bg-clip-text text-transparent animate-gradient-move">Admin</span>
           </div>
+          <button className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 shadow-lg">
+            <FaUser className="text-blue-500 text-lg" />
+          </button>
         </div>
       </header>
 
-      {/* Stats Cards */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-blue-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Tổng sách</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.books}</p>
-              </div>
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <FaBook className="text-blue-600 text-xl" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-green-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Tổng tác giả</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.authors}</p>
-              </div>
-              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                <FaUserTie className="text-green-600 text-xl" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-orange-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Tổng thể loại</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.categories}</p>
-              </div>
-              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center">
-                <FaTags className="text-orange-600 text-xl" />
-              </div>
-            </div>
-          </div>
-          
-          <div className="bg-white rounded-2xl shadow-lg p-6 border-l-4 border-purple-500">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-gray-600">Tổng người dùng</p>
-                <p className="text-3xl font-bold text-gray-800">{stats.users}</p>
-              </div>
-              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                <FaUser className="text-purple-600 text-xl" />
-              </div>
-            </div>
-          </div>
+      {/* Stats Cards Responsive */}
+      <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4 md:gap-6 px-3 py-2 sm:px-4 md:px-8 w-full">
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-b-4 border-blue-500 flex flex-col items-center justify-center animate-gradient-move">
+          <FaBook className="text-blue-500 text-2xl md:text-3xl mb-1 animate-bounce" />
+          <span className="text-xs md:text-sm text-gray-500">Sách</span>
+          <span className="text-lg md:text-2xl font-bold text-gray-800">{stats.books}</span>
         </div>
-
-        {/* Navigation Tabs */}
-        <div className="bg-white rounded-2xl shadow-lg p-2 mb-8">
-          <div className="flex space-x-2">
-            {TABS.map((tabItem) => (
-              <button
-                key={tabItem.key}
-                onClick={() => setTab(tabItem.key)}
-                className={`flex items-center gap-3 px-6 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  tab === tabItem.key
-                    ? `bg-gradient-to-r ${tabItem.color} text-white shadow-lg`
-                    : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
-                }`}
-              >
-                {tabItem.icon}
-                {tabItem.label}
-              </button>
-            ))}
-          </div>
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-b-4 border-green-500 flex flex-col items-center justify-center animate-gradient-move">
+          <FaUserTie className="text-green-500 text-2xl md:text-3xl mb-1 animate-bounce" />
+          <span className="text-xs md:text-sm text-gray-500">Tác giả</span>
+          <span className="text-lg md:text-2xl font-bold text-gray-800">{stats.authors}</span>
         </div>
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-b-4 border-orange-500 flex flex-col items-center justify-center animate-gradient-move">
+          <FaTags className="text-orange-500 text-2xl md:text-3xl mb-1 animate-bounce" />
+          <span className="text-xs md:text-sm text-gray-500">Thể loại</span>
+          <span className="text-lg md:text-2xl font-bold text-gray-800">{stats.categories}</span>
+        </div>
+        <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-b-4 border-purple-500 flex flex-col items-center justify-center animate-gradient-move">
+          <FaUser className="text-purple-500 text-2xl md:text-3xl mb-1 animate-bounce" />
+          <span className="text-xs md:text-sm text-gray-500">Người dùng</span>
+          <span className="text-lg md:text-2xl font-bold text-gray-800">{stats.users}</span>
+        </div>
+      </div>
 
-        {/* Content Area */}
-        <div className="bg-white rounded-2xl shadow-lg p-8">
-          {tab === 'books' && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Quản lý Sách</h2>
-                <button
-                  onClick={handleAddNew}
-                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg"
-                >
-                  <FaPlus />
-                  Thêm sách mới
-                </button>
-              </div>
+      {/* Tabs Responsive: Top for tablet/desktop, bottom for mobile */}
+      <div className="hidden sm:block w-full px-3 sm:px-4 md:px-8 mt-2 mb-4">
+        <div className="flex justify-center gap-2 md:gap-4">
+          {TABS.map(tabItem => (
+            <button
+              key={tabItem.key}
+              onClick={() => setTab(tabItem.key)}
+              className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl font-semibold transition-all duration-300 animate-gradient-move
+                ${tab === tabItem.key ? `bg-gradient-to-r ${tabItem.color} text-white shadow-lg` : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'}`}
+            >
+              <span className={`text-lg md:text-xl ${tab === tabItem.key ? 'animate-bounce' : ''}`}>{tabItem.icon}</span>
+              <span className="text-xs md:text-base">{tabItem.label.replace('Quản lý ', '')}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 flex justify-around sm:hidden shadow-xl animate-fade-in">
+        {TABS.map(tabItem => (
+          <button
+            key={tabItem.key}
+            onClick={() => setTab(tabItem.key)}
+            className={`flex flex-col items-center flex-1 py-2 ${tab === tabItem.key ? 'text-blue-600 font-bold' : 'text-gray-400'} transition-all animate-gradient-move`}
+          >
+            <span className={`text-xl mb-0.5 ${tab === tabItem.key ? 'animate-bounce' : ''}`}>{tabItem.icon}</span>
+            <span className="text-xs">{tabItem.label.replace('Quản lý ', '')}</span>
+          </button>
+        ))}
+      </nav>
 
-              {loading ? (
-                <Loading />
-              ) : error ? (
-                <Error message={error} />
-              ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full">
-                    <thead>
-                      <tr className="bg-gray-50 border-b border-gray-200">
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Hình ảnh</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tiêu đề</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tác giả</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Giá</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Đánh giá</th>
-                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Thao tác</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {books.map((book) => (
-                        <tr key={book.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200">
-                                                     <td className="px-6 py-4">
-                             <img src={book.img} alt={book.title} className="w-16 h-20 object-cover rounded-lg shadow" />
-                           </td>
-                          <td className="px-6 py-4">
-                            <div>
-                              <p className="font-semibold text-gray-800">{book.title}</p>
-                              <p className="text-sm text-gray-500">{book.category}</p>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4 text-gray-700">{book.author}</td>
-                          <td className="px-6 py-4">
-                            <span className="font-semibold text-green-600">{Number(book.price).toLocaleString()}₫</span>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-1">
-                              <FaStar className="text-yellow-400" />
-                              <span className="font-semibold">{book.rating}</span>
-                            </div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="flex items-center gap-2">
-                              <button
-                                onClick={() => handleEdit(book)}
-                                className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200"
-                              >
-                                <FaEdit />
-                              </button>
-                              <button
-                                onClick={() => handleDelete(book.id!)}
-                                className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200"
-                              >
-                                <FaTrash />
-                              </button>
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
+      {/* Content Responsive: Card List */}
+      <div className="flex flex-col gap-3 px-3 sm:px-4 md:px-8 py-3 pb-16">
+        {tab === 'books' && books.map(book => (
+          <div key={book.id} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move">
+            <div className="flex items-center justify-between">
+              <div className="font-bold text-blue-700 text-base md:text-lg">{book.title}</div>
+              <button onClick={() => setOpenBookId(openBookId === book.id ? null : book.id)} className="text-blue-500 font-bold text-sm md:text-base">{openBookId === book.id ? 'Ẩn' : 'Chi tiết'}</button>
+            </div>
+            <div className="text-xs md:text-sm text-gray-500">{book.author}</div>
+            {openBookId === book.id && (
+              <div className="mt-2 border-t pt-2">
+                <div className="text-xs md:text-sm text-gray-700">Thể loại: {book.category}</div>
+                <div className="text-xs md:text-sm text-gray-700">Giá: {book.price}₫</div>
+                <div className="flex gap-2 mt-2">
+                  <button className="flex-1 p-2 md:p-3 bg-blue-100 text-blue-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleEdit(book)}>Sửa</button>
+                  <button className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleDelete(book.id)}>Xóa</button>
                 </div>
-              )}
+              </div>
+            )}
+          </div>
+        ))}
+        {tab === 'authors' && authors.map(author => (
+          <div key={author.id} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move">
+            <div className="flex items-center justify-between">
+              <div className="font-bold text-green-700 text-base md:text-lg">{author.name}</div>
+              <button onClick={() => setOpenAuthorId(openAuthorId === author.id ? null : author.id)} className="text-green-500 font-bold text-sm md:text-base">{openAuthorId === author.id ? 'Ẩn' : 'Chi tiết'}</button>
             </div>
-          )}
-
-          {tab === 'authors' && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Quản lý Tác giả</h2>
-                <button
-                  onClick={() => setShowAuthorForm(true)}
-                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-green-500 to-teal-600 text-white rounded-xl font-semibold hover:from-green-600 hover:to-teal-700 transition-all duration-300 shadow-lg"
-                >
-                  <FaPlus />
-                  Thêm tác giả mới
-                </button>
+            <div className="text-xs md:text-sm text-gray-500">{author.country}</div>
+            {openAuthorId === author.id && (
+              <div className="mt-2 border-t pt-2">
+                <div className="text-xs md:text-sm text-gray-700">{author.bio}</div>
+                <div className="flex gap-2 mt-2">
+                  <button className="flex-1 p-2 md:p-3 bg-green-100 text-green-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleEditAuthor(author)}>Sửa</button>
+                  <button className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleDeleteAuthor(author.id)}>Xóa</button>
+                </div>
               </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tên</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Quốc gia</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Năm sinh</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Thao tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {authors.map((author) => (
-                      <tr key={author.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200">
-                        <td className="px-6 py-4">
-                          <div>
-                            <p className="font-semibold text-gray-800">{author.name}</p>
-                            <p className="text-sm text-gray-500">{author.bio}</p>
-                          </div>
-                        </td>
-                        <td className="px-6 py-4 text-gray-700">{author.country}</td>
-                        <td className="px-6 py-4 text-gray-700">{author.birth_year}</td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleEditAuthor(author)}
-                              className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200"
-                            >
-                              <FaEdit />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteAuthor(author.id)}
-                              className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200"
-                            >
-                              <FaTrash />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            )}
+          </div>
+        ))}
+        {tab === 'categories' && categoriesData.map(category => (
+          <div key={category.id} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move">
+            <div className="flex items-center justify-between">
+              <div className="font-bold text-orange-700 text-base md:text-lg">{category.name}</div>
+              <button onClick={() => setOpenCategoryId(openCategoryId === category.id ? null : category.id)} className="text-orange-500 font-bold text-sm md:text-base">{openCategoryId === category.id ? 'Ẩn' : 'Chi tiết'}</button>
             </div>
-          )}
-
-          {tab === 'categories' && (
-            <div>
-              <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-800">Quản lý Thể loại</h2>
-                <button
-                  onClick={() => setShowCategoryForm(true)}
-                  className="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-orange-500 to-red-600 text-white rounded-xl font-semibold hover:from-orange-600 hover:to-red-700 transition-all duration-300 shadow-lg"
-                >
-                  <FaPlus />
-                  Thêm thể loại mới
-                </button>
+            {openCategoryId === category.id && (
+              <div className="mt-2 border-t pt-2">
+                <div className="text-xs md:text-sm text-gray-700">Mô tả: {category.description}</div>
+                <div className="flex gap-2 mt-2">
+                  <button className="flex-1 p-2 md:p-3 bg-blue-100 text-blue-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleEditCategory(category)}>Sửa</button>
+                  <button className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleDeleteCategory(category.id)}>Xóa</button>
+                </div>
               </div>
-
-              <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gray-50 border-b border-gray-200">
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Tên</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Mô tả</th>
-                      <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">Thao tác</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {categoriesData.map((category) => (
-                      <tr key={category.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200">
-                        <td className="px-6 py-4 font-semibold text-gray-800">{category.name}</td>
-                        <td className="px-6 py-4 text-gray-700">{category.description}</td>
-                        <td className="px-6 py-4">
-                          <div className="flex items-center gap-2">
-                            <button
-                              onClick={() => handleEditCategory(category)}
-                              className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors duration-200"
-                            >
-                              <FaEdit />
-                            </button>
-                            <button
-                              onClick={() => handleDeleteCategory(category.id)}
-                              className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors duration-200"
-                            >
-                              <FaTrash />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        ))}
       </div>
 
       {/* Success/Error Messages */}
