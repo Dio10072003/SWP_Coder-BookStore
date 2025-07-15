@@ -141,12 +141,12 @@ const BookGrid = ({ books = [] }) => {
   }
 
   return (
-    <section className="py-10 px-4 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
+    <section className="py-6 px-2 sm:py-8 sm:px-4 md:py-10 md:px-6 max-w-7xl mx-auto">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 sm:gap-7 md:gap-10">
         {books.map((book, idx) => (
           <div
             key={book.id}
-            className="relative rounded-3xl shadow-2xl p-6 flex flex-col items-center border-4 font-bold transition-transform duration-300 hover:scale-105 hover:shadow-2xl bg-white/60 backdrop-blur-md group overflow-hidden"
+            className="relative rounded-3xl shadow-2xl p-4 sm:p-6 md:p-8 flex flex-col items-center border-4 font-bold transition-transform duration-300 hover:scale-105 hover:shadow-2xl bg-white/60 backdrop-blur-md group overflow-hidden animate-gradient-move"
             style={{
               borderImage: `linear-gradient(135deg, ${gradientColors[idx % gradientColors.length][0]}, ${gradientColors[idx % gradientColors.length][1]}) 1`,
               borderWidth: 4,
@@ -163,24 +163,24 @@ const BookGrid = ({ books = [] }) => {
                 alt={book.title}
                 width={180}
                 height={260}
-                className="rounded-xl mb-4 shadow-lg object-cover w-[180px] h-[260px]"
+                className="rounded-xl mb-4 shadow-lg object-cover w-[140px] h-[200px] sm:w-[160px] sm:h-[230px] md:w-[180px] md:h-[260px]"
                 style={{ background: '#f3f3f3' }}
               />
-              <div className="text-xl font-extrabold mb-1 truncate w-full text-center" title={book.title} style={{ fontFamily: 'Montserrat, Arial, sans-serif', letterSpacing: '-0.02em' }}>{book.title}</div>
-              <div className="text-base mb-2 w-full text-center text-pink-600 font-semibold" style={{ fontFamily: 'Inter, Arial, sans-serif' }}>by {book.author}</div>
+              <div className="text-lg sm:text-xl md:text-2xl font-extrabold mb-1 truncate w-full text-center" title={book.title} style={{ fontFamily: 'Montserrat, Arial, sans-serif', letterSpacing: '-0.02em' }}>{book.title}</div>
+              <div className="text-sm sm:text-base md:text-lg mb-2 w-full text-center text-pink-600 font-semibold" style={{ fontFamily: 'Inter, Arial, sans-serif' }}>by {book.author}</div>
               <div className="flex gap-2 mb-2">
-                <span className="bg-pink-100 text-pink-700 px-3 py-1 rounded-full text-xs font-bold">{book.category}</span>
-                <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-bold">{book.publishYear}</span>
+                <span className="bg-pink-100 text-pink-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold">{book.category}</span>
+                <span className="bg-purple-100 text-purple-700 px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-bold">{book.publishYear}</span>
               </div>
               <div className="flex items-center gap-2 mb-2">
-                {renderStars(book.rating)}
-                <span className="text-sm text-gray-500">({book.rating || 0})</span>
+                <span className="animate-bounce text-base md:text-lg">{renderStars(book.rating)}</span>
+                <span className="text-xs sm:text-sm text-gray-500">({book.rating || 0})</span>
               </div>
-              <div className="mb-4 text-2xl font-bold text-yellow-500 drop-shadow">{formatVND(book.price)}</div>
+              <div className="mb-4 text-xl md:text-2xl font-bold text-yellow-500 drop-shadow">{formatVND(book.price)}</div>
               <div className="flex gap-2 w-full">
                 <Link
                   href={`/Books/${book.id}`}
-                  className="flex-1 px-4 py-2 rounded-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-lg text-center"
+                  className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-lg text-center text-xs sm:text-sm md:text-base"
                   style={{ fontFamily: 'Inter, Arial, sans-serif' }}
                 >
                   Xem chi tiết

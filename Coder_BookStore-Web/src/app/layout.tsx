@@ -24,9 +24,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
       </head>
-      <body className="min-h-screen flex flex-col text-gray-900 dark:text-gray-100 font-sans selection:bg-pink-500 selection:text-white">
+      <body className="min-h-screen flex flex-col w-full bg-white text-gray-900 dark:text-gray-100 font-sans selection:bg-pink-500 selection:text-white">
         <Header />
-        <main className="flex-grow">{children}</main>
+        <main className="flex-grow w-full px-2 sm:px-4 md:px-8 lg:max-w-7xl lg:mx-auto">{children}</main>
         <Footer />
       </body>
     </html>

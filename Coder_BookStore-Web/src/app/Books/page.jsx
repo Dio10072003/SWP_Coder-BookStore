@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import BookFilter from './Components/BookFilter.jsx';
 import BookGrid from './Components/BookGrid.jsx';
 import Pagination from './Components/Pagination.jsx';
@@ -8,6 +8,7 @@ import SearchBar from './Components/SearchBar.jsx';
 import { useBooks } from '../hooks/useBooks';
 import Loading from '../components/Loading';
 import Error from '../components/Error';
+import { FaFilter, FaTimes } from 'react-icons/fa';
 
 const FloatingIcon = ({ style, children, className }) => (
   <div
@@ -28,7 +29,39 @@ export default function BooksPage() {
     maxPrice: undefined
   });
   const [page, setPage] = useState(1);
-  const limit = 10;
+  const [limit, setLimit] = useState(12); // default for desktop
+  const [showFilter, setShowFilter] = useState(false);
+
+  // Responsive limit for pagination
+  useEffect(() => {
+    function updateLimit() {
+      if (typeof window !== 'undefined') {
+        const w = window.innerWidth;
+        if (w < 640) setLimit(4); // mobile
+        else if (w < 1024) setLimit(8); // tablet
+        else setLimit(12); // desktop
+      }
+    }
+    updateLimit();
+    window.addEventListener('resize', updateLimit);
+    return () => window.removeEventListener('resize', updateLimit);
+  }, []);
+
+  // Tag/chip filter state helpers
+  const activeChips = [];
+  if (filters.category) activeChips.push({ key: 'category', label: filters.category });
+  if (filters.year) activeChips.push({ key: 'year', label: `Năm: ${filters.year.min || ''}${filters.year.min && filters.year.max ? ' - ' : ''}${filters.year.max || ''}` });
+  if (filters.minRating) activeChips.push({ key: 'minRating', label: `Đánh giá: ${filters.minRating}+` });
+  if (filters.maxPrice) activeChips.push({ key: 'maxPrice', label: `≤ ${filters.maxPrice}₫` });
+
+  const handleRemoveChip = (key) => {
+    if (key === 'category') setFilters(f => ({ ...f, category: undefined }));
+    if (key === 'year') setFilters(f => ({ ...f, year: undefined }));
+    if (key === 'minRating') setFilters(f => ({ ...f, minRating: undefined }));
+    if (key === 'maxPrice') setFilters(f => ({ ...f, maxPrice: undefined }));
+    setPage(1);
+  };
+
   const memoizedFilters = useMemo(() => ({ ...filters, page, limit }), [filters, page, limit]);
   const { books, loading, error, total } = useBooks(memoizedFilters);
 
@@ -138,14 +171,48 @@ export default function BooksPage() {
       </div>
 
       {/* Search and Filter UI */}
-      <div className="max-w-5xl mx-auto px-4 bg-white rounded-3xl shadow-xl">
-        <SearchBar onSearch={handleSearch} />
-        <BookFilter 
-          onCategoryChange={handleCategoryChange}
-          onYearChange={handleYearChange}
-          onRatingChange={handleRatingChange}
-          onPriceChange={handlePriceChange}
-        />
+      <div className="max-w-5xl mx-auto px-2 sm:px-4 md:px-8 bg-white rounded-3xl shadow-xl mt-2 mb-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 animate-gradient-move">
+        <div className="flex-1">
+          <SearchBar onSearch={handleSearch} />
+        </div>
+        {/* Filter UI Responsive - Nút Bộ lọc cho mọi thiết bị */}
+        <div className="flex items-center gap-2 mb-2 sm:mb-4">
+          <button
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-400 via-yellow-400 to-purple-400 text-white font-bold shadow-lg animate-gradient-move text-base md:text-lg"
+            onClick={() => setShowFilter(true)}
+          >
+            <FaFilter /> Bộ lọc
+          </button>
+        </div>
+        {/* Tag/Chip filter */}
+        {activeChips.length > 0 && (
+          <div className="flex flex-wrap gap-2 mb-2">
+            {activeChips.map(chip => (
+              <span key={chip.key} className="flex items-center gap-1 px-3 py-1 rounded-full bg-gradient-to-r from-pink-100 via-yellow-100 to-purple-100 text-pink-700 font-semibold shadow animate-gradient-move text-xs sm:text-sm">
+                {chip.label}
+                <button onClick={() => handleRemoveChip(chip.key)} className="ml-1 text-pink-400 hover:text-red-500"><FaTimes size={12} /></button>
+              </span>
+            ))}
+          </div>
+        )}
+        {/* Modal filter cho mọi thiết bị */}
+        {showFilter && (
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/40 backdrop-blur-sm">
+            <div className="w-full sm:w-[480px] bg-white rounded-t-3xl sm:rounded-3xl shadow-2xl p-6 animate-fade-in flex flex-col gap-4 max-h-[90vh] overflow-y-auto">
+              <div className="flex items-center justify-between mb-2">
+                <span className="font-bold text-lg text-pink-500">Bộ lọc</span>
+                <button onClick={() => setShowFilter(false)} className="p-2 rounded-full bg-gray-100 hover:bg-pink-100 text-pink-500"><FaTimes /></button>
+              </div>
+              <BookFilter
+                onCategoryChange={handleCategoryChange}
+                onYearChange={handleYearChange}
+                onRatingChange={handleRatingChange}
+                onPriceChange={handlePriceChange}
+              />
+              <button onClick={() => setShowFilter(false)} className="mt-2 px-4 py-2 rounded-xl bg-gradient-to-r from-pink-400 via-yellow-400 to-purple-400 text-white font-bold shadow-lg animate-gradient-move">Áp dụng</button>
+            </div>
+          </div>
+        )}
       </div>
       {/* Clear Filters Button */}
       {hasActiveFilters && (

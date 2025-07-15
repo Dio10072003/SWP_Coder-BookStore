@@ -104,7 +104,7 @@ export default function PromotionDemo({ onChange }) {
   };
 
   return (
-    <div className="max-w-2xl mx-auto p-6 bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl mt-8 border border-pink-200">
+    <div className="w-full px-2 sm:px-4 md:px-8 lg:max-w-2xl lg:mx-auto p-6 bg-white/70 backdrop-blur-xl rounded-3xl shadow-2xl mt-8 border border-pink-200">
       <h2 className="text-2xl font-extrabold mb-6 text-pink-500 tracking-tight text-center drop-shadow">Demo Promotion CRUD</h2>
       {message && <div className="mb-4 text-green-600 font-bold text-center animate-fade-in">{message}</div>}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4 mb-8">
