@@ -3,9 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useBooks } from '../hooks/useBooks';
 import { bookService } from '../services/bookService';
-import Loading from '../components/Loading';
-import Error from '../components/Error';
-import { FaPlus, FaEdit, FaTrash, FaBook, FaUser, FaUserTie, FaTags, FaCog, FaSignOutAlt, FaClock, FaStar, FaTimes } from 'react-icons/fa';
+import { FaPlus, FaBook, FaUser, FaUserTie, FaTags, FaCog, FaTimes } from 'react-icons/fa';
 import { authorService, CreateAuthorData } from '../services/authorService';
 import { categoryService, CreateCategoryData } from '../services/categoryService';
 import { Author } from '../services/authorService';
@@ -61,46 +59,11 @@ const TABS = [
   { key: 'categories', label: 'Quản lý Thể loại', icon: <FaTags />, color: 'from-orange-500 to-red-600' },
 ];
 
-function getClockTheme(hour: number) {
-  if (hour >= 5 && hour < 11) return { icon: '☀️', bg: 'bg-yellow-100', greeting: 'Chào buổi sáng!' };
-  if (hour >= 11 && hour < 14) return { icon: '🌤️', bg: 'bg-yellow-200', greeting: 'Buổi trưa vui vẻ!' };
-  if (hour >= 14 && hour < 18) return { icon: '🌇', bg: 'bg-orange-200', greeting: 'Buổi chiều năng động!' };
-  if (hour >= 18 && hour < 22) return { icon: '🌙', bg: 'bg-indigo-200', greeting: 'Chúc buổi tối an lành!' };
-  return { icon: '🌌', bg: 'bg-purple-300', greeting: 'Đêm khuya đọc sách!' };
-}
-
-function ClockWidget({ time, location }: { time: Date; location: string }) {
-  const hour = time.getHours();
-  const { icon, bg, greeting } = getClockTheme(hour);
-  return (
-    <>
-      {/* Mobile: icon + time */}
-      <div className={`flex items-center gap-2 px-3 py-1 rounded-full shadow ${bg} transition-colors duration-500 sm:hidden`}>
-        <span className="text-xl animate-bounce-slow">{icon}</span>
-        <span className="font-mono font-bold text-base">{time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
-      </div>
-      {/* Tablet: icon + greeting + time */}
-      <div className={`hidden sm:flex lg:hidden items-center gap-2 px-4 py-2 rounded-full shadow ${bg} transition-colors duration-500`}>
-        <span className="text-2xl animate-bounce-slow">{icon}</span>
-        <span className="font-bold text-base">{greeting}</span>
-        <span className="font-mono text-base">{time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' })}</span>
-      </div>
-      {/* Desktop: icon + greeting + time + location */}
-      <div className={`hidden lg:flex items-center gap-3 px-5 py-2 rounded-full shadow ${bg} transition-colors duration-500`}>
-        <span className="text-2xl animate-bounce-slow">{icon}</span>
-        <span className="font-bold text-lg">{greeting}</span>
-        <span className="font-mono text-lg">{time.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}</span>
-        <span className="text-xs text-gray-500">{location}</span>
-      </div>
-    </>
-  );
-}
-
 
 export default function AdminPage() {
   const [reloadBooks, setReloadBooks] = useState(0);
   const bookFilters = useMemo(() => ({ limit: 1000, reload: reloadBooks }), [reloadBooks]);
-  const { books, loading, error } = useBooks(bookFilters);
+  const { books } = useBooks(bookFilters);
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState<number | null>(null);
   const [formData, setFormData] = useState<BookFormData>(initialFormData);
@@ -112,8 +75,7 @@ export default function AdminPage() {
   const [authors, setAuthors] = useState<Author[]>([]);
   const [categoriesData, setCategoriesData] = useState<Category[]>([]);
   const [stats, setStats] = useState({ books: 0, users: 0, authors: 0, categories: 0 });
-  const [currentTime, setCurrentTime] = useState(new Date());
-  const [isClient, setIsClient] = useState(false);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   // Keep all state declarations for both author and user management
   const [showAuthorForm, setShowAuthorForm] = useState(false);
@@ -130,18 +92,12 @@ export default function AdminPage() {
   const [categoryFormError, setCategoryFormError] = useState<string | null>(null);
   const [categorySuccessMessage, setCategorySuccessMessage] = useState<string | null>(null);
 
-  const [accessDenied, setAccessDenied] = useState(false);
-
   // Cập nhật thời gian thực
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentTime(new Date());
+      // setCurrentTime(new Date()); // Removed as per edit hint
     }, 1000);
     return () => clearInterval(timer);
-  }, []);
-
-  useEffect(() => {
-    setIsClient(true);
   }, []);
 
   useEffect(() => {
@@ -301,11 +257,6 @@ export default function AdminPage() {
           : 'Có lỗi xảy ra'
       );
     }
-  };
-
-  const handleAddNew = () => {
-    resetForm();
-    setShowForm(true);
   };
 
   const fetchAuthors = async () => {
