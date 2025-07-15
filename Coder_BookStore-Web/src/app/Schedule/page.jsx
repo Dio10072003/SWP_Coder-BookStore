@@ -359,13 +359,13 @@ export default function SchedulePage() {
           />
         ))}
       </div>
-      {/* Logo phụ CoderTour - nhỏ lại trên mobile/tablet */}
-      <div className="fixed top-2 right-2 md:top-4 md:right-4 lg:top-6 lg:right-6 z-50">
+      {/* Logo phụ CoderTour - animate fade in/out, responsive position/size */}
+      <div className="fixed z-50 top-2 right-2 w-10 h-10 md:top-2 md:right-2 md:w-10 md:h-10 lg:top-2 lg:right-8 lg:w-20 lg:h-20 animate-fade-in-out pointer-events-none select-none">
         <Image 
           src={coderTour} 
           alt="CoderTour Logo" 
-          width={32} height={32} 
-          className="rounded-full shadow-2xl animate-pulse bg-white/10 backdrop-blur-sm p-1 md:w-[48px] md:h-[48px] md:p-2 lg:w-[60px] lg:h-[60px] lg:p-2" 
+          fill
+          className="object-contain rounded-full shadow-2xl bg-white/10 backdrop-blur-sm"
         />
       </div>
       {/* Header responsive: full width, responsive padding */}
@@ -414,14 +414,14 @@ export default function SchedulePage() {
       </div>
 
       {/* Artistic Rainbow Intro Bar - full width */}
-      <div className="relative z-10 flex justify-center w-full px-2 md:px-4 lg:px-8 mb-6 lg:mb-8">
-        <div className="w-full rounded-3xl p-6 md:p-8 lg:p-12 bg-gradient-to-r from-pink-400 via-yellow-400 to-blue-400 animate-gradient-x shadow-2xl border-2 border-white/20 flex flex-col items-center justify-center text-center select-none">
-          <div className="max-w-5xl mx-auto">
-            <div className="text-4xl md:text-5xl mb-2 animate-bounce-slow">🌈</div>
-            <div className="text-lg md:text-2xl font-extrabold bg-gradient-to-r from-purple-500 via-pink-500 via-yellow-400 to-blue-400 bg-clip-text text-transparent drop-shadow-lg animate-gradient-move mb-2">
+      <div className="relative z-10 flex justify-center w-full px-1 md:px-2 lg:px-8 mb-4 md:mb-6 lg:mb-8">
+        <div className="w-full max-w-2xl rounded-2xl md:rounded-3xl p-3 md:p-4 lg:p-12 bg-gradient-to-r from-pink-400 via-yellow-400 to-blue-400 animate-gradient-x shadow-2xl border-2 border-white/20 flex flex-col items-center justify-center text-center select-none">
+          <div className="max-w-3xl mx-auto">
+            <div className="text-3xl md:text-4xl lg:text-5xl mb-2 animate-bounce-slow">🌈</div>
+            <div className="text-base md:text-lg lg:text-2xl font-extrabold bg-gradient-to-r from-purple-500 via-pink-500 via-yellow-400 to-blue-400 bg-clip-text text-transparent drop-shadow-lg animate-gradient-move mb-2">
               Đắm chìm trong sắc màu Radio – nơi cảm hứng, tri thức và nghệ thuật giao thoa từng phút giây!
             </div>
-            <div className="text-base md:text-lg font-bold bg-gradient-to-r from-blue-400 via-green-400 to-pink-400 bg-clip-text text-transparent drop-shadow animate-gradient-move italic tracking-wide">
+            <div className="text-sm md:text-base lg:text-lg font-bold bg-gradient-to-r from-blue-400 via-green-400 to-pink-400 bg-clip-text text-transparent drop-shadow animate-gradient-move italic tracking-wide">
               CoderTour - Nơi lập trình và nghệ thuật gia hội tụ đa màu !
             </div>
           </div>
@@ -429,8 +429,8 @@ export default function SchedulePage() {
       </div>
 
       {/* Thanh chọn ngày dạng tuần - full width, responsive padding */}
-      <div className="relative z-10 flex flex-col items-center mb-8 w-full px-2 md:px-4 lg:px-8">
-        <div className="flex gap-1 md:gap-2 lg:gap-3 justify-center mb-4 overflow-x-auto flex-nowrap w-full px-0 lg:overflow-x-visible scrollbar-hide">
+      <div className="relative z-10 flex flex-col items-center mb-6 md:mb-8 w-full px-1 md:px-2 lg:px-8">
+        <div className="flex gap-1 md:gap-1 lg:gap-3 justify-center mb-4 overflow-x-auto flex-nowrap w-full px-0 lg:overflow-x-visible scrollbar-hide">
           <button 
             onClick={() => setCurrentWeekStart(Math.max(0, currentWeekStart - 7))} 
             className="hidden lg:block p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 group"
@@ -448,17 +448,17 @@ export default function SchedulePage() {
                   ${isActive 
                     ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white border-purple-300 scale-105 shadow-2xl' 
                     : 'bg-white/10 text-white border-white/20 hover:bg-white/20 hover:scale-105'}
-                  px-2 py-1 md:px-2.5 md:py-1.5 lg:px-4 lg:py-3
+                  px-2 py-1 md:px-1.5 md:py-1 lg:px-4 lg:py-3
                   rounded-md md:rounded-lg lg:rounded-2xl
-                  text-xs md:text-sm lg:text-base
+                  text-xs md:text-xs lg:text-base
                   font-bold
-                  min-w-[44px] md:min-w-[64px] lg:min-w-[100px]`
+                  min-w-[44px] md:min-w-[48px] lg:min-w-[100px]`
                 }
                 style={{marginRight: 2, marginLeft: 2}}
               >
                 {/* Mobile: chỉ hiện ngày/tháng, Tablet/Desktop: hiện cả thứ + ngày/tháng */}
                 <div className="hidden md:block font-extrabold text-[10px] md:text-xs lg:text-sm mb-0.5 uppercase tracking-wide opacity-80">{getWeekdayVN(d)}</div>
-                <div className="text-xs md:text-base lg:text-lg font-bold">{d.getDate().toString().padStart(2, '0')}/{(d.getMonth()+1).toString().padStart(2, '0')}</div>
+                <div className="text-xs md:text-xs lg:text-lg font-bold">{d.getDate().toString().padStart(2, '0')}/{(d.getMonth()+1).toString().padStart(2, '0')}</div>
               </button>
             );
           })}
