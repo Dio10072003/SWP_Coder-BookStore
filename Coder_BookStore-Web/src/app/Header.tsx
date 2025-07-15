@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import { FaBars, FaTimes, FaCog } from 'react-icons/fa';
+import { FaBars, FaTimes, FaCog, FaUserTie } from 'react-icons/fa';
 import { JSX } from 'react';
 
 export default function Header(): JSX.Element {
@@ -68,7 +68,10 @@ export default function Header(): JSX.Element {
 
   const CartInfo = (
     <Link href="/CartPage" className="relative ml-4">
-      🛒 Cart
+      <span className="flex items-center gap-2 px-3 py-1 rounded-2xl bg-white/90 shadow-lg border border-white/40 hover:bg-gradient-to-r hover:from-pink-200 hover:to-purple-200 transition-all duration-200 text-purple-800 font-bold text-base md:text-lg animate-gradient-move">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="inline-block align-middle"><path d="M7 18c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm10 0c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zM7.16 16l.94-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49a1 1 0 0 0-.87-1.48H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 17.37 5.48 19 7 19h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.09z" fill="#7c3aed"/></svg>
+        <span>Cart</span>
+      </span>
     </Link>
   );
 
@@ -179,6 +182,12 @@ export default function Header(): JSX.Element {
           <Link href="/admin" onClick={() => setOpen(false)} className="block hover:text-orange-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10 flex items-center gap-2">
             <FaCog /> Admin Panel
           </Link>
+          {/* Staff Panel cho Staff/Admin */}
+          {(userRole === 'Staff' || userRole === 'Admin') && (
+            <Link href="/staff" onClick={() => setOpen(false)} className="block hover:text-green-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10 flex items-center gap-2">
+              <FaUserTie /> Staff Panel
+            </Link>
+          )}
           {isLoggedIn ? (
             <Link href="/Profile" onClick={() => setOpen(false)} className="block hover:text-green-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Profile</Link>
           ) : (
@@ -187,6 +196,11 @@ export default function Header(): JSX.Element {
               <Link href="/Register" onClick={() => setOpen(false)} className="block hover:text-teal-200 transition-colors duration-150 py-1.5 rounded-lg hover:bg-white hover:bg-opacity-10">Đăng ký</Link>
             </>
           )}
+          {/* Cart button nổi bật */}
+          <Link href="/CartPage" onClick={() => setOpen(false)} className="flex items-center gap-2 mt-3 px-4 py-2 rounded-2xl bg-white/90 shadow-lg border border-white/40 hover:bg-gradient-to-r hover:from-pink-200 hover:to-purple-200 transition-all duration-200 text-purple-800 font-bold text-base w-fit mx-auto animate-gradient-move">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" className="inline-block align-middle"><path d="M7 18c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zm10 0c-1.104 0-2 .896-2 2s.896 2 2 2 2-.896 2-2-.896-2-2-2zM7.16 16l.94-2h7.45c.75 0 1.41-.41 1.75-1.03l3.58-6.49a1 1 0 0 0-.87-1.48H6.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52 17.37 5.48 19 7 19h12v-2H7.42c-.14 0-.25-.11-.25-.25l.03-.09z" fill="#7c3aed"/></svg>
+            <span>Cart</span>
+          </Link>
           <div className="flex justify-center pt-2">
             <div className="text-[10px] font-bold text-blue-900 bg-white/70 backdrop-blur-md px-2 py-1 rounded-xl shadow border border-white/30 flex flex-col items-center min-w-[90px]">
               <div className="text-center w-full text-xs leading-tight">{greet}</div>
