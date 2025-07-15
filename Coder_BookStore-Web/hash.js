@@ -1,3 +1,4 @@
+require('dotenv').config({ path: '.env.local' });
 const { createClient } = require('@supabase/supabase-js');
 const bcrypt = require('bcrypt');
 
@@ -18,8 +19,8 @@ async function hashAndUpdateUsers() {
   }
 
   for (const user of users) {
-    // Only hash if password exists and passwordHash is empty or missing
-    if (user.password && (!user.passwordHash || user.passwordHash === '')) {
+    // Luôn hash lại nếu có password plaintext
+    if (user.password) {
       try {
         const hash = await bcrypt.hash(user.password, 10);
         const { error: updateError } = await supabase
@@ -28,14 +29,10 @@ async function hashAndUpdateUsers() {
           .eq('id', user.id);
         if (updateError) {
           console.error(`Error updating user ${user.id}:`, updateError);
-        } else {
-          console.log(`User ${user.id} password hashed and updated.`);
         }
       } catch (err) {
         console.error(`Hashing failed for user ${user.id}:`, err);
       }
-    } else {
-      console.log(`User ${user.id} already has a hashed password or no password set.`);
     }
   }
 }
