@@ -185,6 +185,20 @@ function getDayMonthVN(date) {
   return `Ngày ${date.getDate().toString().padStart(2, '0')}/${(date.getMonth()+1).toString().padStart(2, '0')}`;
 }
 
+// --- Add helper to find current airing program index ---
+function getCurrentAiringProgramIndex(programs, currentTime) {
+  if (!programs || programs.length === 0) return -1;
+  const mins = currentTime.getHours() * 60 + currentTime.getMinutes();
+  for (let i = 0; i < programs.length; i++) {
+    const progStart = programs[i].start * 15;
+    const progEnd = progStart + programs[i].duration * 15;
+    if (mins >= progStart && mins < progEnd) {
+      return i;
+    }
+  }
+  return -1;
+}
+
 export default function SchedulePage() {
   const [books, setBooks] = useState([]);
   const [authors, setAuthors] = useState([]);
@@ -293,18 +307,45 @@ export default function SchedulePage() {
   };
 
   const currentProgram = getCurrentProgram();
+  const currentAiringIndex = getCurrentAiringProgramIndex(programs, currentTime);
+
+  // --- Check if selected day is today (ignore time, only date) ---
+  const today = new Date();
+  const isSelectedDayToday = days[selectedDay].getDate() === today.getDate() &&
+    days[selectedDay].getMonth() === today.getMonth() &&
+    days[selectedDay].getFullYear() === today.getFullYear();
+
+  // --- Section: Đang phát sóng ---
+  let currentAiring = null;
+  if (currentAiringIndex !== -1) {
+    currentAiring = programs[currentAiringIndex];
+  }
+
+  // --- Section: Sắp phát sóng ---
+  let upcomingPrograms = [];
+  if (currentAiringIndex !== -1) {
+    upcomingPrograms = programs.slice(currentAiringIndex + 1, currentAiringIndex + 4);
+  } else {
+    // Nếu chưa có chương trình nào đang phát, lấy 3 chương trình đầu tiên còn lại trong ngày
+    const nowMins = currentTime.getHours() * 60 + currentTime.getMinutes();
+    const nextIdx = programs.findIndex(p => (p.start * 15) > nowMins);
+    if (nextIdx !== -1) {
+      upcomingPrograms = programs.slice(nextIdx, nextIdx + 3);
+    } else {
+      upcomingPrograms = programs.slice(0, 3);
+    }
+  }
 
   return (
-    <div className="relative min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 overflow-hidden">
-      {/* Background animated elements */}
-      <div className="absolute inset-0 overflow-hidden">
+    <div className="w-full min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900 overflow-hidden">
+      {/* Background animated elements - only show on desktop */}
+      <div className="absolute inset-0 overflow-hidden hidden lg:block">
         <div className="absolute -top-40 -left-40 w-80 h-80 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
         <div className="absolute -bottom-40 -right-40 w-80 h-80 bg-yellow-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
         <div className="absolute top-40 -right-40 w-80 h-80 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
       </div>
-
-      {/* Floating particles */}
-      <div className="absolute inset-0">
+      {/* Floating particles - only show on desktop */}
+      <div className="absolute inset-0 hidden lg:block">
         {[...Array(20)].map((_, i) => (
           <div
             key={i}
@@ -318,37 +359,34 @@ export default function SchedulePage() {
           />
         ))}
       </div>
-
-      {/* Logo phụ CoderTour */}
-      <div className="fixed top-6 right-6 z-50">
+      {/* Logo phụ CoderTour - nhỏ lại trên mobile/tablet */}
+      <div className="fixed top-2 right-2 md:top-4 md:right-4 lg:top-6 lg:right-6 z-50">
         <Image 
           src={coderTour} 
           alt="CoderTour Logo" 
-          width={60} 
-          height={60} 
-          className="rounded-full shadow-2xl animate-pulse bg-white/10 backdrop-blur-sm p-2" 
+          width={32} height={32} 
+          className="rounded-full shadow-2xl animate-pulse bg-white/10 backdrop-blur-sm p-1 md:w-[48px] md:h-[48px] md:p-2 lg:w-[60px] lg:h-[60px] lg:p-2" 
         />
       </div>
-
-      {/* Header với thời gian thực */}
-      <div className="relative z-10 flex flex-col items-center justify-center py-8">
-        <div className="flex items-center gap-4 mb-4">
-          <div className="relative">
-            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 p-1 animate-spin-slow">
+      {/* Header responsive: full width, responsive padding */}
+      <div className="relative z-10 flex flex-col items-center justify-center w-full py-2 md:py-4 lg:py-10 px-2 md:px-4 lg:px-8">
+        <div className="flex flex-col lg:flex-row items-center gap-2 lg:gap-4 mb-2 lg:mb-4 w-full px-0">
+          <div className="relative mb-2 lg:mb-0">
+            <div className="w-8 h-8 md:w-12 md:h-12 lg:w-20 lg:h-20 rounded-full bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 p-0.5 md:p-1 lg:p-1.5 animate-spin-slow">
               <div className="w-full h-full rounded-full bg-gradient-to-br from-indigo-900 to-purple-900 flex items-center justify-center">
-                <FaBroadcastTower className="text-white text-2xl animate-pulse" />
+                <FaBroadcastTower className="text-white text-base md:text-xl lg:text-2xl animate-pulse" />
               </div>
             </div>
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 rounded-full animate-ping"></div>
+            <div className="absolute -top-1 -right-1 w-2 h-2 md:w-3 md:h-3 lg:w-6 lg:h-6 bg-red-500 rounded-full animate-ping"></div>
           </div>
-          <div>
-            <h1 className="text-5xl md:text-7xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-2xl font-heading tracking-tight animate-gradient-move">
+          <div className="flex-1 text-center lg:text-left">
+            <h1 className="text-base md:text-2xl lg:text-5xl font-black bg-gradient-to-r from-purple-400 via-pink-400 to-yellow-400 bg-clip-text text-transparent drop-shadow-2xl font-heading tracking-tight animate-gradient-move">
               LỊCH PHÁT SÓNG
             </h1>
-            <div className="flex items-center gap-4 mt-2 text-white/80">
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+            <div className="flex flex-col md:flex-row items-center gap-1 md:gap-2 lg:gap-4 mt-1 md:mt-2 text-white/80 justify-center lg:justify-start">
+              <div className="flex items-center gap-1 md:gap-2 bg-white/10 backdrop-blur-sm rounded-full px-2 py-0.5 md:px-3 md:py-1 lg:px-4 lg:py-2">
                 <FaClock className="text-yellow-400" />
-                <span className="font-mono text-lg font-bold">
+                <span className="font-mono text-xs md:text-base lg:text-lg font-bold">
                   {currentTime.toLocaleTimeString('vi-VN', { 
                     hour: '2-digit', 
                     minute: '2-digit', 
@@ -356,9 +394,9 @@ export default function SchedulePage() {
                   })}
                 </span>
               </div>
-              <div className="flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-full px-4 py-2">
+              <div className="flex items-center gap-1 md:gap-2 bg-white/10 backdrop-blur-sm rounded-full px-2 py-0.5 md:px-3 md:py-1 lg:px-4 lg:py-2">
                 <FaCalendarAlt className="text-pink-400" />
-                <span className="font-semibold">
+                <span className="font-semibold text-xs md:text-base lg:text-lg">
                   {currentTime.toLocaleDateString('vi-VN', { 
                     weekday: 'long', 
                     year: 'numeric', 
@@ -370,38 +408,32 @@ export default function SchedulePage() {
             </div>
           </div>
         </div>
-        <p className="text-xl md:text-2xl text-white/90 font-light mb-6 text-center max-w-4xl leading-relaxed">
+        <p className="text-xs md:text-base lg:text-xl text-white/90 font-light mb-2 md:mb-4 lg:mb-6 text-center w-full max-w-xs md:max-w-2xl lg:max-w-4xl leading-relaxed">
           Khám phá lịch phát sóng đa dạng với giao lưu tác giả, chủ đề hấp dẫn và nhiều chương trình đặc biệt mỗi ngày!
         </p>
       </div>
 
-      {/* Thanh điều khiển */}
-      <div className="relative z-10 flex justify-center mb-8">
-        <div className="flex items-center gap-4 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
-          <button 
-            onClick={() => setIsAutoPlay(!isAutoPlay)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl font-semibold transition-all duration-300 ${
-              isAutoPlay 
-                ? 'bg-gradient-to-r from-green-400 to-emerald-500 text-white shadow-lg' 
-                : 'bg-white/20 text-white hover:bg-white/30'
-            }`}
-          >
-            {isAutoPlay ? <FaPause /> : <FaPlay />}
-            {isAutoPlay ? 'Tạm dừng' : 'Tự động'}
-          </button>
-          <div className="h-6 w-px bg-white/30"></div>
-          <div className="text-white/80 text-sm">
-            Chương trình hiện tại: {currentProgramIndex + 1}/{programs.length}
+      {/* Artistic Rainbow Intro Bar - full width */}
+      <div className="relative z-10 flex justify-center w-full px-2 md:px-4 lg:px-8 mb-6 lg:mb-8">
+        <div className="w-full rounded-3xl p-6 md:p-8 lg:p-12 bg-gradient-to-r from-pink-400 via-yellow-400 to-blue-400 animate-gradient-x shadow-2xl border-2 border-white/20 flex flex-col items-center justify-center text-center select-none">
+          <div className="max-w-5xl mx-auto">
+            <div className="text-4xl md:text-5xl mb-2 animate-bounce-slow">🌈</div>
+            <div className="text-lg md:text-2xl font-extrabold bg-gradient-to-r from-purple-500 via-pink-500 via-yellow-400 to-blue-400 bg-clip-text text-transparent drop-shadow-lg animate-gradient-move mb-2">
+              Đắm chìm trong sắc màu Radio – nơi cảm hứng, tri thức và nghệ thuật giao thoa từng phút giây!
+            </div>
+            <div className="text-base md:text-lg font-bold bg-gradient-to-r from-blue-400 via-green-400 to-pink-400 bg-clip-text text-transparent drop-shadow animate-gradient-move italic tracking-wide">
+              CoderTour - Nơi lập trình và nghệ thuật gia hội tụ đa màu !
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Thanh chọn ngày dạng tuần */}
-      <div className="relative z-10 flex flex-col items-center mb-8">
-        <div className="flex gap-3 justify-center mb-4">
+      {/* Thanh chọn ngày dạng tuần - full width, responsive padding */}
+      <div className="relative z-10 flex flex-col items-center mb-8 w-full px-2 md:px-4 lg:px-8">
+        <div className="flex gap-1 md:gap-2 lg:gap-3 justify-center mb-4 overflow-x-auto flex-nowrap w-full px-0 lg:overflow-x-visible scrollbar-hide">
           <button 
             onClick={() => setCurrentWeekStart(Math.max(0, currentWeekStart - 7))} 
-            className="p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 group"
+            className="hidden lg:block p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 group"
           >
             <FaChevronLeft className="text-white group-hover:text-purple-300 transition-colors" />
           </button>
@@ -412,136 +444,148 @@ export default function SchedulePage() {
               <button
                 key={i}
                 onClick={() => handleSelectDay(i)}
-                className={`px-4 py-3 rounded-2xl font-bold text-sm transition-all duration-300 border-2 backdrop-blur-sm ${
-                  isActive 
-                    ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white border-purple-300 scale-110 shadow-2xl' 
-                    : 'bg-white/10 text-white border-white/20 hover:bg-white/20 hover:scale-105'
-                }`}
+                className={`flex flex-col items-center justify-center transition-all duration-300 border-2 backdrop-blur-sm whitespace-nowrap select-none
+                  ${isActive 
+                    ? 'bg-gradient-to-r from-purple-400 to-pink-400 text-white border-purple-300 scale-105 shadow-2xl' 
+                    : 'bg-white/10 text-white border-white/20 hover:bg-white/20 hover:scale-105'}
+                  px-2 py-1 md:px-2.5 md:py-1.5 lg:px-4 lg:py-3
+                  rounded-md md:rounded-lg lg:rounded-2xl
+                  text-xs md:text-sm lg:text-base
+                  font-bold
+                  min-w-[44px] md:min-w-[64px] lg:min-w-[100px]`
+                }
+                style={{marginRight: 2, marginLeft: 2}}
               >
-                <div className="font-extrabold text-xs mb-1 uppercase tracking-wide opacity-80">{getWeekdayVN(d)}</div>
-                <div className="text-base">{d.getDate().toString().padStart(2, '0')}/{(d.getMonth()+1).toString().padStart(2, '0')}</div>
+                {/* Mobile: chỉ hiện ngày/tháng, Tablet/Desktop: hiện cả thứ + ngày/tháng */}
+                <div className="hidden md:block font-extrabold text-[10px] md:text-xs lg:text-sm mb-0.5 uppercase tracking-wide opacity-80">{getWeekdayVN(d)}</div>
+                <div className="text-xs md:text-base lg:text-lg font-bold">{d.getDate().toString().padStart(2, '0')}/{(d.getMonth()+1).toString().padStart(2, '0')}</div>
               </button>
             );
           })}
           <button 
             onClick={() => setCurrentWeekStart(Math.min(DAYS_COUNT - 7, currentWeekStart + 7))} 
-            className="p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 group"
+            className="hidden lg:block p-3 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 group"
           >
             <FaChevronRight className="text-white group-hover:text-purple-300 transition-colors" />
           </button>
         </div>
       </div>
 
-      {/* Chương trình hiện tại nổi bật */}
-      {currentProgram && (
-        <div className="relative z-10 max-w-4xl mx-auto mb-8 px-4">
-          <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 backdrop-blur-md rounded-3xl p-8 border border-white/20 shadow-2xl animate-fade-in">
-            <div className="text-center mb-6">
-              <h2 className="text-2xl font-bold text-white mb-2">Đang phát sóng</h2>
-              <div className="flex items-center justify-center gap-4 text-white/80">
-                <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
-                  <FaClock className="text-yellow-400" />
-                  <span className="font-mono">
-                    {formatTimeFromMins(currentProgram.start * 15)} - {formatTimeFromMins((currentProgram.start + currentProgram.duration) * 15)}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2 bg-white/10 rounded-full px-4 py-2">
-                  <span className="text-sm">
-                    {currentProgram.duration * 15} phút
-                  </span>
-                </div>
-              </div>
+      {/* Đang phát sóng */}
+      {isSelectedDayToday && (
+        <div className="relative z-10 max-w-md md:max-w-2xl lg:max-w-4xl mx-auto mb-6 md:mb-8 px-2 md:px-4 lg:px-4">
+          <div className="bg-gradient-to-r from-purple-500/10 to-pink-500/10 lg:from-purple-500/20 lg:to-pink-500/20 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 md:p-6 lg:p-8 border border-yellow-400/30 lg:border-yellow-400/60 shadow-lg lg:shadow-2xl animate-fade-in">
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold text-yellow-300 mb-2 flex items-center justify-center gap-2">
+                <FaBroadcastTower className="inline-block text-yellow-300 animate-pulse" /> Đang phát sóng
+              </h2>
             </div>
-            <Link href={currentProgram.link} className="block group">
-              <div className={`relative overflow-hidden rounded-2xl p-8 bg-gradient-to-r ${currentProgram.color} shadow-2xl transform transition-all duration-500 group-hover:scale-105 group-hover:shadow-3xl`}>
-                <div className="absolute inset-0 bg-black/10"></div>
-                <div className="relative z-10 flex items-center gap-6">
-                  <div className="flex-shrink-0">
-                    <div className="w-20 h-20 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
-                      {currentProgram.type === 'book' && (
-                        <svg width="40" height="40" fill="none" viewBox="0 0 48 48" className="text-white">
-                          <rect x="8" y="12" width="32" height="24" rx="6" fill="currentColor" />
-                          <rect x="14" y="18" width="20" height="12" rx="3" fill="#1f2937" />
-                          <path d="M24 18v12" stroke="#f472b6" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                      )}
-                      {currentProgram.type === 'author' && (
-                        <svg width="40" height="40" fill="none" viewBox="0 0 48 48" className="text-white">
-                          <circle cx="24" cy="24" r="20" fill="currentColor" />
-                          <path d="M24 18a6 6 0 1 1 0 12 6 6 0 0 1 0-12z" fill="#1f2937" />
-                          <path d="M24 30c-5 0-9 2-9 4v2h18v-2c0-2-4-4-9-4z" fill="#f472b6" />
-                        </svg>
-                      )}
-                      {currentProgram.type === 'category' && (
-                        <svg width="40" height="40" fill="none" viewBox="0 0 48 48" className="text-white">
-                          <rect x="10" y="10" width="28" height="28" rx="8" fill="currentColor" />
-                          <path d="M24 18v12M18 24h12" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                      )}
-                      {currentProgram.type === 'ad' && (
-                        <svg width="40" height="40" fill="none" viewBox="0 0 48 48" className="text-white">
-                          <rect x="8" y="16" width="32" height="16" rx="6" fill="currentColor" />
-                          <path d="M16 24h16" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                      )}
-                      {currentProgram.type === 'news' && (
-                        <svg width="40" height="40" fill="none" viewBox="0 0 48 48" className="text-white">
-                          <rect x="8" y="12" width="32" height="24" rx="6" fill="currentColor" />
-                          <path d="M16 20h16M16 28h10" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                      )}
-                      {currentProgram.type === 'music' && (
-                        <svg width="40" height="40" fill="none" viewBox="0 0 48 48" className="text-white">
-                          <circle cx="24" cy="24" r="20" fill="currentColor" />
-                          <path d="M18 30a4 4 0 1 1 8 0 4 4 0 0 1-8 0zm8-12v8" stroke="#1f2937" strokeWidth="2" strokeLinecap="round" />
-                        </svg>
-                      )}
-                      {currentProgram.type === 'ranking' && (
-                        <svg width="40" height="40" fill="none" viewBox="0 0 48 48" className="text-white">
-                          <circle cx="24" cy="24" r="20" fill="currentColor" />
-                          <path d="M24 18a6 6 0 1 1 0 12 6 6 0 0 1 0-12z" fill="#1f2937" />
-                          <path d="M24 30c-5 0-9 2-9 4v2h18v-2c0-2-4-4-9-4z" fill="#f472b6" />
-                        </svg>
-                      )}
+            {currentAiring ? (
+              <Link href={currentAiring.link} className="block group">
+                <div className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-r ${currentAiring.color} shadow-2xl group-hover:scale-105 group-hover:shadow-3xl transition-all duration-500 ring-4 ring-yellow-400 ring-opacity-80 animate-pulse-slow`}>
+                  <div className="absolute inset-0 bg-black/10"></div>
+                  <div className="relative z-10 flex items-center gap-6">
+                    <div className="flex-shrink-0">
+                      <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                        {/* icon logic như cũ */}
+                        {currentAiring.type === 'book' && <span className="text-3xl">📚</span>}
+                        {currentAiring.type === 'author' && <span className="text-3xl">👨‍💼</span>}
+                        {currentAiring.type === 'category' && <span className="text-3xl">🏷️</span>}
+                        {currentAiring.type === 'ad' && <span className="text-3xl">📢</span>}
+                        {currentAiring.type === 'news' && <span className="text-3xl">📰</span>}
+                        {currentAiring.type === 'music' && <span className="text-3xl">🎵</span>}
+                        {currentAiring.type === 'ranking' && <span className="text-3xl">🏆</span>}
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-bold text-white shadow-sm">
-                        {currentProgram.type === 'book' ? '📚 Đọc sách' : 
-                         currentProgram.type === 'author' ? '👨‍💼 Giao lưu tác giả' : 
-                         currentProgram.type === 'category' ? '🏷️ Chủ đề' : 
-                         currentProgram.type === 'ad' ? '📢 Quảng cáo' : 
-                         currentProgram.type === 'news' ? '📰 Bản tin' : 
-                         currentProgram.type === 'music' ? '🎵 Âm nhạc' : 
-                         currentProgram.type === 'ranking' ? '🏆 Bảng xếp hạng' : '📺 Chương trình khác'}
-                      </span>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3 mb-2">
+                        <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-bold text-white shadow-sm">
+                          {currentAiring.type === 'book' ? '📚 Đọc sách' : 
+                           currentAiring.type === 'author' ? '👨‍💼 Giao lưu tác giả' : 
+                           currentAiring.type === 'category' ? '🏷️ Chủ đề' : 
+                           currentAiring.type === 'ad' ? '📢 Quảng cáo' : 
+                           currentAiring.type === 'news' ? '📰 Bản tin' : 
+                           currentAiring.type === 'music' ? '🎵 Âm nhạc' : 
+                           currentAiring.type === 'ranking' ? '🏆 Bảng xếp hạng' : '📺 Chương trình khác'}
+                        </span>
+                      </div>
+                      <h3 className="text-xl sm:text-2xl font-black text-white drop-shadow mb-1 group-hover:text-yellow-200 transition-colors duration-300">
+                        {currentAiring.title}
+                      </h3>
+                      <div className="flex items-center gap-2 text-white/80 text-sm mb-1">
+                        <FaClock className="text-yellow-400" />
+                        <span className="font-mono">
+                          {formatTimeFromMins(currentAiring.start * 15)} - {formatTimeFromMins((currentAiring.start + currentAiring.duration) * 15)}
+                        </span>
+                        <span className="ml-2">({currentAiring.duration * 15} phút)</span>
+                      </div>
+                      <p className="text-white/80 text-base">Chương trình đang phát sóng trực tiếp</p>
                     </div>
-                    <h3 className="text-2xl md:text-3xl font-black text-white drop-shadow mb-2 group-hover:text-yellow-200 transition-colors duration-300">
-                      {currentProgram.title}
-                    </h3>
-                    <p className="text-white/80 text-lg">
-                      Chương trình đang phát sóng trực tiếp
-                    </p>
-                  </div>
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm animate-pulse">
-                      <FaPlay className="text-white text-xl" />
+                    <div className="flex-shrink-0">
+                      <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm animate-pulse">
+                        <FaPlay className="text-white text-xl" />
+                      </div>
                     </div>
                   </div>
                 </div>
+              </Link>
+            ) : (
+              <div className="text-center text-white/80 py-6">Hiện chưa có chương trình nào đang phát sóng.</div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Sắp phát sóng */}
+      {isSelectedDayToday && (
+        <div className="relative z-10 max-w-md md:max-w-2xl lg:max-w-4xl mx-auto mb-6 md:mb-8 px-2 md:px-4 lg:px-4">
+          <div className="bg-gradient-to-r from-blue-500/10 to-cyan-500/10 lg:from-blue-500/20 lg:to-cyan-500/20 backdrop-blur-md rounded-2xl md:rounded-3xl p-3 md:p-6 lg:p-8 border border-cyan-300/30 lg:border-cyan-300/40 shadow-lg lg:shadow-2xl">
+            <div className="text-center mb-4">
+              <h2 className="text-2xl font-bold text-cyan-200 mb-2 flex items-center justify-center gap-2">
+                <FaClock className="inline-block text-cyan-200 animate-pulse" /> Sắp phát sóng
+              </h2>
+            </div>
+            {upcomingPrograms.length > 0 ? (
+              <div className="flex flex-col gap-4">
+                {upcomingPrograms.map((program, idx) => (
+                  <Link href={program.link} key={idx} className={`group block relative overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl bg-gradient-to-r ${program.color} shadow-xl`}>
+                    <div className="absolute inset-0 bg-black/10"></div>
+                    <div className="relative z-10 flex items-center gap-4 p-4">
+                      <div className="w-12 h-12 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
+                        {program.type === 'book' && <span className="text-2xl">📚</span>}
+                        {program.type === 'author' && <span className="text-2xl">👨‍💼</span>}
+                        {program.type === 'category' && <span className="text-2xl">🏷️</span>}
+                        {program.type === 'ad' && <span className="text-2xl">📢</span>}
+                        {program.type === 'news' && <span className="text-2xl">📰</span>}
+                        {program.type === 'music' && <span className="text-2xl">🎵</span>}
+                        {program.type === 'ranking' && <span className="text-2xl">🏆</span>}
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-lg font-bold text-white mb-1 group-hover:text-yellow-200 transition-colors duration-300 line-clamp-2">{program.title}</h3>
+                        <div className="flex items-center gap-2 text-white/80 text-sm">
+                          <span className="font-mono">
+                            {formatTimeFromMins(program.start * 15)} - {formatTimeFromMins((program.start + program.duration) * 15)}
+                          </span>
+                          <span className="ml-2">({program.duration * 15} phút)</span>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
               </div>
-            </Link>
+            ) : (
+              <div className="text-center text-white/80 py-6">Không có chương trình sắp phát sóng.</div>
+            )}
           </div>
         </div>
       )}
 
       {/* Danh sách tất cả chương trình */}
-      <div className="relative z-10 max-w-6xl mx-auto px-4">
-        <div className="bg-white/5 backdrop-blur-md rounded-3xl p-8 border border-white/10 shadow-2xl">
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold text-white mb-2">Lịch phát sóng chi tiết</h2>
-            <p className="text-white/70">Tất cả chương trình trong ngày {getDateString(days[selectedDay])}</p>
+      <div className="relative z-10 max-w-6xl mx-auto px-2 sm:px-4">
+        <div className="bg-white/5 backdrop-blur-md rounded-3xl p-4 sm:p-8 border border-white/10 shadow-2xl">
+          <div className="text-center mb-6 sm:mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">Lịch phát sóng chi tiết</h2>
+            <p className="text-white/70 text-sm sm:text-base">Tất cả chương trình trong ngày {getDateString(days[selectedDay])}</p>
           </div>
           
           {loading ? (
@@ -552,55 +596,63 @@ export default function SchedulePage() {
               </div>
             </div>
           ) : (
-            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {programs.map((program, idx) => (
-                <Link 
-                  href={program.link} 
-                  key={idx} 
-                  className={`group block relative overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl ${
-                    idx === currentProgramIndex ? 'ring-4 ring-purple-400 ring-opacity-50 scale-105' : ''
-                  }`}
-                  onClick={() => setCurrentProgramIndex(idx)}
-                >
-                  <div className={`absolute inset-0 bg-gradient-to-br ${program.color} opacity-90`}></div>
-                  <div className="relative z-10 p-6 text-white">
-                    <div className="flex items-center justify-between mb-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                          {program.type === 'book' && <span className="text-lg">📚</span>}
-                          {program.type === 'author' && <span className="text-lg">👨‍💼</span>}
-                          {program.type === 'category' && <span className="text-lg">🏷️</span>}
-                          {program.type === 'ad' && <span className="text-lg">📢</span>}
-                          {program.type === 'news' && <span className="text-lg">📰</span>}
-                          {program.type === 'music' && <span className="text-lg">🎵</span>}
-                          {program.type === 'ranking' && <span className="text-lg">🏆</span>}
+            <div className="grid gap-3 sm:gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+              {programs.map((program, idx) => {
+                // Nếu không phải ngày hôm nay thì không highlight gì cả
+                const isCurrent = isSelectedDayToday && idx === currentAiringIndex;
+                return (
+                  <Link 
+                    href={program.link} 
+                    key={idx} 
+                    className={`group block relative overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl ${
+                      isCurrent ? 'ring-4 ring-yellow-400 ring-opacity-80 scale-105 animate-pulse-slow shadow-yellow-400/40' :
+                      isSelectedDayToday && idx === currentProgramIndex ? 'ring-2 ring-purple-400 ring-opacity-50 scale-105' : ''
+                    }`}
+                    onClick={() => setCurrentProgramIndex(idx)}
+                  >
+                    <div className={`absolute inset-0 bg-gradient-to-br ${program.color} opacity-90`}></div>
+                    <div className="relative z-10 p-4 sm:p-6 text-white">
+                      <div className="flex items-center justify-between mb-2 sm:mb-4">
+                        <div className="flex items-center gap-2">
+                          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center">
+                            {program.type === 'book' && <span className="text-lg">📚</span>}
+                            {program.type === 'author' && <span className="text-lg">👨‍💼</span>}
+                            {program.type === 'category' && <span className="text-lg">🏷️</span>}
+                            {program.type === 'ad' && <span className="text-lg">📢</span>}
+                            {program.type === 'news' && <span className="text-lg">📰</span>}
+                            {program.type === 'music' && <span className="text-lg">🎵</span>}
+                            {program.type === 'ranking' && <span className="text-lg">🏆</span>}
+                          </div>
+                          <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-full">
+                            {formatTimeFromMins(program.start * 15)} - {formatTimeFromMins((program.start + program.duration) * 15)}
+                          </span>
                         </div>
-                        <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-full">
-                          {formatTimeFromMins(program.start * 15)} - {formatTimeFromMins((program.start + program.duration) * 15)}
+                        {isCurrent && (
+                          <div className="w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
+                        )}
+                        {!isCurrent && isSelectedDayToday && idx === currentProgramIndex && (
+                          <div className="w-3 h-3 bg-purple-400 rounded-full animate-ping"></div>
+                        )}
+                      </div>
+                      <h3 className="text-base sm:text-lg font-bold mb-1 sm:mb-2 group-hover:text-yellow-200 transition-colors duration-300 line-clamp-2">
+                        {program.title}
+                      </h3>
+                      <div className="flex items-center justify-between text-xs sm:text-sm opacity-80">
+                        <span>{program.duration * 15} phút</span>
+                        <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
+                          {program.type === 'book' ? 'Đọc sách' : 
+                           program.type === 'author' ? 'Giao lưu' : 
+                           program.type === 'category' ? 'Chủ đề' : 
+                           program.type === 'ad' ? 'Quảng cáo' : 
+                           program.type === 'news' ? 'Bản tin' : 
+                           program.type === 'music' ? 'Âm nhạc' : 
+                           program.type === 'ranking' ? 'Xếp hạng' : 'Khác'}
                         </span>
                       </div>
-                      {idx === currentProgramIndex && (
-                        <div className="w-3 h-3 bg-red-500 rounded-full animate-ping"></div>
-                      )}
                     </div>
-                    <h3 className="text-lg font-bold mb-2 group-hover:text-yellow-200 transition-colors duration-300 line-clamp-2">
-                      {program.title}
-                    </h3>
-                    <div className="flex items-center justify-between text-sm opacity-80">
-                      <span>{program.duration * 15} phút</span>
-                      <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
-                        {program.type === 'book' ? 'Đọc sách' : 
-                         program.type === 'author' ? 'Giao lưu' : 
-                         program.type === 'category' ? 'Chủ đề' : 
-                         program.type === 'ad' ? 'Quảng cáo' : 
-                         program.type === 'news' ? 'Bản tin' : 
-                         program.type === 'music' ? 'Âm nhạc' : 
-                         program.type === 'ranking' ? 'Xếp hạng' : 'Khác'}
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           )}
         </div>
