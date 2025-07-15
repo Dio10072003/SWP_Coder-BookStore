@@ -1,28 +1,29 @@
 import React from 'react';
+import { FaTrash, FaCreditCard } from 'react-icons/fa';
 
 const CartSummary = ({ items, onClear }) => {
   const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const isEmpty = items.length === 0;
   return (
     <div className="sticky top-24 w-full md:w-80">
-      <div className="backdrop-blur-lg bg-white/80 rounded-2xl shadow-xl p-6 flex flex-col items-center border border-purple-100">
-        <div className="font-extrabold text-2xl text-purple-700 mb-2 tracking-tight drop-shadow">Summary</div>
-        <div className="w-full flex justify-between text-lg font-semibold mb-4">
-          <span>Total:</span>
-          <span className="text-pink-600">{total.toLocaleString()} VND</span>
+      <div className="backdrop-blur-2xl bg-white/40 rounded-3xl shadow-2xl border-2 border-gradient-to-br from-purple-300/60 via-pink-200/60 to-yellow-200/60 p-6 sm:p-8 md:p-10 flex flex-col items-center animate-gradient-move">
+        <div className="font-extrabold text-xl sm:text-2xl md:text-3xl bg-gradient-to-r from-pink-500 via-yellow-400 to-purple-500 bg-clip-text text-transparent animate-gradient-move mb-2 tracking-tight drop-shadow">Tổng kết</div>
+        <div className="w-full flex items-center justify-between text-base sm:text-lg md:text-xl font-bold mb-4">
+          <span className="flex items-center gap-2"><FaCreditCard className="text-pink-400" /> Tổng:</span>
+          <span className="bg-gradient-to-r from-purple-500 to-pink-500 bg-clip-text text-transparent animate-gradient-move">{total.toLocaleString()} VND</span>
         </div>
         <button
           onClick={onClear}
           disabled={isEmpty}
-          className="w-full py-2 mb-2 rounded-full bg-gradient-to-r from-pink-400 to-purple-400 text-white font-bold shadow-lg hover:scale-105 hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 sm:py-2.5 md:py-3 mb-2 rounded-full bg-gradient-to-r from-pink-400 to-orange-400 text-white font-bold shadow-lg hover:scale-105 hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 animate-shake"
         >
-          Clear Cart
+          <FaTrash /> Xóa giỏ hàng
         </button>
         <button
           disabled={isEmpty}
-          className="w-full py-3 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-extrabold text-lg shadow-xl mt-2 animate-glow hover:scale-105 hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-3 sm:py-3.5 md:py-4 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 text-white font-extrabold text-base sm:text-lg md:text-xl shadow-xl mt-2 animate-glow hover:scale-105 hover:shadow-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
         >
-          Checkout
+          <FaCreditCard /> Thanh toán
         </button>
         <style jsx>{`
           @keyframes glow {
@@ -32,6 +33,15 @@ const CartSummary = ({ items, onClear }) => {
           }
           .animate-glow {
             animation: glow 2.5s infinite alternate;
+          }
+          @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-4px); }
+            40%, 60% { transform: translateX(4px); }
+          }
+          .animate-shake:hover {
+            animation: shake 0.4s;
           }
         `}</style>
       </div>
