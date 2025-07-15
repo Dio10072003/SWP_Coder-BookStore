@@ -70,19 +70,19 @@ const BookFilter = ({ onCategoryChange, onYearChange, onRatingChange, onPriceCha
   };
 
   return (
-    <div className="mb-8">
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+    <div className="mb-8 animate-gradient-move">
+      <div className="flex flex-col gap-4 sm:grid sm:grid-cols-2 md:grid-cols-4 sm:gap-6">
         {/* Category Filter */}
         <div>
           <label className="block text-pink-500 text-base font-semibold mb-2">Thể loại</label>
           <select
             value={category}
             onChange={handleCategoryChange}
-            className="w-full min-w-[220px] px-5 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-lg font-semibold transition-all"
+            className="w-full min-w-[160px] px-4 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-base sm:text-lg font-semibold transition-all"
             style={{ fontFamily: 'Inter, Arial, sans-serif' }}
           >
             {categories.map((cat) => (
-              <option key={cat} value={cat} className="text-lg">{cat}</option>
+              <option key={cat} value={cat} className="text-base sm:text-lg">{cat}</option>
             ))}
           </select>
         </div>
@@ -94,21 +94,21 @@ const BookFilter = ({ onCategoryChange, onYearChange, onRatingChange, onPriceCha
             <select
               value={minYear}
               onChange={handleMinYearChange}
-              className="w-1/2 min-w-[110px] px-5 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-lg font-semibold transition-all"
+              className="w-1/2 min-w-[80px] px-4 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-base sm:text-lg font-semibold transition-all"
               style={{ fontFamily: 'Inter, Arial, sans-serif' }}
             >
               {years.map((y) => (
-                <option key={y} value={y} className="text-lg">Từ {y}</option>
+                <option key={y} value={y} className="text-base sm:text-lg">Từ {y}</option>
               ))}
             </select>
             <select
               value={maxYear}
               onChange={handleMaxYearChange}
-              className="w-1/2 min-w-[110px] px-5 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-lg font-semibold transition-all"
+              className="w-1/2 min-w-[80px] px-4 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-base sm:text-lg font-semibold transition-all"
               style={{ fontFamily: 'Inter, Arial, sans-serif' }}
             >
               {years.map((y) => (
-                <option key={y} value={y} className="text-lg">Đến {y}</option>
+                <option key={y} value={y} className="text-base sm:text-lg">Đến {y}</option>
               ))}
             </select>
           </div>
@@ -120,14 +120,14 @@ const BookFilter = ({ onCategoryChange, onYearChange, onRatingChange, onPriceCha
           <select
             value={rating}
             onChange={handleRatingChange}
-            className="w-full min-w-[220px] px-5 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-lg font-semibold transition-all"
+            className="w-full min-w-[160px] px-4 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 text-base sm:text-lg font-semibold transition-all"
             style={{ fontFamily: 'Inter, Arial, sans-serif' }}
           >
-            <option value="All" className="text-lg">Tất cả</option>
-            <option value="4.5" className="text-lg">4.5+ sao</option>
-            <option value="4.0" className="text-lg">4.0+ sao</option>
-            <option value="3.5" className="text-lg">3.5+ sao</option>
-            <option value="3.0" className="text-lg">3.0+ sao</option>
+            <option value="All" className="text-base sm:text-lg">Tất cả</option>
+            <option value="4.5" className="text-base sm:text-lg">4.5+ sao</option>
+            <option value="4.0" className="text-base sm:text-lg">4.0+ sao</option>
+            <option value="3.5" className="text-base sm:text-lg">3.5+ sao</option>
+            <option value="3.0" className="text-base sm:text-lg">3.0+ sao</option>
           </select>
         </div>
 
@@ -140,10 +140,10 @@ const BookFilter = ({ onCategoryChange, onYearChange, onRatingChange, onPriceCha
               value={maxPrice}
               onChange={handlePriceChange}
               placeholder="Nhập giá tối đa"
-              className="w-full px-5 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 pr-16 text-lg font-semibold transition-all"
+              className="w-full px-4 py-3 bg-white/40 backdrop-blur-md text-gray-900 rounded-2xl border border-white/40 shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-400 pr-14 text-base sm:text-lg font-semibold transition-all"
               style={{ fontFamily: 'Inter, Arial, sans-serif' }}
             />
-            <span className="absolute right-4 text-gray-400 font-semibold pointer-events-none">VND</span>
+            <span className="absolute right-4 text-gray-400 font-semibold pointer-events-none text-base sm:text-lg">VND</span>
           </div>
         </div>
       </div>
