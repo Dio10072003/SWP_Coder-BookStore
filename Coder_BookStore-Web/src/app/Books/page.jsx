@@ -262,8 +262,8 @@ export default function BooksPage() {
         {error && (
           <div className="mb-6 p-4 bg-red-100 border border-red-400 text-red-700 rounded-lg">
             {error}
-          </div>
-        )}
+        </div>
+      )}
         
         {/* Active Filters Info */}
         {(() => {

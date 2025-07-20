@@ -124,8 +124,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const {
-      title, author, price, img, rating, description, category,
-      pages, language, isbn
+      title, author, price, category
     } = body;
     // Mapping mọi biến thể về publishyear
     const publishyear = body.publishyear ?? body.publishYear ?? body.year ?? body.Year ?? body.publicyear ?? body.publicYear;
