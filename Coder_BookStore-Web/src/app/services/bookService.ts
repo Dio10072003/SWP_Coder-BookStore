@@ -17,6 +17,8 @@ export interface BookFilters {
   category?: string;
   search?: string;
   year?: number;
+  minYear?: number;
+  maxYear?: number;
   minRating?: number;
   maxPrice?: number;
 }
@@ -45,11 +47,13 @@ class BookService {
   async getAllBooks(filters?: BookFilters): Promise<Book[]> {
     try {
       const params = new URLSearchParams();
-      if (filters?.category) params.append('category', filters.category);
-      if (filters?.search) params.append('search', filters.search);
-      if (filters?.year) params.append('year', filters.year.toString());
-      if (filters?.minRating) params.append('minRating', filters.minRating.toString());
-      if (filters?.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
+      if (filters?.category && filters.category !== 'All') params.append('category', filters.category);
+      if (filters?.search && filters.search.trim()) params.append('search', filters.search);
+      if (typeof filters?.year === 'number' && !isNaN(filters.year)) params.append('year', filters.year.toString());
+      if (typeof filters?.minYear === 'number' && !isNaN(filters.minYear)) params.append('minYear', filters.minYear.toString());
+      if (typeof filters?.maxYear === 'number' && !isNaN(filters.maxYear)) params.append('maxYear', filters.maxYear.toString());
+      if (typeof filters?.minRating === 'number' && !isNaN(filters.minRating)) params.append('minRating', filters.minRating.toString());
+      if (typeof filters?.maxPrice === 'number' && !isNaN(filters.maxPrice)) params.append('maxPrice', filters.maxPrice.toString());
 
       const url = `${this.baseUrl}${params.toString() ? `?${params.toString()}` : ''}`;
       const response = await fetch(url);
@@ -230,9 +234,16 @@ class BookService {
   }
 
   async getYears(): Promise<number[]> {
-    const { data } = await this.getAllBooksWithTotal();
-    if (!data) return [];
-    return Array.from(new Set(data.map((b: Book) => b.publishYear))).filter(Boolean).sort((a, b) => b - a);
+    try {
+      const { data } = await this.getAllBooksWithTotal();
+      if (!data) return [];
+      // Lấy tất cả năm xuất bản từ sách, loại bỏ trùng lặp và sắp xếp
+      const years = Array.from(new Set(data.map((b: Book) => b.publishYear))).filter(Boolean);
+      return years.sort((a, b) => b - a); // Sắp xếp giảm dần (năm mới nhất trước)
+    } catch (error) {
+      console.error('Error fetching years:', error);
+      return [];
+    }
   }
 
   async getAuthors(): Promise<string[]> {
@@ -249,20 +260,25 @@ class BookService {
 
   async getAllBooksWithTotal(filters?: BookFilters & { page?: number; limit?: number }): Promise<{ data: Book[]; total: number }> {
     try {
+      console.log('getAllBooksWithTotal called with filters:', filters);
       const params = new URLSearchParams();
-      if (filters?.category) params.append('category', filters.category);
-      if (filters?.search) params.append('search', filters.search);
-      if (filters?.year) params.append('year', filters.year.toString());
-      if (filters?.minRating) params.append('minRating', filters.minRating.toString());
-      if (filters?.maxPrice) params.append('maxPrice', filters.maxPrice.toString());
-      if (filters?.page) params.append('page', filters.page.toString());
-      if (filters?.limit) params.append('limit', filters.limit.toString());
+      if (filters?.category && filters.category !== 'All') params.append('category', filters.category);
+      if (filters?.search && filters.search.trim()) params.append('search', filters.search);
+      if (typeof filters?.year === 'number' && !isNaN(filters.year)) params.append('year', filters.year.toString());
+      if (typeof filters?.minYear === 'number' && !isNaN(filters.minYear)) params.append('minYear', filters.minYear.toString());
+      if (typeof filters?.maxYear === 'number' && !isNaN(filters.maxYear)) params.append('maxYear', filters.maxYear.toString());
+      if (typeof filters?.minRating === 'number' && !isNaN(filters.minRating)) params.append('minRating', filters.minRating.toString());
+      if (typeof filters?.maxPrice === 'number' && !isNaN(filters.maxPrice)) params.append('maxPrice', filters.maxPrice.toString());
+      if (typeof filters?.page === 'number' && !isNaN(filters.page) && filters.page > 0) params.append('page', filters.page.toString());
+      if (typeof filters?.limit === 'number' && !isNaN(filters.limit) && filters.limit > 0) params.append('limit', filters.limit.toString());
       const url = `${this.baseUrl}${params.toString() ? `?${params.toString()}` : ''}`;
+      console.log('Fetching URL:', url);
       const response = await fetch(url);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const result = await response.json();
+      console.log('API response:', result);
       if (Array.isArray(result)) {
         // fallback nếu API chưa trả về total
         return { data: result, total: result.length };

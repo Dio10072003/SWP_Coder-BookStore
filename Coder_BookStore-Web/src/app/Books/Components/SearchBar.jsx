@@ -14,12 +14,9 @@ const SearchBar = ({ onSearch }) => {
   const handleInputChange = (e) => {
     const value = e.target.value;
     setQuery(value);
-    // Debounce search - search after user stops typing for 500ms
+    // Lọc real-time ngay khi nhập
     if (onSearch) {
-      clearTimeout(window.searchTimeout);
-      window.searchTimeout = setTimeout(() => {
-        onSearch(value);
-      }, 500);
+      onSearch(value);
     }
   };
 

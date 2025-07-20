@@ -3,46 +3,120 @@ import { supabaseAdmin } from '../lib/supabase';
 
 // GET /api/books - List or get single book
 export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const id = searchParams.get('id');
+  try {
+    console.log('API called with URL:', request.url);
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
 
-  if (id) {
-    const { data, error } = await supabaseAdmin
+    if (id) {
+      const { data, error } = await supabaseAdmin
+        .from('books')
+        .select('*')
+        .eq('id', id)
+        .single();
+      if (error) {
+        console.error('Single book error:', error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
+      }
+      return NextResponse.json(data);
+    }
+
+    // Test simple query first
+    console.log('Testing basic database connection...');
+    const { data: testData, error: testError } = await supabaseAdmin
       .from('books')
-      .select('*')
-      .eq('id', id)
-      .single();
+      .select('id, title')
+      .limit(1);
+    
+    if (testError) {
+      console.error('Database connection test failed:', testError);
+      return NextResponse.json({ error: 'Database connection failed', details: testError.message }, { status: 500 });
+    }
+    
+    console.log('Database connection successful, test data:', testData);
+
+    const category = searchParams.get('category');
+    const search = searchParams.get('search');
+    const author = searchParams.get('author');
+    const year = searchParams.get('year');
+    const minYear = searchParams.get('minYear');
+    const maxYear = searchParams.get('maxYear');
+    const minRating = searchParams.get('minRating');
+    const maxPrice = searchParams.get('maxPrice');
+    const page = parseInt(searchParams.get('page') || '1') || 1;
+    const limit = parseInt(searchParams.get('limit') || '12') || 12;
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    console.log('Query params:', { category, search, author, year, minYear, maxYear, minRating, maxPrice, page, limit, from, to });
+    console.log('maxPrice type:', typeof maxPrice, 'value:', maxPrice);
+
+    // Start with basic query
+    let query = supabaseAdmin.from('books').select('*', { count: 'exact' });
+    
+    // Apply filters
+    if (category && category !== 'All') {
+      query = query.eq('category', category);
+    }
+    if (search) {
+      query = query.ilike('title', `%${search}%`);
+    }
+    if (author) {
+      query = query.eq('author', author);
+    }
+    
+    // Handle year filters - try different column names
+    const minYearNum = minYear ? Number(minYear) : null;
+    const maxYearNum = maxYear ? Number(maxYear) : null;
+    const yearNum = year ? Number(year) : null;
+    
+    if (yearNum && !isNaN(yearNum)) {
+      // Try multiple possible column names
+      query = query.or(`publicyear.eq.${yearNum},publishyear.eq.${yearNum},publishYear.eq.${yearNum}`);
+    } else {
+      if (minYearNum && !isNaN(minYearNum)) {
+        query = query.or(`publicyear.gte.${minYearNum},publishyear.gte.${minYearNum},publishYear.gte.${minYearNum}`);
+      }
+      if (maxYearNum && !isNaN(maxYearNum)) {
+        query = query.or(`publicyear.lte.${maxYearNum},publishyear.lte.${maxYearNum},publishYear.lte.${maxYearNum}`);
+      }
+    }
+    
+    if (minRating) {
+      const minRatingNum = Number(minRating);
+      if (!isNaN(minRatingNum)) {
+        query = query.gte('rating', minRatingNum);
+      }
+    }
+    
+    if (maxPrice) {
+      const maxPriceNum = Number(maxPrice);
+      if (!isNaN(maxPriceNum)) {
+        // Lọc theo giá tối đa - chỉ hiển thị sách có giá <= maxPrice
+        console.log('Applying maxPrice filter:', maxPriceNum, 'type:', typeof maxPriceNum);
+        // Sử dụng lte để so sánh giá
+        query = query.lte('price', maxPriceNum);
+        console.log('Applied maxPrice filter:', maxPriceNum);
+      }
+    }
+    
+    // Apply pagination
+    query = query.range(from, to);
+    console.log('Executing query...');
+    
+    const { data, count, error } = await query;
+    console.log('Query result:', { dataCount: data?.length, count, error });
+    
     if (error) {
+      console.error('Supabase query error:', error);
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
-    return NextResponse.json(data);
+    
+    return NextResponse.json({ data: data || [], total: count || 0 });
+  } catch (error) {
+    console.error('API error:', error);
+    return NextResponse.json({ error: 'Internal server error', details: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
-
-  const category = searchParams.get('category');
-  const search = searchParams.get('search');
-  const author = searchParams.get('author');
-  const year = searchParams.get('year');
-  const minRating = searchParams.get('minRating');
-  const maxPrice = searchParams.get('maxPrice');
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '12');
-  const from = (page - 1) * limit;
-  const to = from + limit - 1;
-
-  let query = supabaseAdmin.from('books').select('*, created_at', { count: 'exact' });
-  if (category && category !== 'All') query = query.eq('category', category);
-  if (search) query = query.ilike('title', `%${search}%`);
-  if (author) query = query.eq('author', author);
-  if (year) query = query.eq('publishYear', parseInt(year));
-  if (minRating) query = query.gte('rating', parseFloat(minRating));
-  if (maxPrice) query = query.lte('price', parseFloat(maxPrice));
-  query = query.range(from, to);
-
-  const { data, count, error } = await query;
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
-  return NextResponse.json({ data, total: count });
 }
 
 // POST /api/books
@@ -51,14 +125,23 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const {
       title, author, price, img, rating, description, category,
-      publishYear, pages, language, isbn
+      pages, language, isbn
     } = body;
-    if (!title || !author || !price || !category) {
+    // Mapping mọi biến thể về publishyear
+    const publishyear = body.publishyear ?? body.publishYear ?? body.year ?? body.Year ?? body.publicyear ?? body.publicYear;
+    if (!title || !author || !price || !category || publishyear === undefined) {
       return NextResponse.json({ error: 'Thiếu trường bắt buộc' }, { status: 400 });
     }
+    const insertData = { ...body, publishyear };
+    // Xóa các biến thể khác nếu có
+    delete insertData.publishYear;
+    delete insertData.year;
+    delete insertData.Year;
+    delete insertData.publicyear;
+    delete insertData.publicYear;
     const { data, error } = await supabaseAdmin
       .from('books')
-      .insert([{ title, author, price, img, rating, description, category, publishYear, pages, language, isbn }])
+      .insert([insertData])
       .select()
       .single();
     if (error) {
@@ -79,6 +162,15 @@ export async function PUT(request: NextRequest) {
   }
   try {
     const body = await request.json();
+    // Mapping mọi biến thể về publishyear
+    if (body.publishyear || body.publishYear || body.year || body.Year || body.publicyear || body.publicYear) {
+      body.publishyear = body.publishyear ?? body.publishYear ?? body.year ?? body.Year ?? body.publicyear ?? body.publicYear;
+      delete body.publishYear;
+      delete body.year;
+      delete body.Year;
+      delete body.publicyear;
+      delete body.publicYear;
+    }
     const { data, error } = await supabaseAdmin
       .from('books')
       .update(body)
