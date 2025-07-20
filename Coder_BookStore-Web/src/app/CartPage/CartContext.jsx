@@ -1,5 +1,6 @@
 'use client'
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { orderService } from '../services/orderService';
 
 const CartContext = createContext();
 
@@ -36,8 +37,26 @@ export const CartProvider = ({ children }) => {
     prev.map(item => item.id === id ? { ...item, quantity } : item)
   );
 
+  const checkout = async () => {
+    if (cart.length === 0) return false;
+    const order = {
+      order_code: 'ORDER-' + Date.now(),
+      status: 'Đã đặt hàng',
+      location: 'Hệ thống',
+      note: 'Đơn hàng từ website',
+    };
+    try {
+      await orderService.createOrder(order);
+      clearCart();
+      return true;
+    } catch (err) {
+      alert('Lỗi khi lưu đơn hàng: ' + err.message);
+      return false;
+    }
+  };
+
   return (
-    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, updateQuantity }}>
+    <CartContext.Provider value={{ cart, addToCart, removeFromCart, clearCart, updateQuantity, checkout }}>
       {children}
     </CartContext.Provider>
   );

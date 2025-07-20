@@ -1,23 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
-import { bookService } from '../../services/bookService';
 import { addToCartLocal } from '../../utils/cartUtils';
 
-const emptyBook = {
-  title: '',
-  author: '',
-  price: '',
-  img: '',
-  rating: 0,
-  description: '',
-  category: '',
-  publishYear: new Date().getFullYear(),
-  pages: 0,
-  language: '',
-  isbn: '',
-};
+function formatVND(price) {
+  if (typeof price === 'number') return price.toLocaleString('vi-VN') + '₫';
+  if (typeof price === 'string' && !isNaN(Number(price))) return Number(price).toLocaleString('vi-VN') + '₫';
+  return price;
+}
 
 const gradientColors = [
   ['#6366f1', '#a21caf'],
@@ -30,85 +21,7 @@ const gradientColors = [
   ['#f472b6', '#6366f1'],
 ];
 
-// Format giá tiền VND
-function formatVND(price) {
-  if (typeof price === 'number') return price.toLocaleString('vi-VN') + '₫';
-  if (typeof price === 'string' && !isNaN(Number(price))) return Number(price).toLocaleString('vi-VN') + '₫';
-  return price;
-}
-
-const BookGrid = ({ books = [] }) => {
-  const [showModal, setShowModal] = useState(false);
-  const [modalType, setModalType] = useState('create');
-  const [form, setForm] = useState(emptyBook);
-  const [editingId, setEditingId] = useState(null);
-  const [formError, setFormError] = useState(null);
-  const [successMsg, setSuccessMsg] = useState(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
-
-  const openCreateModal = () => {
-    setForm(emptyBook);
-    setModalType('create');
-    setShowModal(true);
-    setEditingId(null);
-    setFormError(null);
-  };
-
-  const openEditModal = (book) => {
-    setForm({
-      title: book.title || '',
-      author: book.author || '',
-      price: book.price || '',
-      img: book.img || '',
-      rating: book.rating || 0,
-      description: book.description || '',
-      category: book.category || '',
-      publishYear: book.publishYear || new Date().getFullYear(),
-      pages: book.pages || 0,
-      language: book.language || '',
-      isbn: book.isbn || '',
-    });
-    setModalType('edit');
-    setShowModal(true);
-    setEditingId(book.id);
-    setFormError(null);
-  };
-
-  const handleFormChange = (e) => {
-    const { name, value } = e.target;
-    setForm(f => ({ ...f, [name]: name === 'rating' || name === 'pages' || name === 'publishYear' ? Number(value) : value }));
-  };
-
-  const handleFormSubmit = async (e) => {
-    e.preventDefault();
-    setFormError(null);
-    try {
-      if (modalType === 'create') {
-        await bookService.createBook(form);
-        setSuccessMsg('Đã thêm sách!');
-      } else if (modalType === 'edit' && editingId) {
-        await bookService.updateBook(editingId, form);
-        setSuccessMsg('Đã cập nhật sách!');
-      }
-      setShowModal(false);
-    } catch (err) {
-      setFormError(err.message || 'Lỗi không xác định');
-    }
-  };
-
-  const handleDelete = async (id) => {
-    if (!window.confirm('Bạn có chắc chắn muốn xóa sách này?')) return;
-    setDeleteLoading(true);
-    try {
-      await bookService.deleteBook(id);
-      setSuccessMsg('Đã xóa sách!');
-    } catch (err) {
-      setFormError(err.message || 'Lỗi không xác định');
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
-
+const BookGrid = ({ books = [], onEdit, onDelete }) => {
   const renderStars = (rating) => {
     if (!rating) return null;
     const fullStars = Math.floor(rating);
@@ -177,7 +90,7 @@ const BookGrid = ({ books = [] }) => {
                 <span className="text-xs sm:text-sm text-gray-500">({book.rating || 0})</span>
               </div>
               <div className="mb-4 text-xl md:text-2xl font-bold text-yellow-500 drop-shadow">{formatVND(book.price)}</div>
-              <div className="flex gap-2 w-full">
+              <div className="flex gap-2 w-full mb-2">
                 <Link
                   href={`/Books/${book.id}`}
                   className="flex-1 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl font-bold bg-gradient-to-r from-purple-500 to-pink-500 text-white hover:from-pink-500 hover:to-purple-500 transition-all shadow-lg text-center text-xs sm:text-sm md:text-base"
@@ -187,61 +100,30 @@ const BookGrid = ({ books = [] }) => {
                 </Link>
                 <AddToCartButton book={book} />
               </div>
+              <div className="flex gap-2 w-full">
+                <button
+                  onClick={() => onEdit(book)}
+                  className="flex-1 px-3 py-2 rounded-lg bg-yellow-400 text-white font-semibold hover:bg-yellow-500 transition"
+                >
+                  Sửa
+                </button>
+                <button
+                  onClick={() => onDelete(book)}
+                  className="flex-1 px-3 py-2 rounded-lg bg-red-500 text-white font-semibold hover:bg-red-600 transition"
+                >
+                  Xóa
+                </button>
+              </div>
             </div>
           </div>
         ))}
       </div>
-      {/* Modal thêm/sửa sách */}
-      {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-          <form onSubmit={handleFormSubmit} className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
-            <h2 className="text-xl font-bold mb-4">{modalType === 'create' ? 'Thêm sách' : 'Sửa sách'}</h2>
-            <label className="block mb-2">Tên sách
-              <input name="title" value={form.title} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
-            </label>
-            <label className="block mb-2">Tác giả
-              <input name="author" value={form.author} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
-            </label>
-            <label className="block mb-2">Giá (VND)
-              <input name="price" value={form.price} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
-            </label>
-            <label className="block mb-2">Ảnh bìa (URL)
-              <input name="img" value={form.img} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
-            </label>
-            <label className="block mb-2">Đánh giá (0-5)
-              <input name="rating" type="number" min="0" max="5" step="0.1" value={form.rating} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
-            </label>
-            <label className="block mb-2">Mô tả
-              <textarea name="description" value={form.description} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
-            </label>
-            <label className="block mb-2">Thể loại
-              <input name="category" value={form.category} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" required />
-            </label>
-            <label className="block mb-2">Năm xuất bản
-              <input name="publishYear" type="number" value={form.publishYear} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
-            </label>
-            <label className="block mb-2">Số trang
-              <input name="pages" type="number" value={form.pages} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
-            </label>
-            <label className="block mb-2">Ngôn ngữ
-              <input name="language" value={form.language} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
-            </label>
-            <label className="block mb-2">ISBN
-              <input name="isbn" value={form.isbn} onChange={handleFormChange} className="w-full border rounded px-3 py-2 mb-2" />
-            </label>
-            <div className="flex justify-end gap-2 mt-4">
-              <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400">Hủy</button>
-              <button type="submit" className="px-4 py-2 rounded bg-pink-500 hover:bg-pink-600 text-white font-bold">Lưu</button>
-            </div>
-          </form>
-        </div>
-      )}
     </section>
   );
 };
 
 function AddToCartButton({ book }) {
-  const [added, setAdded] = useState(false);
+  const [added, setAdded] = React.useState(false);
   const isLoggedIn = typeof window !== 'undefined' && !!localStorage.getItem('user');
   const handleAdd = () => {
     if (!isLoggedIn) {

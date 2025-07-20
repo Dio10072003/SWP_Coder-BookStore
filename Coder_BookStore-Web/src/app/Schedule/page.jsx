@@ -483,9 +483,9 @@ export default function SchedulePage() {
             {currentAiring ? (
               <Link href={currentAiring.link} className="block group">
                 <div className={`relative overflow-hidden rounded-2xl p-6 bg-gradient-to-r ${currentAiring.color} shadow-2xl group-hover:scale-105 group-hover:shadow-3xl transition-all duration-500 ring-4 ring-yellow-400 ring-opacity-80 animate-pulse-slow`}>
-                  <div className="absolute inset-0 bg-black/10"></div>
-                  <div className="relative z-10 flex items-center gap-6">
-                    <div className="flex-shrink-0">
+                <div className="absolute inset-0 bg-black/10"></div>
+                <div className="relative z-10 flex items-center gap-6">
+                  <div className="flex-shrink-0">
                       <div className="w-16 h-16 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm">
                         {/* icon logic như cũ */}
                         {currentAiring.type === 'book' && <span className="text-3xl">📚</span>}
@@ -495,11 +495,11 @@ export default function SchedulePage() {
                         {currentAiring.type === 'news' && <span className="text-3xl">📰</span>}
                         {currentAiring.type === 'music' && <span className="text-3xl">🎵</span>}
                         {currentAiring.type === 'ranking' && <span className="text-3xl">🏆</span>}
-                      </div>
                     </div>
-                    <div className="flex-1">
+                  </div>
+                  <div className="flex-1">
                       <div className="flex items-center gap-3 mb-2">
-                        <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-bold text-white shadow-sm">
+                      <span className="inline-block px-3 py-1 rounded-full bg-white/20 text-xs font-bold text-white shadow-sm">
                           {currentAiring.type === 'book' ? '📚 Đọc sách' : 
                            currentAiring.type === 'author' ? '👨‍💼 Giao lưu tác giả' : 
                            currentAiring.type === 'category' ? '🏷️ Chủ đề' : 
@@ -516,14 +516,14 @@ export default function SchedulePage() {
                         <FaClock className="text-yellow-400" />
                         <span className="font-mono">
                           {formatTimeFromMins(currentAiring.start * 15)} - {formatTimeFromMins((currentAiring.start + currentAiring.duration) * 15)}
-                        </span>
+                      </span>
                         <span className="ml-2">({currentAiring.duration * 15} phút)</span>
                       </div>
                       <p className="text-white/80 text-base">Chương trình đang phát sóng trực tiếp</p>
-                    </div>
-                    <div className="flex-shrink-0">
+                  </div>
+                  <div className="flex-shrink-0">
                       <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center backdrop-blur-sm animate-pulse">
-                        <FaPlay className="text-white text-xl" />
+                      <FaPlay className="text-white text-xl" />
                       </div>
                     </div>
                   </div>
@@ -601,56 +601,56 @@ export default function SchedulePage() {
                 // Nếu không phải ngày hôm nay thì không highlight gì cả
                 const isCurrent = isSelectedDayToday && idx === currentAiringIndex;
                 return (
-                  <Link 
-                    href={program.link} 
-                    key={idx} 
-                    className={`group block relative overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl ${
+                <Link 
+                  href={program.link} 
+                  key={idx} 
+                  className={`group block relative overflow-hidden rounded-2xl transition-all duration-500 hover:scale-105 hover:shadow-2xl ${
                       isCurrent ? 'ring-4 ring-yellow-400 ring-opacity-80 scale-105 animate-pulse-slow shadow-yellow-400/40' :
                       isSelectedDayToday && idx === currentProgramIndex ? 'ring-2 ring-purple-400 ring-opacity-50 scale-105' : ''
-                    }`}
-                    onClick={() => setCurrentProgramIndex(idx)}
-                  >
-                    <div className={`absolute inset-0 bg-gradient-to-br ${program.color} opacity-90`}></div>
+                  }`}
+                  onClick={() => setCurrentProgramIndex(idx)}
+                >
+                  <div className={`absolute inset-0 bg-gradient-to-br ${program.color} opacity-90`}></div>
                     <div className="relative z-10 p-4 sm:p-6 text-white">
                       <div className="flex items-center justify-between mb-2 sm:mb-4">
-                        <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2">
                           <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/20 flex items-center justify-center">
-                            {program.type === 'book' && <span className="text-lg">📚</span>}
-                            {program.type === 'author' && <span className="text-lg">👨‍💼</span>}
-                            {program.type === 'category' && <span className="text-lg">🏷️</span>}
-                            {program.type === 'ad' && <span className="text-lg">📢</span>}
-                            {program.type === 'news' && <span className="text-lg">📰</span>}
-                            {program.type === 'music' && <span className="text-lg">🎵</span>}
-                            {program.type === 'ranking' && <span className="text-lg">🏆</span>}
-                          </div>
-                          <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-full">
-                            {formatTimeFromMins(program.start * 15)} - {formatTimeFromMins((program.start + program.duration) * 15)}
-                          </span>
+                          {program.type === 'book' && <span className="text-lg">📚</span>}
+                          {program.type === 'author' && <span className="text-lg">👨‍💼</span>}
+                          {program.type === 'category' && <span className="text-lg">🏷️</span>}
+                          {program.type === 'ad' && <span className="text-lg">📢</span>}
+                          {program.type === 'news' && <span className="text-lg">📰</span>}
+                          {program.type === 'music' && <span className="text-lg">🎵</span>}
+                          {program.type === 'ranking' && <span className="text-lg">🏆</span>}
                         </div>
+                        <span className="text-xs font-bold bg-white/20 px-2 py-1 rounded-full">
+                          {formatTimeFromMins(program.start * 15)} - {formatTimeFromMins((program.start + program.duration) * 15)}
+                        </span>
+                      </div>
                         {isCurrent && (
                           <div className="w-3 h-3 bg-yellow-400 rounded-full animate-ping"></div>
                         )}
                         {!isCurrent && isSelectedDayToday && idx === currentProgramIndex && (
                           <div className="w-3 h-3 bg-purple-400 rounded-full animate-ping"></div>
-                        )}
-                      </div>
-                      <h3 className="text-base sm:text-lg font-bold mb-1 sm:mb-2 group-hover:text-yellow-200 transition-colors duration-300 line-clamp-2">
-                        {program.title}
-                      </h3>
-                      <div className="flex items-center justify-between text-xs sm:text-sm opacity-80">
-                        <span>{program.duration * 15} phút</span>
-                        <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
-                          {program.type === 'book' ? 'Đọc sách' : 
-                           program.type === 'author' ? 'Giao lưu' : 
-                           program.type === 'category' ? 'Chủ đề' : 
-                           program.type === 'ad' ? 'Quảng cáo' : 
-                           program.type === 'news' ? 'Bản tin' : 
-                           program.type === 'music' ? 'Âm nhạc' : 
-                           program.type === 'ranking' ? 'Xếp hạng' : 'Khác'}
-                        </span>
-                      </div>
+                      )}
                     </div>
-                  </Link>
+                      <h3 className="text-base sm:text-lg font-bold mb-1 sm:mb-2 group-hover:text-yellow-200 transition-colors duration-300 line-clamp-2">
+                      {program.title}
+                    </h3>
+                      <div className="flex items-center justify-between text-xs sm:text-sm opacity-80">
+                      <span>{program.duration * 15} phút</span>
+                      <span className="bg-white/20 px-2 py-1 rounded-full text-xs">
+                        {program.type === 'book' ? 'Đọc sách' : 
+                         program.type === 'author' ? 'Giao lưu' : 
+                         program.type === 'category' ? 'Chủ đề' : 
+                         program.type === 'ad' ? 'Quảng cáo' : 
+                         program.type === 'news' ? 'Bản tin' : 
+                         program.type === 'music' ? 'Âm nhạc' : 
+                         program.type === 'ranking' ? 'Xếp hạng' : 'Khác'}
+                      </span>
+                    </div>
+                  </div>
+                </Link>
                 );
               })}
             </div>

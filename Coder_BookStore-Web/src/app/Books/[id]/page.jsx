@@ -83,7 +83,7 @@ export default function BookDetailPage() {
                 <FaCalendar className="text-purple-500 text-lg" />
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Năm xuất bản</p>
-                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.publishYear}</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.publishYear || book.publishyear || 'Chưa cập nhật'}</p>
                 </div>
               </div>
 
@@ -91,7 +91,7 @@ export default function BookDetailPage() {
                 <FaFileAlt className="text-blue-500 text-lg" />
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Số trang</p>
-                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.pages} trang</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.pages ? `${book.pages} trang` : 'Chưa cập nhật'}</p>
                 </div>
               </div>
 
@@ -99,7 +99,7 @@ export default function BookDetailPage() {
                 <FaLanguage className="text-green-500 text-lg" />
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">Ngôn ngữ</p>
-                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.language}</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200">{book.language || 'Chưa cập nhật'}</p>
                 </div>
               </div>
 
@@ -107,7 +107,7 @@ export default function BookDetailPage() {
                 <FaBarcode className="text-orange-500 text-lg" />
                 <div>
                   <p className="text-sm text-gray-600 dark:text-gray-400">ISBN</p>
-                  <p className="font-semibold text-gray-800 dark:text-gray-200 text-sm">{book.isbn}</p>
+                  <p className="font-semibold text-gray-800 dark:text-gray-200 text-sm">{book.isbn || 'Chưa cập nhật'}</p>
                 </div>
               </div>
             </div>

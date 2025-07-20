@@ -2,8 +2,7 @@
 
 import React from 'react';
 
-const Pagination = ({ page, setPage, total, limit }) => {
-  const totalPages = Math.ceil((total || 0) / (limit || 1));
+const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   if (totalPages <= 1) return null;
 
   const getPageNumbers = () => {
@@ -11,12 +10,12 @@ const Pagination = ({ page, setPage, total, limit }) => {
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
-      if (page <= 4) {
+      if (currentPage <= 4) {
         pages.push(1, 2, 3, 4, 5, '...', totalPages);
-      } else if (page >= totalPages - 3) {
+      } else if (currentPage >= totalPages - 3) {
         pages.push(1, '...', totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages);
       } else {
-        pages.push(1, '...', page - 1, page, page + 1, '...', totalPages);
+        pages.push(1, '...', currentPage - 1, currentPage, currentPage + 1, '...', totalPages);
       }
     }
     return pages;
@@ -25,15 +24,15 @@ const Pagination = ({ page, setPage, total, limit }) => {
   return (
     <div className="pagination-container">
       <button
-        onClick={() => setPage(1)}
-        disabled={page === 1}
+        onClick={() => onPageChange(1)}
+        disabled={currentPage === 1}
         className="pagination-btn"
       >
         First
       </button>
       <button
-        onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-        disabled={page === 1}
+        onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+        disabled={currentPage === 1}
         className="pagination-btn"
       >
         &laquo;
@@ -43,22 +42,22 @@ const Pagination = ({ page, setPage, total, limit }) => {
           ? <span key={idx} className="pagination-ellipsis">...</span>
           : <button
               key={idx}
-              onClick={() => setPage(p)}
-              className={`pagination-btn${p === page ? ' active' : ''}`}
+              onClick={() => onPageChange(p)}
+              className={`pagination-btn${p === currentPage ? ' active' : ''}`}
             >
               {p}
             </button>
       )}
       <button
-        onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-        disabled={page === totalPages}
+        onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+        disabled={currentPage === totalPages}
         className="pagination-btn"
       >
         &raquo;
       </button>
       <button
-        onClick={() => setPage(totalPages)}
-        disabled={page === totalPages}
+        onClick={() => onPageChange(totalPages)}
+        disabled={currentPage === totalPages}
         className="pagination-btn"
       >
         Last
@@ -71,18 +70,28 @@ const Pagination = ({ page, setPage, total, limit }) => {
           gap: 8px;
           margin: 24px 0;
           flex-wrap: wrap;
+          padding: 0 16px;
         }
         .pagination-btn {
           border: 1.5px solid #d1d5db;
           background: rgba(255,255,255,0.7);
           border-radius: 12px;
-          padding: 8px 16px;
+          padding: 8px 12px;
           font-weight: 600;
           font-family: 'Inter', Arial, sans-serif;
           cursor: pointer;
           transition: background 0.2s, color 0.2s, border 0.2s, transform 0.15s;
-          font-size: 1rem;
+          font-size: 0.9rem;
           box-shadow: 0 2px 8px 0 rgba(160,160,200,0.07);
+          min-width: 40px;
+        }
+        
+        @media (max-width: 640px) {
+          .pagination-btn {
+            padding: 6px 10px;
+            font-size: 0.8rem;
+            min-width: 36px;
+          }
         }
         .pagination-btn.active {
           background: linear-gradient(90deg, #a1c4fd, #c2e9fb);
