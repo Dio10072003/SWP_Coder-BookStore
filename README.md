@@ -42,3 +42,39 @@ Coder_BookStore-Web/
 ├── pnpm-lock.yaml         # Lockfile pnpm
 ├── README.md              # Tài liệu này
 └── ...
+⚙️ Hướng dẫn cài đặt & chạy dự án
+
+### 1. Clone repository
+```bash
+git clone <repo-url>
+cd Coder_BookStore-Web
+```
+
+### 2. Cài đặt dependencies
+```bash
+pnpm install
+# hoặc
+npm install
+```
+
+### 3. Thiết lập biến môi trường
+- Tạo file `.env` dựa trên mẫu `src/app/api/env.example` và điền các thông tin cần thiết (Supabase, API keys, ...).
+
+### 4. Chạy dự án ở chế độ phát triển
+```bash
+pnpm dev
+# hoặc
+npm run dev
+
+Truy cập: [http://localhost:3000](http://localhost:3000)
+
+### 5. Build production
+```bash
+pnpm build
+pnpm start
+# hoặc
+npm run build
+npm start
+```
+
+---
