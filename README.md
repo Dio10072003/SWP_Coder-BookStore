@@ -104,21 +104,22 @@ src/
 ```bash
 # 1. Clone repo
 git clone https://github.com/Dio10072003/swp-book-project.git
-cd swp-book-project
+cd swp-book-project/Coder_BookStore-Web
 
 # 2. Cài dependencies
 npm install
+# hoặc nếu dùng pnpm
+# pnpm install
 
 # 3. Thiết lập environment variables
-cp .env.example .env
-# => Sau đó chỉnh sửa thông tin database, secret, v.v.
+# Tạo file .env dựa trên mẫu
+cp src/app/api/env.example .env
+# => Sau đó chỉnh sửa thông tin Supabase, secret, v.v.
 
-# 4. Khởi tạo database (nếu dùng Prisma)
-npx prisma generate
-npx prisma migrate dev
-
-# 5. Chạy ứng dụng
+# 4. Chạy ứng dụng ở chế độ phát triển
 npm run dev
+# hoặc
+# pnpm dev
 🌐 Triển khai
 👉 Dự án được triển khai tại Render:
 🔗 https://swp-coder-bookstore.onrender.com
