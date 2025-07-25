@@ -9,3 +9,11 @@ Coder BookStore-Web là nền tảng bán sách trực tuyến hiện đại, t�
 - Trung tâm hỗ trợ khách hàng, gửi ticket, đánh giá dịch vụ.
 - Trang quản trị cho admin: quản lý sách, tác giả, danh mục, đơn hàng, nhân viên, phân quyền, reset mật khẩu nhân viên.
 - Giao diện hiện đại, tối ưu cho desktop và mobile.
+
+🛠️ Công nghệ sử dụng
+- **Next.js** (React framework) - Frontend & API routes
+- **TypeScript** & **JavaScript**
+- **Supabase** - Backend/database
+- **Tailwind CSS** - Styling
+- **pnpm** hoặc **npm** - Quản lý package
+- **PostCSS**, **ESLint** - Công cụ hỗ trợ phát triển
