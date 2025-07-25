@@ -11,12 +11,14 @@ Coder Book Store là ứng dụng web quản lý và bán sách trực tuyến, 
 Thực hành teamwork, quản lý dự án, quy trình chuyên nghiệp
 Xây dựng sản phẩm thực tế phục vụ học tập và nghiên cứu
 
-
-- Đăng nhập / Đăng ký người dùng
-- Danh sách sách theo danh mục
-- Quản lý người dùng (Admin panel)
-- Tìm kiếm sách, lọc theo thể loại
-- Responsive UI phù hợp cả Desktop và Mobile
+🌟 Tính năng nổi bật
+🔐 Đăng nhập / Đăng ký người dùng
+📚 Danh sách sách theo danh mục, thể loại, tác giả
+🛒 Quản lý giỏ hàng, đặt hàng, theo dõi đơn hàng
+🧑‍💼 Trang quản trị (Admin panel): quản lý người dùng, sách, danh mục, đơn hàng
+🔎 Tìm kiếm sách, lọc nâng cao
+💬 Đánh giá, phản hồi, hỗ trợ khách hàng
+📱 Giao diện responsive, tối ưu cho cả Desktop và Mobile
 
 ---
 
