@@ -103,3 +103,11 @@ npm start
 - Nếu gặp vấn đề, vui lòng tạo Issue hoặc Pull Request.
 - Email liên hệ: [TomOutfit2020@gmail.com]
 - Đóng góp ý kiến, phản hồi qua trang Feedback hoặc Support Center trên website.
+
+📑 Thông tin bổ sung
+- Dự án phục vụ mục đích học tập, nghiên cứu, có thể mở rộng cho các mục đích thương mại.
+- Mọi đóng góp, phản hồi đều được hoan nghênh để dự án ngày càng hoàn thiện.
+
+---
+
+**Cảm ơn bạn đã quan tâm và sử dụng Coder BookStore-Web!**
