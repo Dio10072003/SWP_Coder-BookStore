@@ -21,17 +21,11 @@ Xây dựng sản phẩm thực tế phục vụ học tập và nghiên cứu
 📱 Giao diện responsive, tối ưu cho cả Desktop và Mobile
 
 ---
+🚀 Công nghệ sử dụng
 
-## 🚀 Công nghệ sử dụng
+<img width="437" height="651" alt="{6991BEB0-CE9A-4E89-B99B-EB7045BB3D76}" src="https://github.com/user-attachments/assets/a60b6cf0-6cae-48b2-939c-8279581b0b41" />
 
-| Công nghệ                   | Mô tả                                              |
-| --------------------------- | -------------------------------------------------- |
-| **Next.js (App Router)**    | Framework React mạnh mẽ, hỗ trợ SSR và SEO tốt     |
-| **TypeScript**              | Ngôn ngữ lập trình tĩnh, giúp giảm lỗi runtime     |
-| **Tailwind CSS**            | Thư viện CSS tiện dụng, viết giao diện nhanh chóng |
-| **Prisma ORM**              | Giao tiếp database hiệu quả, dễ mở rộng            |
-| **PostgreSQL / SQL Server** | Cơ sở dữ liệu quan hệ (tuỳ môi trường sử dụng)     |
-| **Vercel**                  | Triển khai và hosting ứng dụng web serverless      |
+
 
 ---
 
