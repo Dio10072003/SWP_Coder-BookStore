@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '../lib/supabase';
 
-// GET /api/users/[id] - Lấy thông tin user theo id
+// GET /api/users/[id] - Get user theo id
 export async function GET(request: NextRequest, context: any) {
   const { id } = context.params;
   const { data, error } = await supabaseAdmin
@@ -12,10 +12,10 @@ export async function GET(request: NextRequest, context: any) {
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 404 });
   }
-  // Không trả về password hoặc hash, nhưng vẫn sử dụng biến
+  // No password or hash, but using var
   const { password, passwordHash, ...safeUser } = data;
   if (password || passwordHash) {
-    // Đã loại bỏ thông tin nhạy cảm
+    
   }
   return NextResponse.json(safeUser);
 }
@@ -35,12 +35,11 @@ export async function PUT(request: NextRequest, context: any) {
   }
   const { password, passwordHash, ...safeUser } = data;
   if (password || passwordHash) {
-    // Đã loại bỏ thông tin nhạy cảm
   }
   return NextResponse.json(safeUser);
 }
 
-// DELETE /api/users/[id] - Xóa user theo id
+// DELETE /api/users/[id] - Delete user by id
 export async function DELETE(request: NextRequest, context: any) {
   const { id } = context.params;
   const { error } = await supabaseAdmin
