@@ -86,3 +86,10 @@ npm start
 - Viết code sạch, tuân thủ chuẩn ESLint, sử dụng Prettier nếu cần.
 - Đặt tên biến, hàm, component rõ ràng, dễ hiểu.
 - Đóng góp code qua Pull Request, mô tả rõ thay đổi.
+
+🤝 Đóng góp
+1. Fork repository, tạo branch mới từ `main`.
+2. Commit code nhỏ, có message rõ ràng.
+3. Tạo Pull Request, mô tả chi tiết thay đổi.
+4. Tham gia review, góp ý cho các PR khác.
+5. Tôn trọng quy tắc teamwork, hỗ trợ lẫn nhau.
