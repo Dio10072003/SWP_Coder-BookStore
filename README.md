@@ -1,6 +1,12 @@
 # 📚 Coder Book Store Web Application
 
-Dự án thực hiện trong khuôn khổ môn học Software Development Project (SWP391) tại FPT University.
+Dự án thực hiện trong khuôn khổ môn học **Software Development Project (SWP391)** tại FPT University.
+
+## 🎉 Welcome
+Chào mừng mọi người đến với hành trình khám phá thế giới tri thức cùng dự án Coder Book Store – nơi công nghệ gặp gỡ đam mê đọc sách!
+💻 Đặc biệt gửi lời chào tới các coder, developer, những người yêu thích lập trình và công nghệ!
+Tại đây, mỗi dòng code không chỉ tạo nên một sản phẩm, mà còn mở ra cánh cửa đến kho tàng tri thức vô tận.
+Hãy cùng chúng tôi “lập trình” nên một trải nghiệm mua sách trực tuyến thông minh, tiện lợi và truyền cảm hứng cho cộng đồng IT Việt Nam!
 
 ## 🔖 Introduction
 
