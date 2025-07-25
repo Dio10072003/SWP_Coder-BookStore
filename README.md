@@ -129,4 +129,123 @@ A web-based application that allows customers to browse, search, and purchase bo
 - 📦 Track orders and update shipping status
 - 📈 Dashboard for revenue and order tracking
 
----
+  ---Open in Visual Studio
+
+  -Open .sln file in Visual Studio 2022+
+
+Set correct connection string in appsettings.json or Web.config
+
+Database Setup
+
+Run Entity Framework migrations or import SQL script provided
+
+Run the Application
+
+Press F5 to build and run
+
+▶️ Usage
+Customers:
+
+Sign up or log in
+
+Browse or search for books
+
+Add books to cart and checkout
+
+View order history
+
+Admin:
+
+Login with admin role
+
+Manage books (add/edit/delete)
+
+Manage categories
+
+View and process orders
+
+🖼️ Screenshots
+(Insert screenshots such as homepage, product list, admin panel, etc.)
+
+🚫 Limitations
+No third-party payment integration yet (cash on delivery only)
+
+No user review system
+
+Limited to single language (English only by default)
+
+🚀 Future Improvements
+Add PayPal/VnPay integration
+
+Add product rating and reviews
+
+Multilingual support (EN, VN, etc.)
+
+Export reports to Excel/PDF
+
+👨‍💻 Contributors
+Nguyen Van A – Backend Developer
+
+Le Thi B – Frontend Developer
+
+Tran Van C – Database Engineer -->
+Open in Visual Studio
+
+Open .sln file in Visual Studio 2022+
+
+Set correct connection string in appsettings.json or Web.config
+
+Database Setup
+
+Run Entity Framework migrations or import SQL script provided
+
+Run the Application
+
+Press F5 to build and run
+
+▶️ Usage
+Customers:
+
+Sign up or log in
+
+Browse or search for books
+
+Add books to cart and checkout
+
+View order history
+
+Admin:
+
+Login with admin role
+
+Manage books (add/edit/delete)
+
+Manage categories
+
+View and process orders
+
+🖼️ Screenshots
+(Insert screenshots such as homepage, product list, admin panel, etc.)
+
+🚫 Limitations
+No third-party payment integration yet (cash on delivery only)
+
+No user review system
+
+Limited to single language (English only by default)
+
+🚀 Future Improvements
+Add PayPal/VnPay integration
+
+Add product rating and reviews
+
+Multilingual support (EN, VN, etc.)
+
+Export reports to Excel/PDF
+
+👨‍💻 Contributors
+Nguyen Van A – Backend Developer
+
+Le Thi B – Frontend Developer
+
+Tran Van C – Database Engineer
