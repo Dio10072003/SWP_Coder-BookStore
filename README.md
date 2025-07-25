@@ -1,6 +1,6 @@
-# 📚 SWP Book Store Project
+# 📚 Coder Book Store Project
 
-> Đây là Project SWP của nhóm.
+> 🏫 Dự án thực hiện trong khuôn khổ môn học Software Development Project (SWP391)
 
 ## 🔖 Giới thiệu
 
