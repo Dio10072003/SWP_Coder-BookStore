@@ -4,7 +4,13 @@
 
 ## 🔖 Giới thiệu
 
-SWP Book Store là ứng dụng web quản lý và bán sách trực tuyến, phát triển với kiến trúc hiện đại sử dụng Next.js và TypeScript. Dự án hướng tới việc xây dựng một hệ thống thực tế, đáp ứng đầy đủ các nghiệp vụ của một cửa hàng sách online.
+Coder Book Store là ứng dụng web quản lý và bán sách trực tuyến, phát triển với kiến trúc hiện đại sử dụng Next.js và TypeScript. Dự án hướng tới việc xây dựng một hệ thống thực tế, đáp ứng đầy đủ các nghiệp vụ của một cửa hàng sách online.
+
+🎯 Mục tiêu dự án
+Áp dụng kiến thức phát triển phần mềm hiện đại
+Thực hành teamwork, quản lý dự án, quy trình chuyên nghiệp
+Xây dựng sản phẩm thực tế phục vụ học tập và nghiên cứu
+
 
 - Đăng nhập / Đăng ký người dùng
 - Danh sách sách theo danh mục
