@@ -78,3 +78,11 @@ npm start
 ```
 
 ---
+👨‍💻 Hướng dẫn phát triển
+- Sử dụng **Next.js** (App Router) cho các trang và API.
+- Tách biệt rõ frontend (UI/UX) và backend (API routes).
+- Sử dụng **Supabase** cho database, xác thực, lưu trữ file.
+- Quản lý state với React hooks, context.
+- Viết code sạch, tuân thủ chuẩn ESLint, sử dụng Prettier nếu cần.
+- Đặt tên biến, hàm, component rõ ràng, dễ hiểu.
+- Đóng góp code qua Pull Request, mô tả rõ thay đổi.
