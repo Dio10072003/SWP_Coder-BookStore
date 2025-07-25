@@ -93,3 +93,9 @@ npm start
 3. Tạo Pull Request, mô tả chi tiết thay đổi.
 4. Tham gia review, góp ý cho các PR khác.
 5. Tôn trọng quy tắc teamwork, hỗ trợ lẫn nhau.
+
+🔒 Bảo mật & quyền riêng tư
+- Không commit thông tin nhạy cảm (API key, mật khẩu) lên repo.
+- Sử dụng biến môi trường cho các thông tin bảo mật.
+- Kiểm tra, validate dữ liệu đầu vào ở cả frontend và backend.
+- Sử dụng hash password, xác thực token cho các API
