@@ -16,14 +16,14 @@
 
 ## 🚀 Công nghệ sử dụng
 
-| Công nghệ           | Mô tả                                                  |
-|---------------------|---------------------------------------------------------|
-| **Next.js (App Router)** | Framework React mạnh mẽ, hỗ trợ SSR và SEO tốt    |
-| **TypeScript**      | Ngôn ngữ lập trình tĩnh, giúp giảm lỗi runtime         |
-| **Tailwind CSS**    | Thư viện CSS tiện dụng, viết giao diện nhanh chóng     |
-| **Prisma ORM**      | Giao tiếp database hiệu quả, dễ mở rộng                |
-| **PostgreSQL / SQL Server** | Cơ sở dữ liệu quan hệ (tuỳ môi trường sử dụng) |
-| **Vercel**          | Triển khai và hosting ứng dụng web serverless          |
+| Công nghệ                   | Mô tả                                              |
+| --------------------------- | -------------------------------------------------- |
+| **Next.js (App Router)**    | Framework React mạnh mẽ, hỗ trợ SSR và SEO tốt     |
+| **TypeScript**              | Ngôn ngữ lập trình tĩnh, giúp giảm lỗi runtime     |
+| **Tailwind CSS**            | Thư viện CSS tiện dụng, viết giao diện nhanh chóng |
+| **Prisma ORM**              | Giao tiếp database hiệu quả, dễ mở rộng            |
+| **PostgreSQL / SQL Server** | Cơ sở dữ liệu quan hệ (tuỳ môi trường sử dụng)     |
+| **Vercel**                  | Triển khai và hosting ứng dụng web serverless      |
 
 ---
 
@@ -49,14 +49,14 @@ Edit
 
 ## 👥 Thành viên nhóm
 
-| Họ tên        | MSSV      | Vai trò              |
-|---------------|-----------|----------------------|
-| Nguyễn Văn A  | SE150001  | Frontend             |
-| Trần Thị B     | SE150002  | Backend              |
-| Lê Văn C      | SE150003  | Database & API       |
-| Phạm Thị D     | SE150004  | Kiểm thử & Document  |
+| Họ tên       | MSSV     | Vai trò             |
+| ------------ | -------- | ------------------- |
+| Nguyễn Văn A | SE150001 | Frontend            |
+| Trần Thị B   | SE150002 | Backend             |
+| Lê Văn C     | SE150003 | Database & API      |
+| Phạm Thị D   | SE150004 | Kiểm thử & Document |
 
-> 🛠️ *Chi tiết hơn xem trong thư mục `docs/` nếu có.*
+> 🛠️ _Chi tiết hơn xem trong thư mục `docs/` nếu có._
 
 ---
 
@@ -90,3 +90,62 @@ Bạn có thể thêm ảnh vào thư mục public/ và cập nhật đường d
 
 📄 License
 MIT © Nhóm SWP - FPT University
+```
+
+# 📚 Book Store Web Application
+
+A web-based application that allows customers to browse, search, and purchase books online. Admins can manage inventory, categories, and customer orders with ease.
+
+---
+
+## 📌 Table of Contents
+
+- [Overview](#overview)
+- [Features](#features)
+- [Technology Stack](#technology-stack)
+- [Installation](#installation)
+- [Usage](#usage)
+- [Screenshots](#screenshots)
+- [Limitations](#limitations)
+- [Future Improvements](#future-improvements)
+- [Contributors](#contributors)
+- [License](#license)
+
+---
+
+## 📖 Overview
+
+**Book Store Web Application** is a simple yet powerful platform designed for online book retail. It provides a user-friendly interface for customers to explore books by genres, view details, add to cart, and place orders. Admins can manage books, categories, and order processing through a secure dashboard.
+
+---
+
+## ✨ Features
+
+- 👤 Customer registration and login
+- 🔍 Search and filter books by name, category, or price
+- 🛒 Shopping cart and order placement
+- 🧾 Order history and order details
+- 📚 Admin management of books, categories, and inventory
+- 📦 Track orders and update shipping status
+- 📈 Dashboard for revenue and order tracking
+
+---
+
+## 🧰 Technology Stack
+
+- **Frontend**: ASP.NET MVC / Razor Pages / Blazor
+- **Backend**: .NET Framework 4.8 / .NET Core 6
+- **Database**: SQL Server, Entity Framework
+- **Authentication**: ASP.NET Identity
+- **UI Library**: Bootstrap / Tailwind CSS
+- **Deployment**: IIS, Azure, or local hosting
+
+---
+
+## ⚙️ Installation
+
+1. **Clone the Repository**
+   ```bash
+
+
+   ```
