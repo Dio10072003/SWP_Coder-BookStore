@@ -99,3 +99,7 @@ npm start
 - Sử dụng biến môi trường cho các thông tin bảo mật.
 - Kiểm tra, validate dữ liệu đầu vào ở cả frontend và backend.
 - Sử dụng hash password, xác thực token cho các API
+📞 Liên hệ & hỗ trợ
+- Nếu gặp vấn đề, vui lòng tạo Issue hoặc Pull Request.
+- Email liên hệ: [TomOutfit2020@gmail.com]
+- Đóng góp ý kiến, phản hồi qua trang Feedback hoặc Support Center trên website.
