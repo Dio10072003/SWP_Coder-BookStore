@@ -16,16 +16,31 @@ Coder Book Store là ứng dụng web quản lý và bán sách trực tuyến, 
 
 **Người dùng**
 - 🔐 Đăng nhập / Đăng ký người dùng: Hệ thống xác thực an toàn, dễ sử dụng.
+- 👤 Quản lý hồ sơ cá nhân: Xem và cập nhật thông tin cá nhân, đổi mật khẩu.
 - 📚 Danh sách sách: Hiển thị sách theo danh mục, thể loại, tác giả, với khả năng phân trang.
 - 🛒 Quản lý giỏ hàng & Đặt hàng: Thêm/xóa sản phẩm vào giỏ, đặt hàng và theo dõi trạng thái đơn hàng.
-- 🔎 Tìm kiếm & Lọc nâng cao: Dễ dàng tìm kiếm sách theo từ khóa và áp dụng các bộ lọc đa dạng.
-- 💬 Đánh giá & Phản hồi: Gửi đánh giá và bình luận về sản phẩm.
+- 🔎 Tìm kiếm & Lọc nâng cao: Dễ dàng tìm kiếm sách theo từ khóa, lọc theo thể loại, tác giả, giá, đánh giá, v.v.
+- ⭐ Đánh giá & Bình luận: Gửi đánh giá, nhận xét về sản phẩm, xem đánh giá của người dùng khác.
+- 💬 Gửi phản hồi & Hỗ trợ: Gửi phản hồi, yêu cầu hỗ trợ, theo dõi lịch sử hỗ trợ.
+- 📝 Đăng ký nhận bản tin: Đăng ký email để nhận thông báo về sách mới, khuyến mãi, sự kiện.
 
 **Quản trị viên**
-- 🧑‍💼 Trang quản trị (Admin Panel): Giao diện trực quan để quản lý người dùng, sách, danh mục, và đơn hàng.
+- 🧑‍💼 Trang quản trị (Admin Panel): Giao diện trực quan để quản lý người dùng, sách, danh mục, đơn hàng.
+- 📦 Quản lý kho sách: Thêm, sửa, xóa sách, cập nhật số lượng tồn kho.
+- 🗂️ Quản lý danh mục & tác giả: Thêm, sửa, xóa danh mục sách, tác giả.
+- 🧑‍🤝‍🧑 Quản lý nhân viên: Thêm, phân quyền, reset mật khẩu nhân viên.
+- 📊 Thống kê & báo cáo: Xem thống kê doanh thu, số lượng đơn hàng, sách bán chạy, hoạt động người dùng.
+- 🏷️ Quản lý khuyến mãi & sự kiện: Tạo, chỉnh sửa các chương trình khuyến mãi, sự kiện, blog.
+- 📨 Quản lý phản hồi & hỗ trợ: Xem, phản hồi các yêu cầu hỗ trợ, feedback từ người dùng.
 
 **Tổng quan**
 - 📱 Giao diện Responsive: Tối ưu hóa cho cả thiết bị Desktop và Mobile.
+- 🌐 Đa ngôn ngữ: Hỗ trợ nhiều ngôn ngữ (có thể mở rộng).
+- 🔔 Thông báo real-time: Nhận thông báo về trạng thái đơn hàng, phản hồi, khuyến mãi.
+- 🛡️ Bảo mật: Xác thực JWT, hash mật khẩu, phân quyền truy cập.
+- 🗄️ Lưu trữ file: Hỗ trợ upload ảnh bìa sách, avatar người dùng, tài liệu liên quan.
+- 🕒 Lịch sử hoạt động: Lưu lại lịch sử mua hàng, đánh giá, hoạt động của người dùng.
+- 🛠️ API RESTful hiện đại: Dễ dàng tích hợp với các hệ thống khác hoặc phát triển mobile app trong tương lai.
 
 ## 🚀 Technology Stack
 
