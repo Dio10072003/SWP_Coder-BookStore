@@ -120,6 +120,14 @@ export default function AboutPage() {
           <TeamSection />
           <ContactSection />
         </main>
+        <main>
+          <Intro />
+          <HistorySection />
+          <MissionSection />
+          <CoreValuesSection />
+          <TeamSection />
+          <ContactSection />
+        </main>
 
         <Footer />
       </div>
