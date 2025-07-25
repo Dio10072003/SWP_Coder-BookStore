@@ -81,8 +81,8 @@ npx prisma migrate dev
 # 5. Chạy ứng dụng
 npm run dev
 🌐 Triển khai
-👉 Dự án được triển khai tại Vercel:
-🔗 https://swp-book-project.vercel.app
+👉 Dự án được triển khai tại Render:
+🔗 https://swp-coder-bookstore.onrender.com
 
 🖼️ Giao diện demo
 Bạn có thể thêm ảnh vào thư mục public/ và cập nhật đường dẫn bên dưới nếu cần.
