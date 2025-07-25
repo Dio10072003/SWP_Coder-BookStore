@@ -17,3 +17,28 @@ Coder BookStore-Web là nền tảng bán sách trực tuyến hiện đại, t�
 - **Tailwind CSS** - Styling
 - **pnpm** hoặc **npm** - Quản lý package
 - **PostCSS**, **ESLint** - Công cụ hỗ trợ phát triển
+📂 Cấu trúc thư mục chính
+
+Coder_BookStore-Web/
+├── public/                # Ảnh, font, logo, assets tĩnh
+├── src/
+│   └── app/
+│       ├── Books/         # Trang sách, chi tiết sách
+│       ├── Authors/       # Trang tác giả, chi tiết tác giả
+│       ├── Categories/    # Trang danh mục sách
+│       ├── CartPage/      # Giỏ hàng
+│       ├── OrderTracking/ # Theo dõi đơn hàng
+│       ├── admin/         # Trang quản trị
+│       ├── api/           # API backend (RESTful)
+│       │   ├── auth/      # Đăng nhập, đăng ký, đăng xuất
+│       │   ├── books/     # API sách
+│       │   ├── authors/   # API tác giả
+│       │   └── ...        # Các API khác
+│       ├── components/    # Component dùng chung
+│       ├── services/      # Service gọi API, xử lý logic client
+│       ├── utils/         # Hàm tiện ích
+│       └── ...            # Các trang, module khác
+├── package.json           # Thông tin package
+├── pnpm-lock.yaml         # Lockfile pnpm
+├── README.md              # Tài liệu này
+└── ...
