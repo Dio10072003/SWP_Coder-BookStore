@@ -94,14 +94,8 @@ src/
 
 ## 👥 Thành viên nhóm
 
-| Họ tên       | MSSV     | Vai trò             |
-| ------------ | -------- | ------------------- |
-| Nguyễn Văn A | SE150001 | Frontend            |
-| Trần Thị B   | SE150002 | Backend             |
-| Lê Văn C     | SE150003 | Database & API      |
-| Phạm Thị D   | SE150004 | Kiểm thử & Document |
+<img width="439" height="371" alt="{0480588A-51E0-42E6-94B3-DC0373C49056}" src="https://github.com/user-attachments/assets/018858ea-6628-4632-9bd4-e01738718912" />
 
-> 🛠️ _Chi tiết hơn xem trong thư mục `docs/` nếu có._
 
 ---
 
