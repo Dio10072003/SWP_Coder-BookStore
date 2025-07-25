@@ -29,25 +29,68 @@ Xây dựng sản phẩm thực tế phục vụ học tập và nghiên cứu
 
 ---
 
-## 🧩 Cấu trúc dự án
-
+🧩 Cấu trúc dự án
 src/
-├── app/ # App Router Pages (Next.js)
-│ ├── login/ # Trang đăng nhập
-│ ├── register/ # Trang đăng ký
-│ ├── listbook/ # Trang danh sách sách
-│ └── admin/ # Trang quản trị
-├── components/ # Các component dùng chung (navbar, button...)
-├── lib/ # Hàm tiện ích, config, Prisma client
-├── styles/ # Tệp CSS/Tailwind config
-├── types/ # TypeScript types
-└── api/ # API Routes (auth, book, user)
-
-yaml
-Copy
-Edit
-
----
+├── app/                        # Thư mục chính chứa các trang (pages) và module nghiệp vụ
+│   ├── Login/                  # Trang đăng nhập, các component liên quan đến đăng nhập
+│   │   └── Components/         # Các thành phần nhỏ cho trang đăng nhập (form, button, input)
+│   ├── Register/               # Trang đăng ký, các component liên quan đến đăng ký
+│   │   └── Components/         # Các thành phần nhỏ cho trang đăng ký
+│   ├── Books/                  # Trang danh sách sách, chi tiết sách
+│   │   ├── [id]/               # Trang chi tiết từng cuốn sách (theo id)
+│   │   └── Components/         # Các component: AddBookModal, BookGrid, SearchBar, Pagination,...
+│   ├── Authors/                # Trang danh sách tác giả, chi tiết tác giả
+│   │   ├── [id]/               # Trang chi tiết từng tác giả (theo id)
+│   │   └── Components/         # Các component: AddAuthorModal, AuthorList, AuthorDetail,...
+│   ├── Categories/             # Trang danh mục sách
+│   │   ├── [Category]/         # Trang chi tiết từng danh mục
+│   │   └── Components/         # Các component: CategoryCard, CategoryList,...
+│   ├── CartPage/               # Trang giỏ hàng, quản lý sản phẩm trong giỏ
+│   │   └── Components/         # Các component: CartItem, CartList, CartSummary,...
+│   ├── OrderTracking/          # Trang theo dõi đơn hàng
+│   │   └── Components/         # Các component: OrderOverview, OrderTimeline, OrderSupport,...
+│   ├── admin/                  # Trang quản trị (Admin panel)
+│   │   ├── StaffManagement/    # Quản lý nhân viên
+│   │   │   └── Components/     # Các modal, bảng quản lý nhân viên
+│   │   └── page.tsx            # Trang chính admin
+│   ├── Profile/                # Trang hồ sơ cá nhân người dùng
+│   ├── Feedback/               # Trang gửi phản hồi, đánh giá
+│   │   └── Components/         # Các component: FeedbackForm, FeedbackList, StarRating,...
+│   ├── Promotions/             # Trang khuyến mãi, sự kiện
+│   │   └── Components/         # Các component: PromotionList, PromotionDetail,...
+│   ├── Faq/                    # Trang câu hỏi thường gặp (FAQ)
+│   │   └── Components/         # Các component: FaqCard,...
+│   ├── Support-Center/         # Trung tâm hỗ trợ khách hàng
+│   │   ├── Components/         # Các component: SupportCard, SupportForm, SupportHistory,...
+│   │   └── ticket/             # Trang chi tiết từng ticket hỗ trợ
+│   ├── HomePage/               # Trang chủ, các section nổi bật
+│   │   └── Components/         # HeroSection, BestPicksSection, BlogSection,...
+│   ├── components/             # Các component dùng chung toàn app (Error, Loading, Header, Footer, LogoutButton,...)
+│   ├── services/               # Các service gọi API hoặc xử lý logic phía client (authorService, bookService, userService,...)
+│   ├── utils/                  # Hàm tiện ích dùng chung (cartUtils.js, passwordUtils.js,...)
+│   ├── hooks/                  # Custom React hooks (useBooks.ts,...)
+│   ├── assets/                 # Hình ảnh, tài nguyên tĩnh dùng trong app
+│   ├── globals.css             # File CSS toàn cục
+│   └── layout.tsx              # Layout tổng thể cho app
+│
+├── public/                     # Ảnh, font, logo, icon, tài nguyên tĩnh phục vụ frontend
+│   ├── images/                 # Hình ảnh minh họa, logo
+│   ├── fonts/                  # Font chữ custom
+│   └── ...                     # Các file SVG, favicon, ...
+│
+├── styles/                     # File cấu hình Tailwind, PostCSS, các file CSS bổ sung
+│   └── ...
+│
+├── types/                      # Định nghĩa TypeScript types, interface cho toàn dự án
+│   └── database.ts
+│
+├── api/                        # API routes (nếu tách riêng ngoài app/api)
+│   └── ...
+│
+├── package.json                # Thông tin package, scripts, dependencies
+├── pnpm-lock.yaml              # Lockfile cho pnpm
+├── README.md                   # Tài liệu hướng dẫn dự án
+└── ...                         # Các file cấu hình khác (tsconfig, eslint, v.v.)
 
 ## 👥 Thành viên nhóm
 
