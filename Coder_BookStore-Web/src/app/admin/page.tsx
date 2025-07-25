@@ -1,14 +1,25 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
-import { useBooks } from '../hooks/useBooks';
-import { bookService } from '../services/bookService';
-import { FaPlus, FaBook, FaUser, FaUserTie, FaTags, FaCog, FaTimes } from 'react-icons/fa';
-import { authorService, CreateAuthorData } from '../services/authorService';
-import { categoryService, CreateCategoryData } from '../services/categoryService';
-import { Author } from '../services/authorService';
-import { Category } from '../services/categoryService';
-import Link from 'next/link';
+import React, { useState, useEffect, useMemo } from "react";
+import { useBooks } from "../hooks/useBooks";
+import { bookService } from "../services/bookService";
+import {
+  FaPlus,
+  FaBook,
+  FaUser,
+  FaUserTie,
+  FaTags,
+  FaCog,
+  FaTimes,
+} from "react-icons/fa";
+import { authorService, CreateAuthorData } from "../services/authorService";
+import {
+  categoryService,
+  CreateCategoryData,
+} from "../services/categoryService";
+import { Author } from "../services/authorService";
+import { Category } from "../services/categoryService";
+import Link from "next/link";
 
 interface BookFormData {
   id?: number; // Make ID optional for new books
@@ -26,43 +37,60 @@ interface BookFormData {
 }
 
 const initialFormData: BookFormData = {
-  title: '',
-  author: '',
-  price: '',
-  img: '',
+  title: "",
+  author: "",
+  price: "",
+  img: "",
   rating: 0,
-  description: '',
-  category: '',
+  description: "",
+  category: "",
   publishYear: new Date().getFullYear(),
   pages: 0,
-  language: 'English',
-  isbn: ''
+  language: "English",
+  isbn: "",
 };
 
 const initialAuthorFormData: CreateAuthorData = {
-  name: '',
-  bio: '',
-  avatar: '',
-  country: '',
+  name: "",
+  bio: "",
+  avatar: "",
+  country: "",
   birth_year: undefined,
   genres: [],
 };
 
 const initialCategoryFormData: CreateCategoryData = {
-  name: '',
-  description: '',
+  name: "",
+  description: "",
 };
 
 const TABS = [
-  { key: 'books', label: 'Quản lý Sách', icon: <FaBook />, color: 'from-blue-500 to-purple-600' },
-  { key: 'authors', label: 'Quản lý Tác giả', icon: <FaUserTie />, color: 'from-green-500 to-teal-600' },
-  { key: 'categories', label: 'Quản lý Thể loại', icon: <FaTags />, color: 'from-orange-500 to-red-600' },
+  {
+    key: "books",
+    label: "Quản lý Sách",
+    icon: <FaBook />,
+    color: "from-blue-500 to-purple-600",
+  },
+  {
+    key: "authors",
+    label: "Quản lý Tác giả",
+    icon: <FaUserTie />,
+    color: "from-green-500 to-teal-600",
+  },
+  {
+    key: "categories",
+    label: "Quản lý Thể loại",
+    icon: <FaTags />,
+    color: "from-orange-500 to-red-600",
+  },
 ];
-
 
 export default function AdminPage() {
   const [reloadBooks, setReloadBooks] = useState(0);
-  const bookFilters = useMemo(() => ({ limit: 1000, reload: reloadBooks }), [reloadBooks]);
+  const bookFilters = useMemo(
+    () => ({ limit: 1000, reload: reloadBooks }),
+    [reloadBooks]
+  );
   const { books } = useBooks(bookFilters);
   const [showForm, setShowForm] = useState(false);
   const [editingBook, setEditingBook] = useState<number | null>(null);
@@ -71,26 +99,41 @@ export default function AdminPage() {
   const [formLoading, setFormLoading] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
-  const [tab, setTab] = useState('books');
+  const [tab, setTab] = useState("books");
   const [authors, setAuthors] = useState<Author[]>([]);
   const [categoriesData, setCategoriesData] = useState<Category[]>([]);
-  const [stats, setStats] = useState({ books: 0, users: 0, authors: 0, categories: 0 });
+  const [stats, setStats] = useState({
+    books: 0,
+    users: 0,
+    authors: 0,
+    categories: 0,
+  });
   const [accessDenied, setAccessDenied] = useState(false);
 
   // Keep all state declarations for both author and user management
   const [showAuthorForm, setShowAuthorForm] = useState(false);
   const [editingAuthor, setEditingAuthor] = useState<string | null>(null);
-  const [authorFormData, setAuthorFormData] = useState<CreateAuthorData>(initialAuthorFormData);
+  const [authorFormData, setAuthorFormData] = useState<CreateAuthorData>(
+    initialAuthorFormData
+  );
   const [authorFormLoading, setAuthorFormLoading] = useState(false);
   const [authorFormError, setAuthorFormError] = useState<string | null>(null);
-  const [authorSuccessMessage, setAuthorSuccessMessage] = useState<string | null>(null);
+  const [authorSuccessMessage, setAuthorSuccessMessage] = useState<
+    string | null
+  >(null);
 
   const [showCategoryForm, setShowCategoryForm] = useState(false);
   const [editingCategory, setEditingCategory] = useState<string | null>(null);
-  const [categoryFormData, setCategoryFormData] = useState<CreateCategoryData>(initialCategoryFormData);
+  const [categoryFormData, setCategoryFormData] = useState<CreateCategoryData>(
+    initialCategoryFormData
+  );
   const [categoryFormLoading, setCategoryFormLoading] = useState(false);
-  const [categoryFormError, setCategoryFormError] = useState<string | null>(null);
-  const [categorySuccessMessage, setCategorySuccessMessage] = useState<string | null>(null);
+  const [categoryFormError, setCategoryFormError] = useState<string | null>(
+    null
+  );
+  const [categorySuccessMessage, setCategorySuccessMessage] = useState<
+    string | null
+  >(null);
 
   // Cập nhật thời gian thực
   useEffect(() => {
@@ -101,14 +144,15 @@ export default function AdminPage() {
   }, []);
 
   useEffect(() => {
-    const userStr = typeof window !== 'undefined' ? localStorage.getItem('user') : null;
+    const userStr =
+      typeof window !== "undefined" ? localStorage.getItem("user") : null;
     if (!userStr) {
       setAccessDenied(true);
       return;
     }
     try {
       const user = JSON.parse(userStr);
-      if (user.role !== 'Admin') {
+      if (user.role !== "Admin") {
         setAccessDenied(true);
       }
     } catch {
@@ -116,42 +160,40 @@ export default function AdminPage() {
     }
   }, []);
 
-
-
   useEffect(() => {
     const fetchCategories = async () => {
       try {
         const cats = await bookService.getCategories();
         setCategories(cats);
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        console.error("Error fetching categories:", error);
       }
     };
     fetchCategories();
   }, []);
 
   useEffect(() => {
-    if (tab === 'authors') {
-      fetch('/api/authors')
-        .then(res => res.json())
-        .then(data => setAuthors(Array.isArray(data) ? data : []));
+    if (tab === "authors") {
+      fetch("/api/authors")
+        .then((res) => res.json())
+        .then((data) => setAuthors(Array.isArray(data) ? data : []));
     }
   }, [tab]);
 
   useEffect(() => {
-    if (tab === 'categories') {
-      fetch('/api/categories')
-        .then(res => res.json())
-        .then(data => setCategoriesData(Array.isArray(data) ? data : []));
+    if (tab === "categories") {
+      fetch("/api/categories")
+        .then((res) => res.json())
+        .then((data) => setCategoriesData(Array.isArray(data) ? data : []));
     }
   }, [tab]);
 
   useEffect(() => {
     Promise.all([
-      fetch('/api/books').then(res => res.json()),
-      fetch('/api/users').then(res => res.json()),
-      fetch('/api/authors').then(res => res.json()),
-      fetch('/api/categories').then(res => res.json()),
+      fetch("/api/books").then((res) => res.json()),
+      fetch("/api/users").then((res) => res.json()),
+      fetch("/api/authors").then((res) => res.json()),
+      fetch("/api/categories").then((res) => res.json()),
     ]).then(([books, users, authors, categories]) => {
       setStats({
         books: Array.isArray(books) ? books.length : 0,
@@ -164,29 +206,36 @@ export default function AdminPage() {
 
   const fetchBookCount = async () => {
     try {
-      const res = await fetch('/api/books');
+      const res = await fetch("/api/books");
       const result = await res.json();
-      if (typeof result.total === 'number') {
-        setStats(prev => ({ ...prev, books: result.total }));
+      if (typeof result.total === "number") {
+        setStats((prev) => ({ ...prev, books: result.total }));
       } else if (Array.isArray(result)) {
-        setStats(prev => ({ ...prev, books: result.length }));
+        setStats((prev) => ({ ...prev, books: result.length }));
       }
     } catch {
-      setStats(prev => ({ ...prev, books: 0 }));
+      setStats((prev) => ({ ...prev, books: 0 }));
     }
   };
 
   useEffect(() => {
-    if (tab === 'books') {
+    if (tab === "books") {
       fetchBookCount();
     }
   }, [tab]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: name === 'rating' || name === 'publishYear' || name === 'pages' ? parseFloat(value) || 0 : value
+      [name]:
+        name === "rating" || name === "publishYear" || name === "pages"
+          ? parseFloat(value) || 0
+          : value,
     }));
   };
 
@@ -205,20 +254,20 @@ export default function AdminPage() {
     try {
       if (editingBook) {
         await bookService.updateBook(editingBook, formData);
-        setSuccessMessage('Sách đã được cập nhật thành công!');
+        setSuccessMessage("Sách đã được cập nhật thành công!");
       } else {
         await bookService.createBook(formData);
-        setSuccessMessage('Sách đã được thêm thành công!');
+        setSuccessMessage("Sách đã được thêm thành công!");
       }
       resetForm();
       setShowForm(false);
-      setReloadBooks(r => r + 1);
+      setReloadBooks((r) => r + 1);
       await fetchBookCount();
     } catch (error) {
       setFormError(
-        error && typeof error === 'object' && 'message' in error
-          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
-          : 'Có lỗi xảy ra'
+        error && typeof error === "object" && "message" in error
+          ? (error as { message?: string })?.message ?? "Có lỗi xảy ra"
+          : "Có lỗi xảy ra"
       );
     }
   };
@@ -235,43 +284,45 @@ export default function AdminPage() {
       publishYear: book.publishYear,
       pages: book.pages,
       language: book.language,
-      isbn: book.isbn
+      isbn: book.isbn,
     });
     setEditingBook(book.id ?? null); // Use nullish coalescing for cleaner ID handling
     setShowForm(true);
   };
 
   const handleDelete = async (id: number) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa sách này?')) {
+    if (!confirm("Bạn có chắc chắn muốn xóa sách này?")) {
       return;
     }
     try {
       await bookService.deleteBook(id);
-      setSuccessMessage('Sách đã được xóa thành công!');
-      setReloadBooks(r => r + 1);
+      setSuccessMessage("Sách đã được xóa thành công!");
+      setReloadBooks((r) => r + 1);
       await fetchBookCount();
     } catch (error) {
       setFormError(
-        error && typeof error === 'object' && 'message' in error
-          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
-          : 'Có lỗi xảy ra'
+        error && typeof error === "object" && "message" in error
+          ? (error as { message?: string })?.message ?? "Có lỗi xảy ra"
+          : "Có lỗi xảy ra"
       );
     }
   };
 
   const fetchAuthors = async () => {
     try {
-      const response = await fetch('/api/authors');
+      const response = await fetch("/api/authors");
       const data = await response.json();
       setAuthors(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error fetching authors:', error);
+      console.error("Error fetching authors:", error);
     }
   };
 
-  const handleAuthorInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleAuthorInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setAuthorFormData(prev => ({ ...prev, [name]: value }));
+    setAuthorFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const resetAuthorForm = () => {
@@ -289,19 +340,19 @@ export default function AdminPage() {
     try {
       if (editingAuthor) {
         await authorService.updateAuthor(editingAuthor, authorFormData);
-        setAuthorSuccessMessage('Tác giả đã được cập nhật thành công!');
+        setAuthorSuccessMessage("Tác giả đã được cập nhật thành công!");
       } else {
         await authorService.createAuthor(authorFormData);
-        setAuthorSuccessMessage('Tác giả đã được thêm thành công!');
+        setAuthorSuccessMessage("Tác giả đã được thêm thành công!");
       }
       resetAuthorForm();
       setShowAuthorForm(false);
       await fetchAuthors();
     } catch (error) {
       setAuthorFormError(
-        error && typeof error === 'object' && 'message' in error
-          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
-          : 'Có lỗi xảy ra'
+        error && typeof error === "object" && "message" in error
+          ? (error as { message?: string })?.message ?? "Có lỗi xảy ra"
+          : "Có lỗi xảy ra"
       );
     } finally {
       setAuthorFormLoading(false);
@@ -311,9 +362,9 @@ export default function AdminPage() {
   const handleEditAuthor = (author: Author) => {
     setAuthorFormData({
       name: author.name,
-      bio: author.bio || '',
-      avatar: author.avatar || '',
-      country: author.country || '',
+      bio: author.bio || "",
+      avatar: author.avatar || "",
+      country: author.country || "",
       birth_year: author.birth_year,
       genres: author.genres || [],
     });
@@ -322,35 +373,37 @@ export default function AdminPage() {
   };
 
   const handleDeleteAuthor = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa tác giả này?')) {
+    if (!confirm("Bạn có chắc chắn muốn xóa tác giả này?")) {
       return;
     }
     try {
       await authorService.deleteAuthor(id);
-      setAuthorSuccessMessage('Tác giả đã được xóa thành công!');
+      setAuthorSuccessMessage("Tác giả đã được xóa thành công!");
       await fetchAuthors();
     } catch (error) {
       setAuthorFormError(
-        error && typeof error === 'object' && 'message' in error
-          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
-          : 'Có lỗi xảy ra'
+        error && typeof error === "object" && "message" in error
+          ? (error as { message?: string })?.message ?? "Có lỗi xảy ra"
+          : "Có lỗi xảy ra"
       );
     }
   };
 
   const fetchCategoriesData = async () => {
     try {
-      const response = await fetch('/api/categories');
+      const response = await fetch("/api/categories");
       const data = await response.json();
       setCategoriesData(Array.isArray(data) ? data : []);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
 
-  const handleCategoryInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleCategoryInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
-    setCategoryFormData(prev => ({ ...prev, [name]: value }));
+    setCategoryFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const resetCategoryForm = () => {
@@ -368,19 +421,19 @@ export default function AdminPage() {
     try {
       if (editingCategory) {
         await categoryService.updateCategory(editingCategory, categoryFormData);
-        setCategorySuccessMessage('Thể loại đã được cập nhật thành công!');
+        setCategorySuccessMessage("Thể loại đã được cập nhật thành công!");
       } else {
         await categoryService.createCategory(categoryFormData);
-        setCategorySuccessMessage('Thể loại đã được thêm thành công!');
+        setCategorySuccessMessage("Thể loại đã được thêm thành công!");
       }
       resetCategoryForm();
       setShowCategoryForm(false);
       await fetchCategoriesData();
     } catch (error) {
       setCategoryFormError(
-        error && typeof error === 'object' && 'message' in error
-          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
-          : 'Có lỗi xảy ra'
+        error && typeof error === "object" && "message" in error
+          ? (error as { message?: string })?.message ?? "Có lỗi xảy ra"
+          : "Có lỗi xảy ra"
       );
     } finally {
       setCategoryFormLoading(false);
@@ -390,25 +443,25 @@ export default function AdminPage() {
   const handleEditCategory = (category: Category) => {
     setCategoryFormData({
       name: category.name,
-      description: category.description || '',
+      description: category.description || "",
     });
     setEditingCategory(category.id);
     setShowCategoryForm(true);
   };
 
   const handleDeleteCategory = async (id: string) => {
-    if (!confirm('Bạn có chắc chắn muốn xóa thể loại này?')) {
+    if (!confirm("Bạn có chắc chắn muốn xóa thể loại này?")) {
       return;
     }
     try {
       await categoryService.deleteCategory(id);
-      setCategorySuccessMessage('Thể loại đã được xóa thành công!');
+      setCategorySuccessMessage("Thể loại đã được xóa thành công!");
       await fetchCategoriesData();
     } catch (error) {
       setCategoryFormError(
-        error && typeof error === 'object' && 'message' in error
-          ? (error as { message?: string })?.message ?? 'Có lỗi xảy ra'
-          : 'Có lỗi xảy ra'
+        error && typeof error === "object" && "message" in error
+          ? (error as { message?: string })?.message ?? "Có lỗi xảy ra"
+          : "Có lỗi xảy ra"
       );
     }
   };
@@ -423,9 +476,16 @@ export default function AdminPage() {
       <div className="min-h-screen bg-gradient-to-br from-red-50 to-pink-50 flex items-center justify-center">
         <div className="bg-white rounded-3xl shadow-2xl p-12 text-center max-w-md mx-4">
           <div className="text-red-500 text-6xl mb-6">🚫</div>
-          <h1 className="text-2xl font-bold text-gray-800 mb-4">Truy cập bị từ chối</h1>
-          <p className="text-gray-600 mb-6">Bạn không có quyền truy cập vào trang quản trị.</p>
-          <Link href="/" className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300">
+          <h1 className="text-2xl font-bold text-gray-800 mb-4">
+            Truy cập bị từ chối
+          </h1>
+          <p className="text-gray-600 mb-6">
+            Bạn không có quyền truy cập vào trang quản trị.
+          </p>
+          <Link
+            href="/"
+            className="inline-block px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl font-semibold hover:from-blue-600 hover:to-purple-700 transition-all duration-300"
+          >
             Về trang chủ
           </Link>
         </div>
@@ -442,7 +502,9 @@ export default function AdminPage() {
             <div className="w-9 h-9 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center">
               <FaCog className="text-white text-lg" />
             </div>
-            <span className="font-bold text-base bg-gradient-to-r from-pink-400 via-yellow-400 to-blue-400 bg-clip-text text-transparent animate-gradient-move">Admin</span>
+            <span className="font-bold text-base bg-gradient-to-r from-pink-400 via-yellow-400 to-blue-400 bg-clip-text text-transparent animate-gradient-move">
+              Admin
+            </span>
           </div>
           <button className="w-9 h-9 flex items-center justify-center rounded-full bg-gray-100 shadow-lg">
             <FaUser className="text-blue-500 text-lg" />
@@ -455,110 +517,225 @@ export default function AdminPage() {
         <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-b-4 border-blue-500 flex flex-col items-center justify-center animate-gradient-move">
           <FaBook className="text-blue-500 text-2xl md:text-3xl mb-1 animate-bounce" />
           <span className="text-xs md:text-sm text-gray-500">Sách</span>
-          <span className="text-lg md:text-2xl font-bold text-gray-800">{stats.books}</span>
+          <span className="text-lg md:text-2xl font-bold text-gray-800">
+            {stats.books}
+          </span>
         </div>
         <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-b-4 border-green-500 flex flex-col items-center justify-center animate-gradient-move">
           <FaUserTie className="text-green-500 text-2xl md:text-3xl mb-1 animate-bounce" />
           <span className="text-xs md:text-sm text-gray-500">Tác giả</span>
-          <span className="text-lg md:text-2xl font-bold text-gray-800">{stats.authors}</span>
+          <span className="text-lg md:text-2xl font-bold text-gray-800">
+            {stats.authors}
+          </span>
         </div>
         <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-b-4 border-orange-500 flex flex-col items-center justify-center animate-gradient-move">
           <FaTags className="text-orange-500 text-2xl md:text-3xl mb-1 animate-bounce" />
           <span className="text-xs md:text-sm text-gray-500">Thể loại</span>
-          <span className="text-lg md:text-2xl font-bold text-gray-800">{stats.categories}</span>
+          <span className="text-lg md:text-2xl font-bold text-gray-800">
+            {stats.categories}
+          </span>
         </div>
         <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border-b-4 border-purple-500 flex flex-col items-center justify-center animate-gradient-move">
           <FaUser className="text-purple-500 text-2xl md:text-3xl mb-1 animate-bounce" />
           <span className="text-xs md:text-sm text-gray-500">Người dùng</span>
-          <span className="text-lg md:text-2xl font-bold text-gray-800">{stats.users}</span>
+          <span className="text-lg md:text-2xl font-bold text-gray-800">
+            {stats.users}
+          </span>
         </div>
       </div>
 
       {/* Tabs Responsive: Top for tablet/desktop, bottom for mobile */}
       <div className="hidden sm:block w-full px-3 sm:px-4 md:px-8 mt-2 mb-4">
         <div className="flex justify-center gap-2 md:gap-4">
-          {TABS.map(tabItem => (
+          {TABS.map((tabItem) => (
             <button
               key={tabItem.key}
               onClick={() => setTab(tabItem.key)}
               className={`flex items-center gap-2 px-4 md:px-6 py-2 md:py-3 rounded-xl font-semibold transition-all duration-300 animate-gradient-move
-                ${tab === tabItem.key ? `bg-gradient-to-r ${tabItem.color} text-white shadow-lg` : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'}`}
+                ${
+                  tab === tabItem.key
+                    ? `bg-gradient-to-r ${tabItem.color} text-white shadow-lg`
+                    : "text-gray-600 hover:text-gray-800 hover:bg-gray-100"
+                }`}
             >
-              <span className={`text-lg md:text-xl ${tab === tabItem.key ? 'animate-bounce' : ''}`}>{tabItem.icon}</span>
-              <span className="text-xs md:text-base">{tabItem.label.replace('Quản lý ', '')}</span>
+              <span
+                className={`text-lg md:text-xl ${
+                  tab === tabItem.key ? "animate-bounce" : ""
+                }`}
+              >
+                {tabItem.icon}
+              </span>
+              <span className="text-xs md:text-base">
+                {tabItem.label.replace("Quản lý ", "")}
+              </span>
             </button>
           ))}
         </div>
       </div>
       <nav className="fixed bottom-0 left-0 right-0 z-40 bg-white border-t border-gray-200 flex justify-around sm:hidden shadow-xl animate-fade-in">
-        {TABS.map(tabItem => (
+        {TABS.map((tabItem) => (
           <button
             key={tabItem.key}
             onClick={() => setTab(tabItem.key)}
-            className={`flex flex-col items-center flex-1 py-2 ${tab === tabItem.key ? 'text-blue-600 font-bold' : 'text-gray-400'} transition-all animate-gradient-move`}
+            className={`flex flex-col items-center flex-1 py-2 ${
+              tab === tabItem.key ? "text-blue-600 font-bold" : "text-gray-400"
+            } transition-all animate-gradient-move`}
           >
-            <span className={`text-xl mb-0.5 ${tab === tabItem.key ? 'animate-bounce' : ''}`}>{tabItem.icon}</span>
-            <span className="text-xs">{tabItem.label.replace('Quản lý ', '')}</span>
+            <span
+              className={`text-xl mb-0.5 ${
+                tab === tabItem.key ? "animate-bounce" : ""
+              }`}
+            >
+              {tabItem.icon}
+            </span>
+            <span className="text-xs">
+              {tabItem.label.replace("Quản lý ", "")}
+            </span>
           </button>
         ))}
       </nav>
 
       {/* Content Responsive: Card List */}
       <div className="flex flex-col gap-3 px-3 sm:px-4 md:px-8 py-3 pb-16">
-        {tab === 'books' && books.map(book => (
-          <div key={book.id} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move">
-            <div className="flex items-center justify-between">
-              <div className="font-bold text-blue-700 text-base md:text-lg">{book.title}</div>
-              <button onClick={() => setOpenBookId(openBookId === book.id ? null : book.id)} className="text-blue-500 font-bold text-sm md:text-base">{openBookId === book.id ? 'Ẩn' : 'Chi tiết'}</button>
-            </div>
-            <div className="text-xs md:text-sm text-gray-500">{book.author}</div>
-            {openBookId === book.id && (
-              <div className="mt-2 border-t pt-2">
-                <div className="text-xs md:text-sm text-gray-700">Thể loại: {book.category}</div>
-                <div className="text-xs md:text-sm text-gray-700">Giá: {book.price}₫</div>
-                <div className="flex gap-2 mt-2">
-                  <button className="flex-1 p-2 md:p-3 bg-blue-100 text-blue-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleEdit(book)}>Sửa</button>
-                  <button className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleDelete(book.id)}>Xóa</button>
+        {tab === "books" &&
+          books.map((book) => (
+            <div
+              key={book.id}
+              className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move"
+            >
+              <div className="flex items-center justify-between">
+                <div className="font-bold text-blue-700 text-base md:text-lg">
+                  {book.title}
                 </div>
+                <button
+                  onClick={() =>
+                    setOpenBookId(openBookId === book.id ? null : book.id)
+                  }
+                  className="text-blue-500 font-bold text-sm md:text-base"
+                >
+                  {openBookId === book.id ? "Ẩn" : "Chi tiết"}
+                </button>
               </div>
-            )}
-          </div>
-        ))}
-        {tab === 'authors' && authors.map(author => (
-          <div key={author.id} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move">
-            <div className="flex items-center justify-between">
-              <div className="font-bold text-green-700 text-base md:text-lg">{author.name}</div>
-              <button onClick={() => setOpenAuthorId(openAuthorId === author.id ? null : author.id)} className="text-green-500 font-bold text-sm md:text-base">{openAuthorId === author.id ? 'Ẩn' : 'Chi tiết'}</button>
-            </div>
-            <div className="text-xs md:text-sm text-gray-500">{author.country}</div>
-            {openAuthorId === author.id && (
-              <div className="mt-2 border-t pt-2">
-                <div className="text-xs md:text-sm text-gray-700">{author.bio}</div>
-                <div className="flex gap-2 mt-2">
-                  <button className="flex-1 p-2 md:p-3 bg-green-100 text-green-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleEditAuthor(author)}>Sửa</button>
-                  <button className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleDeleteAuthor(author.id)}>Xóa</button>
+              <div className="text-xs md:text-sm text-gray-500">
+                {book.author}
+              </div>
+              {openBookId === book.id && (
+                <div className="mt-2 border-t pt-2">
+                  <div className="text-xs md:text-sm text-gray-700">
+                    Thể loại: {book.category}
+                  </div>
+                  <div className="text-xs md:text-sm text-gray-700">
+                    Giá: {book.price}₫
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      className="flex-1 p-2 md:p-3 bg-blue-100 text-blue-700 rounded-lg text-sm md:text-base font-semibold"
+                      onClick={() => handleEdit(book)}
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold"
+                      onClick={() => handleDelete(book.id)}
+                    >
+                      Xóa
+                    </button>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-        ))}
-        {tab === 'categories' && categoriesData.map(category => (
-          <div key={category.id} className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move">
-            <div className="flex items-center justify-between">
-              <div className="font-bold text-orange-700 text-base md:text-lg">{category.name}</div>
-              <button onClick={() => setOpenCategoryId(openCategoryId === category.id ? null : category.id)} className="text-orange-500 font-bold text-sm md:text-base">{openCategoryId === category.id ? 'Ẩn' : 'Chi tiết'}</button>
+              )}
             </div>
-            {openCategoryId === category.id && (
-              <div className="mt-2 border-t pt-2">
-                <div className="text-xs md:text-sm text-gray-700">Mô tả: {category.description}</div>
-                <div className="flex gap-2 mt-2">
-                  <button className="flex-1 p-2 md:p-3 bg-blue-100 text-blue-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleEditCategory(category)}>Sửa</button>
-                  <button className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold" onClick={() => handleDeleteCategory(category.id)}>Xóa</button>
+          ))}
+        {tab === "authors" &&
+          authors.map((author) => (
+            <div
+              key={author.id}
+              className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move"
+            >
+              <div className="flex items-center justify-between">
+                <div className="font-bold text-green-700 text-base md:text-lg">
+                  {author.name}
                 </div>
+                <button
+                  onClick={() =>
+                    setOpenAuthorId(
+                      openAuthorId === author.id ? null : author.id
+                    )
+                  }
+                  className="text-green-500 font-bold text-sm md:text-base"
+                >
+                  {openAuthorId === author.id ? "Ẩn" : "Chi tiết"}
+                </button>
               </div>
-            )}
-          </div>
-        ))}
+              <div className="text-xs md:text-sm text-gray-500">
+                {author.country}
+              </div>
+              {openAuthorId === author.id && (
+                <div className="mt-2 border-t pt-2">
+                  <div className="text-xs md:text-sm text-gray-700">
+                    {author.bio}
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      className="flex-1 p-2 md:p-3 bg-green-100 text-green-700 rounded-lg text-sm md:text-base font-semibold"
+                      onClick={() => handleEditAuthor(author)}
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold"
+                      onClick={() => handleDeleteAuthor(author.id)}
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        {tab === "categories" &&
+          categoriesData.map((category) => (
+            <div
+              key={category.id}
+              className="bg-white rounded-2xl shadow-lg p-4 md:p-6 flex flex-col gap-2 animate-gradient-move"
+            >
+              <div className="flex items-center justify-between">
+                <div className="font-bold text-orange-700 text-base md:text-lg">
+                  {category.name}
+                </div>
+                <button
+                  onClick={() =>
+                    setOpenCategoryId(
+                      openCategoryId === category.id ? null : category.id
+                    )
+                  }
+                  className="text-orange-500 font-bold text-sm md:text-base"
+                >
+                  {openCategoryId === category.id ? "Ẩn" : "Chi tiết"}
+                </button>
+              </div>
+              {openCategoryId === category.id && (
+                <div className="mt-2 border-t pt-2">
+                  <div className="text-xs md:text-sm text-gray-700">
+                    Mô tả: {category.description}
+                  </div>
+                  <div className="flex gap-2 mt-2">
+                    <button
+                      className="flex-1 p-2 md:p-3 bg-blue-100 text-blue-700 rounded-lg text-sm md:text-base font-semibold"
+                      onClick={() => handleEditCategory(category)}
+                    >
+                      Sửa
+                    </button>
+                    <button
+                      className="flex-1 p-2 md:p-3 bg-red-100 text-red-700 rounded-lg text-sm md:text-base font-semibold"
+                      onClick={() => handleDeleteCategory(category.id)}
+                    >
+                      Xóa
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
       </div>
 
       {/* Success/Error Messages */}
@@ -599,10 +776,13 @@ export default function AdminPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-800">
-                {editingBook ? 'Chỉnh sửa sách' : 'Thêm sách mới'}
+                {editingBook ? "Chỉnh sửa sách" : "Thêm sách mới"}
               </h2>
               <button
-                onClick={() => { setShowForm(false); resetForm(); }}
+                onClick={() => {
+                  setShowForm(false);
+                  resetForm();
+                }}
                 className="w-10 h-10 rounded-full bg-gray-100 hover:bg-red-100 flex items-center justify-center text-gray-500 hover:text-red-500 transition-all duration-300"
               >
                 <FaTimes />
@@ -668,8 +848,10 @@ export default function AdminPage() {
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                   >
                     <option value="">Chọn thể loại</option>
-                    {categories.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
+                    {categories.map((cat) => (
+                      <option key={cat} value={cat}>
+                        {cat}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -788,13 +970,16 @@ export default function AdminPage() {
                   ) : (
                     <>
                       <FaPlus />
-                      {editingBook ? 'Cập nhật sách' : 'Thêm sách'}
+                      {editingBook ? "Cập nhật sách" : "Thêm sách"}
                     </>
                   )}
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setShowForm(false); resetForm(); }}
+                  onClick={() => {
+                    setShowForm(false);
+                    resetForm();
+                  }}
                   className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-all duration-300"
                 >
                   Hủy
@@ -811,10 +996,13 @@ export default function AdminPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full mx-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-800">
-                {editingAuthor ? 'Chỉnh sửa tác giả' : 'Thêm tác giả mới'}
+                {editingAuthor ? "Chỉnh sửa tác giả" : "Thêm tác giả mới"}
               </h2>
               <button
-                onClick={() => { setShowAuthorForm(false); resetAuthorForm(); }}
+                onClick={() => {
+                  setShowAuthorForm(false);
+                  resetAuthorForm();
+                }}
                 className="w-10 h-10 rounded-full bg-gray-100 hover:bg-red-100 flex items-center justify-center text-gray-500 hover:text-red-500 transition-all duration-300"
               >
                 <FaTimes />
@@ -823,7 +1011,9 @@ export default function AdminPage() {
 
             <form onSubmit={handleAuthorSubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Tên tác giả *</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Tên tác giả *
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -836,10 +1026,12 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Tiểu sử</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Tiểu sử
+                </label>
                 <textarea
                   name="bio"
-                  value={authorFormData.bio || ''}
+                  value={authorFormData.bio || ""}
                   onChange={handleAuthorInputChange}
                   rows={3}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300 resize-none"
@@ -849,11 +1041,13 @@ export default function AdminPage() {
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Avatar URL</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Avatar URL
+                  </label>
                   <input
                     type="text"
                     name="avatar"
-                    value={authorFormData.avatar || ''}
+                    value={authorFormData.avatar || ""}
                     onChange={handleAuthorInputChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
                     placeholder="https://example.com/avatar.jpg"
@@ -861,11 +1055,13 @@ export default function AdminPage() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Quốc gia</label>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Quốc gia
+                  </label>
                   <input
                     type="text"
                     name="country"
-                    value={authorFormData.country || ''}
+                    value={authorFormData.country || ""}
                     onChange={handleAuthorInputChange}
                     className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
                     placeholder="Nhập quốc gia"
@@ -874,12 +1070,19 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Năm sinh</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Năm sinh
+                </label>
                 <input
                   type="number"
                   name="birth_year"
-                  value={authorFormData.birth_year || ''}
-                  onChange={(e) => setAuthorFormData(prev => ({ ...prev, birth_year: parseInt(e.target.value) || undefined }))}
+                  value={authorFormData.birth_year || ""}
+                  onChange={(e) =>
+                    setAuthorFormData((prev) => ({
+                      ...prev,
+                      birth_year: parseInt(e.target.value) || undefined,
+                    }))
+                  }
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent transition-all duration-300"
                   placeholder="1990"
                 />
@@ -899,13 +1102,16 @@ export default function AdminPage() {
                   ) : (
                     <>
                       <FaPlus />
-                      {editingAuthor ? 'Cập nhật tác giả' : 'Thêm tác giả'}
+                      {editingAuthor ? "Cập nhật tác giả" : "Thêm tác giả"}
                     </>
                   )}
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setShowAuthorForm(false); resetAuthorForm(); }}
+                  onClick={() => {
+                    setShowAuthorForm(false);
+                    resetAuthorForm();
+                  }}
                   className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-all duration-300"
                 >
                   Hủy
@@ -922,10 +1128,13 @@ export default function AdminPage() {
           <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-2xl w-full mx-4">
             <div className="flex items-center justify-between mb-6">
               <h2 className="text-2xl font-bold text-gray-800">
-                {editingCategory ? 'Chỉnh sửa thể loại' : 'Thêm thể loại mới'}
+                {editingCategory ? "Chỉnh sửa thể loại" : "Thêm thể loại mới"}
               </h2>
               <button
-                onClick={() => { setShowCategoryForm(false); resetCategoryForm(); }}
+                onClick={() => {
+                  setShowCategoryForm(false);
+                  resetCategoryForm();
+                }}
                 className="w-10 h-10 rounded-full bg-gray-100 hover:bg-red-100 flex items-center justify-center text-gray-500 hover:text-red-500 transition-all duration-300"
               >
                 <FaTimes />
@@ -934,7 +1143,9 @@ export default function AdminPage() {
 
             <form onSubmit={handleCategorySubmit} className="space-y-6">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Tên thể loại *</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Tên thể loại *
+                </label>
                 <input
                   type="text"
                   name="name"
@@ -947,10 +1158,12 @@ export default function AdminPage() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">Mô tả</label>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Mô tả
+                </label>
                 <textarea
                   name="description"
-                  value={categoryFormData.description || ''}
+                  value={categoryFormData.description || ""}
                   onChange={handleCategoryInputChange}
                   rows={4}
                   className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all duration-300 resize-none"
@@ -972,13 +1185,16 @@ export default function AdminPage() {
                   ) : (
                     <>
                       <FaPlus />
-                      {editingCategory ? 'Cập nhật thể loại' : 'Thêm thể loại'}
+                      {editingCategory ? "Cập nhật thể loại" : "Thêm thể loại"}
                     </>
                   )}
                 </button>
                 <button
                   type="button"
-                  onClick={() => { setShowCategoryForm(false); resetCategoryForm(); }}
+                  onClick={() => {
+                    setShowCategoryForm(false);
+                    resetCategoryForm();
+                  }}
                   className="px-6 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-all duration-300"
                 >
                   Hủy
