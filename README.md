@@ -4,7 +4,7 @@
 
 ## 🔖 Giới thiệu
 
-**SWP Book Store** là một ứng dụng web quản lý cửa hàng sách, được phát triển trong khuôn khổ môn học **Software Project (SWP)**. Dự án áp dụng kiến trúc hiện đại với **Next.js**, **TypeScript**, và tích hợp đầy đủ các tính năng như:
+SWP Book Store là ứng dụng web quản lý và bán sách trực tuyến, phát triển với kiến trúc hiện đại sử dụng Next.js và TypeScript. Dự án hướng tới việc xây dựng một hệ thống thực tế, đáp ứng đầy đủ các nghiệp vụ của một cửa hàng sách online.
 
 - Đăng nhập / Đăng ký người dùng
 - Danh sách sách theo danh mục
